@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.AppInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.AppInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="app_code" jdbcType="VARCHAR" property="appCode" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="operator_id" jdbcType="INTEGER" property="operatorId" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="app_id" jdbcType="VARCHAR" property="appId" />
+    <result column="app_secret" jdbcType="VARCHAR" property="appSecret" />
+    <result column="company_id" jdbcType="INTEGER" property="companyId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name, app_code, type, introduction, operator_id, state, create_time, update_time, 
+    app_id, app_secret, company_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from app_app
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from app_app
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertSelective" parameterType="cn.com.cybertech.model.AppInfo">
+    insert into app_app
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="appCode != null">
+        app_code,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="appId != null">
+        app_id,
+      </if>
+      <if test="appSecret != null">
+        app_secret,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="appCode != null">
+        #{appCode,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null">
+        #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.AppInfo">
+    update app_app
+    <set>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="appCode != null">
+        app_code = #{appCode,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="appId != null">
+        app_id = #{appId,jdbcType=VARCHAR},
+      </if>
+      <if test="appSecret != null">
+        app_secret = #{appSecret,jdbcType=VARCHAR},
+      </if>
+      <if test="companyId != null">
+        company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <sql id="sql_where">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=BIGINT}
+      </if>
+      <if test="name != null and name !=''">
+         and name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="appCode != null and appCode !=''">
+         and app_code = #{appCode,jdbcType=VARCHAR}
+      </if>
+      <if test="type != null">
+         and type = #{type,jdbcType=INTEGER}
+      </if>
+      <if test="introduction != null and introduction !=''">
+         and introduction = #{introduction,jdbcType=VARCHAR}
+      </if>
+      <if test="operatorId != null">
+         and operator_id = #{operatorId,jdbcType=INTEGER}
+      </if>
+      <if test="state != null">
+         and state = #{state,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null">
+         and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="appId != null and appId !=''">
+         and app_id = #{appId,jdbcType=VARCHAR}
+      </if>
+      <if test="appSecret != null and appSecret !=''">
+         and app_secret = #{appSecret,jdbcType=VARCHAR}
+      </if>
+      <if test="companyId != null">
+         and company_id = #{companyId,jdbcType=INTEGER}
+      </if>
+    </where>
+  </sql>
+  <select id="getList" parameterType="cn.com.cybertech.model.AppInfo" resultMap="BaseResultMap">
+     select * from app_app
+    <include refid="sql_where" />
+  </select>
+</mapper>
