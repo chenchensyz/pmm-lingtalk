@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.WebCompanyMapper">
+  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.WebCompany">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="company_email" jdbcType="VARCHAR" property="companyEmail" />
+    <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, company_name, company_email, introduction, state, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from sdk_web_company
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sdk_web_company
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <insert id="insertSelective" parameterType="cn.com.cybertech.model.WebCompany" useGeneratedKeys="true" keyProperty="id">
+    insert into sdk_web_company
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="introduction != null">
+        introduction,
+      </if>
+        state,
+        create_time
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      1,SYSDATE()
+    </trim>
+  </insert>
+
+  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.WebCompany">
+    update sdk_web_company
+    <set>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null">
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="sql_where">
+    <where>
+      <if test="id != null">
+         and id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="companyName != null and companyName !=''">
+         and company_name = #{companyName,jdbcType=VARCHAR}
+      </if>
+      <if test="companyEmail != null and companyEmail !=''">
+         and company_email = #{companyEmail,jdbcType=VARCHAR}
+      </if>
+      <if test="introduction != null and introduction !=''">
+         and introduction = #{introduction,jdbcType=VARCHAR}
+      </if>
+      <if test="managerId != null">
+         and manager_id = #{managerId,jdbcType=INTEGER}
+      </if>
+      <if test="state != null">
+         and state = #{state,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+         and create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null">
+         and update_time = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </sql>
+  <select id="getList" parameterType="cn.com.cybertech.model.WebCompany" resultMap="BaseResultMap">
+     select * from sdk_web_company
+    <include refid="sql_where" />
+  </select>
+
+  <select id="selectWebCompanyByPhone" parameterType="string" resultMap="BaseResultMap">
+    SELECT * FROM sdk_web_company WHERE
+	id IN ( SELECT company_id FROM sdk_web_user WHERE phone = #{phone} )
+  </select>
+</mapper>

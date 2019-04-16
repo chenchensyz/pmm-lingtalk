@@ -6,6 +6,6 @@ import org.apache.ibatis.annotations.Param;
 
 public interface WebUserMapper extends BaseDao<WebUser> {
 
-    WebUser getLoginInfoByPhone(@Param("phone") String phone, @Param("companyId") Integer companyId);
+    WebUser getWebLoginByPhone(@Param("phone") String phone, @Param("companyId") Integer companyId);
 
 }

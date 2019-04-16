@@ -11,13 +11,13 @@ public class WebUser extends BaseEntity {
 
     private String password;
 
-    private String userName;
-
     private String nickName;
 
     private String email;
 
     private Integer companyId;
+
+    private Integer roleId;
 
     private Integer state;
 
@@ -49,14 +49,6 @@ public class WebUser extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password == null ? null : password.trim();
-    }
-
-    public String getUserName() {
-        return userName == null ? "" : userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName == null ? null : userName.trim();
     }
 
     public String getNickName() {
@@ -113,5 +105,13 @@ public class WebUser extends BaseEntity {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Integer getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
     }
 }

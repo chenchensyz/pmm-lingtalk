@@ -21,10 +21,6 @@ public class ShiroConfig {
 
 	private static Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
 
-	@Bean(name = "ShiroRealmImpl")
-	public ShiroDbRealm getShiroRealm() {
-		return new ShiroDbRealm();
-	}
 
 	@Bean(name = "shiroEhcacheManager")
 	public EhCacheManager getEhCacheManager() {
@@ -52,7 +48,6 @@ public class ShiroConfig {
 	@Bean(name = "securityManager")
 	public DefaultWebSecurityManager getDefaultWebSecurityManager() {
 		DefaultWebSecurityManager dwsm = new DefaultWebSecurityManager();
-		dwsm.setRealm(getShiroRealm());
 		dwsm.setCacheManager(getEhCacheManager());
 		return dwsm;
 	}

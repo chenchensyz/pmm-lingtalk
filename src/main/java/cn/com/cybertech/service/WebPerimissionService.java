@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface WebPerimissionService {
 
-    List<WebPermission> getPermissions(String userName, Integer menuType);
+    List<WebPermission> getPermissions(Integer userId,  List<Integer> types);
 
     Set<String> findPermissions(String userName);
 }

@@ -5,7 +5,6 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="phone" jdbcType="VARCHAR" property="phone" />
     <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
     <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="company_id" jdbcType="INTEGER" property="companyId" />
@@ -15,40 +14,29 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, phone, password, user_name, nick_name, email, company_id, state, remak, create_time, 
+    id, phone, nick_name, email, company_id, state, remak, create_time,
     update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
-    from sg_web_user
+    from sdk_web_user
     where id = #{id,jdbcType=BIGINT}
-  </select>
-
-  <select id="getLoginInfoByPhone" parameterType="map" resultMap="BaseResultMap">
-    SELECT swu.id, swu.phone, stli.password, swu.user_name, swu.nick_name, swu.company_id, swu.state
-    FROM sg_web_user swu LEFT JOIN sg_tp_login_info stli
-	ON swu.phone=stli.username WHERE swu.phone = #{phone} AND swu.company_id= #{companyId}
   </select>
 
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sg_web_user
+    delete from sdk_web_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
   <insert id="insertSelective" parameterType="cn.com.cybertech.model.WebUser">
-    insert into sg_web_user
+    insert into sdk_web_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
       <if test="phone != null">
         phone,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="userName != null">
-        user_name,
       </if>
       <if test="nickName != null">
         nick_name,
@@ -59,6 +47,9 @@
       <if test="companyId != null">
         company_id,
       </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
       <if test="state != null">
         state,
       </if>
@@ -68,9 +59,6 @@
       <if test="createTime != null">
         create_time,
       </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -78,12 +66,6 @@
       </if>
       <if test="phone != null">
         #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="userName != null">
-        #{userName,jdbcType=VARCHAR},
       </if>
       <if test="nickName != null">
         #{nickName,jdbcType=VARCHAR},
@@ -94,6 +76,9 @@
       <if test="companyId != null">
         #{companyId,jdbcType=INTEGER},
       </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=INTEGER},
+      </if>
       <if test="state != null">
         #{state,jdbcType=INTEGER},
       </if>
@@ -103,22 +88,13 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.WebUser">
-    update sg_web_user
+    update sdk_web_user
     <set>
       <if test="phone != null">
         phone = #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
       </if>
       <if test="nickName != null">
         nick_name = #{nickName,jdbcType=VARCHAR},
@@ -128,6 +104,9 @@
       </if>
       <if test="companyId != null">
         company_id = #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=INTEGER},
       </if>
       <if test="state != null">
         state = #{state,jdbcType=INTEGER},
@@ -152,12 +131,6 @@
       <if test="phone != null and phone !=''">
          and phone = #{phone,jdbcType=VARCHAR}
       </if>
-      <if test="password != null and password !=''">
-         and password = #{password,jdbcType=VARCHAR}
-      </if>
-      <if test="userName != null and userName !=''">
-         and user_name = #{userName,jdbcType=VARCHAR}
-      </if>
       <if test="nickName != null and nickName !=''">
          and nick_name = #{nickName,jdbcType=VARCHAR}
       </if>
@@ -173,16 +146,28 @@
       <if test="remak != null and remak !=''">
          and remak = #{remak,jdbcType=VARCHAR}
       </if>
-      <if test="createTime != null">
-         and create_time = #{createTime,jdbcType=TIMESTAMP}
-      </if>
       <if test="updateTime != null">
          and update_time = #{updateTime,jdbcType=TIMESTAMP}
       </if>
     </where>
   </sql>
   <select id="getList" parameterType="cn.com.cybertech.model.WebUser" resultMap="BaseResultMap">
-     select * from sg_web_user
+     select * from sdk_web_user
     <include refid="sql_where" />
   </select>
+
+    <select id="getWebLoginByPhone" parameterType="map" resultMap="BaseResultMap">
+    SELECT swu.id, swu.phone, swl.password, swu.nick_name, swu.company_id, swu.state
+    FROM sdk_web_user swu LEFT JOIN sdk_web_user_login swl
+	ON swu.phone=swl.phone WHERE swu.phone = #{phone}
+      <choose>
+        <when test="companyId != null">
+          AND swu.company_id= #{companyId}
+        </when>
+        <otherwise>
+          group by  swu.phone
+        </otherwise>
+      </choose>
+  </select>
+
 </mapper>

@@ -29,16 +29,13 @@ public class LoginController {
     private static final Logger LOGGER = LoggerFactory.getLogger(WebUserController.class);
 
     @Autowired
-    private JedisPool jedisPool;
-
-    @Autowired
     private WebUserService webUserService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
 
     @RequestMapping()
-    public RestResponse login(@RequestBody WebUser webUser, HttpServletRequest request) {
+    public RestResponse login(WebUser webUser, HttpServletRequest request) {
         LOGGER.debug("登录:{}");
         if (StringUtils.isBlank(webUser.getPhone()) || StringUtils.isBlank(webUser.getPassword())
                 || webUser.getCompanyId() == null) {
@@ -49,7 +46,6 @@ public class LoginController {
 
         Map<String, Object> map = Maps.newHashMap();
         try {
-            //密码加密规则
             map = webUserService.login(webUser, platform);
         } catch (ValueRuntimeException e) {
             msgCode = (int) e.getValue();

@@ -13,15 +13,15 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from sg_web_role
+    from sdk_web_role
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from sg_web_role
+    delete from sdk_web_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insertSelective" parameterType="cn.com.cybertech.model.WebRole">
-    insert into sg_web_role
+    insert into sdk_web_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
@@ -52,7 +52,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.WebRole">
-    update sg_web_role
+    update sdk_web_role
     <set>
       <if test="roleCode != null">
         role_code = #{roleCode,jdbcType=VARCHAR},
@@ -83,7 +83,7 @@
     </where>
   </sql>
   <select id="getList" parameterType="cn.com.cybertech.model.WebRole" resultMap="BaseResultMap">
-     select * from sg_web_role
+     select * from sdk_web_role
     <include refid="sql_where" />
   </select>
 </mapper>

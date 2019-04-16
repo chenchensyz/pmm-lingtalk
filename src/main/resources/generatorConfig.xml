@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="sg_tp_roles" domainObjectName="TpRole"
+        <table  tableName="sdk_web_company" domainObjectName="WebCompany"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >
