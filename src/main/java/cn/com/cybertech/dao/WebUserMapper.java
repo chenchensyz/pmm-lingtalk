@@ -1,11 +1,18 @@
 package cn.com.cybertech.dao;
 
-import cn.com.cybertech.dao.common.BaseDao;
 import cn.com.cybertech.model.WebUser;
 import org.apache.ibatis.annotations.Param;
 
-public interface WebUserMapper extends BaseDao<WebUser> {
+import java.util.List;
 
-    WebUser getWebLoginByPhone(@Param("phone") String phone, @Param("companyId") Integer companyId);
+public interface WebUserMapper {
+
+    List<WebUser> getList(WebUser webUser);
+
+   int insertWebUser(WebUser webUser);
+
+    int updateWebUser(WebUser webUser);
+
+    WebUser getWebUserByPhone(@Param("phone") String phone, @Param("companyId") Integer companyId);
 
 }

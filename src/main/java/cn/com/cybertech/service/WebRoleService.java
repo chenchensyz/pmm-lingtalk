@@ -7,7 +7,8 @@ import java.util.Set;
 
 public interface WebRoleService {
 
-    List<WebRole> getPermissions(String userName, Integer menuType);
+    List<WebRole> getRoleList(WebRole webRole);
 
-    Set<String> findPermissions(String userName);
+    List<WebRole> getCompanyRoleList();
+
 }

@@ -39,15 +39,10 @@
       <if test="password != null">
         password,
       </if>
-      <if test="state != null">
-        state,
-      </if>
       <if test="appId != null">
         app_id,
       </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
+      state,create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -62,15 +57,10 @@
       <if test="password != null">
         #{password,jdbcType=VARCHAR},
       </if>
-      <if test="state != null">
-        #{state,jdbcType=INTEGER},
-      </if>
       <if test="appId != null">
         #{appId,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
+        1,sysdate()
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.AppUser">

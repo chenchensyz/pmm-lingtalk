@@ -24,8 +24,8 @@ public class WebPerimissionController {
 
     //查询用户权限列表
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public RestResponse getPerimissionList(@RequestParam Integer userId) {
-        List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(0,1));
+    public RestResponse getPerimissionList(Integer userId) {
+        List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(1));
         return RestResponse.success().setData(permissions);
     }
 

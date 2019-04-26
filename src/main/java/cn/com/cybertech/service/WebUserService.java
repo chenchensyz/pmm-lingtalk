@@ -9,9 +9,13 @@ public interface WebUserService {
 
     List<WebUser> getWebUserList(WebUser webUser);
 
-    WebUser getWebLoginByPhone(String phone, Integer companyId);
+    WebUser getWebUserByPhone(String phone, Integer companyId);
 
-    Map<String,Object> login(WebUser webUser, String platform);
+    Map<String, Object> login(WebUser webUser, String platform);
 
-    void saveUser(WebUser webUser, String companyName,String introduction);
+    //注册用户
+    void registerUser(WebUser webUser, String companyName, String introduction);
+
+    //管理员添加用户
+    void addOrEdidUser(WebUser webUser);
 }

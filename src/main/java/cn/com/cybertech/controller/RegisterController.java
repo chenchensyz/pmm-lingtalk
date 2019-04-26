@@ -2,7 +2,6 @@ package cn.com.cybertech.controller;
 
 
 import cn.com.cybertech.model.WebUser;
-import cn.com.cybertech.service.WebCompanyService;
 import cn.com.cybertech.service.WebUserService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/register")
@@ -31,17 +28,17 @@ public class RegisterController {
     public RestResponse register(WebUser webUser, String companyName, String introduction) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-            webUserService.saveUser(webUser, companyName, introduction);
+            webUserService.registerUser(webUser, companyName, introduction);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-    @RequestMapping(value = "/phone/{phone}", method = RequestMethod.GET)
-    public RestResponse getUserByPhone(@PathVariable("phone") String phone) {
+    @RequestMapping(value = "/findPasswordFlag/{phone}", method = RequestMethod.GET)
+    public RestResponse findPasswordFlag(@PathVariable("phone") String phone) {
         boolean flag = false;
-        WebUser user = webUserService.getWebLoginByPhone(phone, null);
+        WebUser user = webUserService.getWebUserByPhone(phone, null);
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {
             flag = true;
         }

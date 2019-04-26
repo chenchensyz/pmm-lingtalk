@@ -1,6 +1,7 @@
 package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
+import cn.com.cybertech.tools.DateUtil;
 
 import java.util.Date;
 
@@ -26,6 +27,10 @@ public class WebUser extends BaseEntity {
     private Date createTime;
 
     private Date updateTime;
+
+    private String createTimeStr;
+
+    private String updateTimeStr;
 
     public Long getId() {
         return id;
@@ -113,5 +118,21 @@ public class WebUser extends BaseEntity {
 
     public void setRoleId(Integer roleId) {
         this.roleId = roleId;
+    }
+
+    public String getCreateTimeStr() {
+        return createTime == null ? "" : DateUtil.format(createTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public String getUpdateTimeStr() {
+        return updateTime == null ? "" : DateUtil.format(updateTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
     }
 }

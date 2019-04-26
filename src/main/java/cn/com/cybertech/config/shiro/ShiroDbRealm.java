@@ -49,7 +49,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         LOGGER.debug("doGetAuthenticationInfo:" + authcToken);
         UsernamePasswordToken token = (UsernamePasswordToken) authcToken;
         String[] param = token.getHost().split(":"); //0:公司id  1:平台标识
-        WebUser user = webUserService.getWebLoginByPhone(token.getUsername(), Integer.valueOf(param[0]));
+        WebUser user = webUserService.getWebUserByPhone(token.getUsername(), Integer.valueOf(param[0]));
         if (user == null) {
             return null;
         }

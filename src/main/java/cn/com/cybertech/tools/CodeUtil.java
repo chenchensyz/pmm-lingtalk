@@ -23,6 +23,7 @@ public class CodeUtil {
     public static final String METHOD_GET = "GET";
 
     public static final int REDIS_DBINDEX = 2;   //token报存在redis第二个库
+    public static final String REDIS_PREFIX = "session:";   //token报存在redis第二个库
 
     public static final int ROLE_COMPANY_MANAGER = 2;   //角色 公司管理员
     public static final int ROLE_COMPANY_DEVELOPER= 3;   //角色 公司开发者

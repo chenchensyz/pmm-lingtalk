@@ -24,7 +24,12 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
     @Override
     public List<WebPermission> getPermissions(Integer userId, List<Integer> types) {
         List<WebPermission> permissions = new ArrayList<>();
-        List<WebPermission> menus = webPermissionMapper.getPermByUserId(userId, types);
+        List<WebPermission> menus;
+        if (userId != null) { //查询用户拥有的权限
+            menus = webPermissionMapper.getPermByUserId(userId, types);
+        } else {
+            menus = webPermissionMapper.getList(new WebPermission());
+        }
         for (WebPermission menu : menus) {
             if (menu.getParentId() == null || menu.getParentId() == 0) {
                 menu.setLevel(0);

@@ -10,6 +10,7 @@ import cn.com.cybertech.tools.EncryptUtils;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,13 +42,13 @@ public class WebUserServiceImpl implements WebUserService {
     }
 
     @Override
-    public WebUser getWebLoginByPhone(String phone, Integer companyId) {
-        return webUserMapper.getWebLoginByPhone(phone, companyId);
+    public WebUser getWebUserByPhone(String phone, Integer companyId) {
+        return webUserMapper.getWebUserByPhone(phone, companyId);
     }
 
     @Override
     public Map<String, Object> login(WebUser webUser, String platform) {
-        WebUser user = webUserMapper.getWebLoginByPhone(webUser.getPhone(), webUser.getCompanyId());
+        WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), webUser.getCompanyId());
         Map<String, Object> resultMap = Maps.newHashMap();
         if (user == null) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT); //用户不存在
@@ -70,15 +70,17 @@ public class WebUserServiceImpl implements WebUserService {
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {
             Map<String, String> map = Maps.newHashMap();
+            map.put("userId", user.getId() + "");
             map.put("phone", user.getPhone());
             map.put("nickName", user.getNickName());
             map.put("companyId", user.getCompanyId() + "");
             map.put("timestamp", System.currentTimeMillis() + "");
-            jedis.hmset(token, map);
+            jedis.hmset(CodeUtil.REDIS_PREFIX + token, map);
 
             resultMap.put("token", token);
             resultMap.put("nickName", user.getNickName());
             resultMap.put("userId", user.getId());
+            resultMap.put("companyId", user.getCompanyId());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败
@@ -90,16 +92,51 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     @Transactional
-    public void saveUser(WebUser webUser, String companyName, String introduction) {
+    public void registerUser(WebUser webUser, String companyName, String introduction) {
         WebCompany webCompany = new WebCompany();
         webCompany.setCompanyName(companyName);
         webCompany.setIntroduction(introduction);
         int count1 = webCompanyMapper.insertSelective(webCompany);
+        WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), null);
+        String newPwd;
+        if (user != null && StringUtils.isNotBlank(user.getPassword())) {
+            newPwd = user.getPassword();
+        } else {
+            newPwd = EncryptUtils.MD5Encode(webUser.getPhone() + webUser.getPassword() + "*!!");
+        }
+        webUser.setPassword(newPwd);
         webUser.setCompanyId(webCompany.getId());
         webUser.setRoleId(CodeUtil.ROLE_COMPANY_MANAGER);
-        webUser.setCreateTime(new Date());
-        int count2 = webUserMapper.insertSelective(webUser);
+        int count2 = webUserMapper.insertWebUser(webUser);
         if (count1 + count2 < 2) {
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void addOrEdidUser(WebUser webUser) {
+        int count = 0;
+        if (webUser.getId() == null) {  //新增
+            if (StringUtils.isBlank(webUser.getPhone()) || StringUtils.isBlank(webUser.getPassword())) {
+                throw new ValueRuntimeException(MessageCode.USERINFO_PARAM_NULL);
+            }
+            WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), null);
+            String newPwd = EncryptUtils.MD5Encode(webUser.getPhone() + webUser.getPassword() + "*!!");
+            if (user != null) {
+                if (user.getCompanyId() == webUser.getCompanyId()) {
+                    throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
+                }
+                if (StringUtils.isNotBlank(user.getPassword())) {
+                    newPwd = user.getPassword();
+                }
+            }
+            webUser.setPassword(newPwd);
+            count = webUserMapper.insertWebUser(webUser);
+        } else {  //编辑
+            count = webUserMapper.updateWebUser(webUser);
+        }
+        if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
         }
     }

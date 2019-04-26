@@ -86,4 +86,8 @@
      select * from sdk_web_role
     <include refid="sql_where" />
   </select>
+
+  <select id="getCompanyRoleList" resultMap="BaseResultMap">
+     select * from sdk_web_role where id > 1
+  </select>
 </mapper>

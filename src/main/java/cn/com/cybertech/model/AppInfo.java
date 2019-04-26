@@ -1,6 +1,7 @@
 package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
+import cn.com.cybertech.tools.DateUtil;
 
 import java.util.Date;
 
@@ -28,6 +29,10 @@ public class AppInfo extends BaseEntity {
     private String appSecret;
 
     private Integer companyId;
+
+    private String createTimeStr;
+
+    private String updateTimeStr;
 
     public Long getId() {
         return id;
@@ -123,5 +128,21 @@ public class AppInfo extends BaseEntity {
 
     public void setCompanyId(Integer companyId) {
         this.companyId = companyId;
+    }
+
+    public String getCreateTimeStr() {
+        return createTime == null ? "" : DateUtil.format(createTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public String getUpdateTimeStr() {
+        return updateTime == null ? "" : DateUtil.format(updateTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
     }
 }
