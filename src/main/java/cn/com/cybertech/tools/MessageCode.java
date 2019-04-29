@@ -26,8 +26,14 @@ public class MessageCode {
     public static final int USERINFO_PASSWORD_NULL = 20107; //请输入密码
     public static final int USERINFO_EXIST = 20108; //用户已存在
     public static final int USERINFO_PARAM_NULL = 20109; //请填写完整登录信息
+
+    public static final int ROLE_ERR_ADD = 30101; //角色增加失败
+    public static final int ROLE_ERR_UPDATE = 30102; //角色修改失败
+    public static final int ROLE_PERM_ERR_ADD = 30103; //角色权限增加失败
+    public static final int ROLE_PERM_ERR_DEL = 30104; //角色权限重置失败
+
     //公司
-    public static final int COMPANYINFO_ERR_SELECT = 30101; //未查到公司
-    public static final int COMPANYINFO_ERR_OPERATION = 30102; //添加或修改公司失败
-    public static final int COMPANYINFO_ERR_DELECT = 30103; //删除公司失败
+    public static final int COMPANYINFO_ERR_SELECT = 40101; //未查到公司
+    public static final int COMPANYINFO_ERR_OPERATION = 40102; //添加或修改公司失败
+    public static final int COMPANYINFO_ERR_DELECT = 40103; //删除公司失败
 }

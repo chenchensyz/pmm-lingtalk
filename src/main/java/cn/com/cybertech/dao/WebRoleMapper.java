@@ -7,5 +7,11 @@ import java.util.List;
 
 public interface WebRoleMapper extends BaseDao<WebRole> {
 
+    int updateWebRole(WebRole webRole);
+
     List<WebRole> getCompanyRoleList();
+
+    int deleteRolePerm(Integer roleId);
+
+    int addRolePerm(WebRole webRole);
 }

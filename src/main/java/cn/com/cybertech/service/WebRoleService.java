@@ -11,4 +11,6 @@ public interface WebRoleService {
 
     List<WebRole> getCompanyRoleList();
 
+    void addOrEdidRole(WebRole webRole);
+
 }

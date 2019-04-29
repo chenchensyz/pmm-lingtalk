@@ -146,4 +146,5 @@ public class WebPermission extends BaseEntity {
     public void setChildren(List<WebPermission> children) {
         this.children = children;
     }
+
 }

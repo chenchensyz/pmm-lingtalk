@@ -26,6 +26,11 @@ public class AppInfoServiceImpl implements AppInfoService {
     private RedisTool redisTool;
 
     @Override
+    public AppInfo queryAppById(Long id) {
+        return appInfoMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
     public List<AppInfo> queryAppList(AppInfo appInfo) {
         return appInfoMapper.getList(appInfo);
     }

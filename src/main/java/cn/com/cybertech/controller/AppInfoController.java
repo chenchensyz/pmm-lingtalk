@@ -51,6 +51,14 @@ public class AppInfoController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
+
+    @RequestMapping("detail")
+    public RestResponse getAppDetail(HttpServletRequest request, Long appId) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        AppInfo appInfo = appInfoService.queryAppById(appId);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(appInfo);
+    }
+
     public static void main(String[] args) {
         System.out.println(EncryptUtils.SHA256Encode("cyber"));
         System.out.println(EncryptUtils.MD5Encode("cyber"));

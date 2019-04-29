@@ -1,8 +1,10 @@
 package cn.com.cybertech.controller;
 
 import cn.com.cybertech.config.redis.RedisTool;
+import cn.com.cybertech.model.WebPermission;
 import cn.com.cybertech.model.WebRole;
 import cn.com.cybertech.model.WebUser;
+import cn.com.cybertech.service.WebPerimissionService;
 import cn.com.cybertech.service.WebRoleService;
 import cn.com.cybertech.service.WebUserService;
 import cn.com.cybertech.tools.CodeUtil;
@@ -16,9 +18,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +36,9 @@ public class WebRoleController {
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
+
+    @Autowired
+    private WebPerimissionService webPerimissionService;
 
     @Autowired
     private RedisTool redisTool;
@@ -51,16 +58,21 @@ public class WebRoleController {
     }
 
     @RequestMapping("/addOrEdidRole")
-    public RestResponse addOrEdidRole(HttpServletRequest request, WebUser webUser) {
+    public RestResponse addOrEdidRole(WebRole webRole) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-        String token = request.getHeader("token");
-        Map<String, String> map = redisTool.hgetAll(CodeUtil.REDIS_PREFIX + token);
-        webUser.setCompanyId(Integer.valueOf(map.get("companyId")));
-//        try {
-//            webUserService.addOrEdidUser(webUser);
-//        } catch (ValueRuntimeException e) {
-//            msgCode = (Integer) e.getValue();
-//        }
+        try {
+            webRoleService.addOrEdidRole(webRole);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+    }
+
+
+    //根据角色查询拥有的权限
+    @RequestMapping(value = "/rolePerms", method = RequestMethod.GET)
+    public RestResponse getRolePerms(Integer roleId) {
+        List<Integer> permissions = webPerimissionService.getPermsByRoleId(roleId);
+        return RestResponse.success().setData(permissions);
     }
 }

@@ -189,4 +189,9 @@
        </foreach>
      </if>
   </select>
+
+  <select id="getPermsByRoleId" parameterType="int" resultType="int">
+    SELECT id FROM sdk_web_permission WHERE id in
+    ( SELECT perimission_id FROM sdk_web_role_perm WHERE role_id = #{roleId} )
+  </select>
 </mapper>

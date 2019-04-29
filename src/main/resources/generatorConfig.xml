@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="sdk_web_company" domainObjectName="WebCompany"
+        <table  tableName="sdk_app_cert" domainObjectName="AppCert"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >

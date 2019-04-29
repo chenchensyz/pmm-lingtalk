@@ -2,6 +2,8 @@ package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
 
+import java.util.List;
+
 public class WebRole extends BaseEntity {
     private Integer id;
 
@@ -10,6 +12,8 @@ public class WebRole extends BaseEntity {
     private String roleName;
 
     private String introduction;
+
+    private List<Integer> permissions;
 
     public Integer getId() {
         return id;
@@ -41,5 +45,13 @@ public class WebRole extends BaseEntity {
 
     public void setIntroduction(String introduction) {
         this.introduction = introduction == null ? null : introduction.trim();
+    }
+
+    public List<Integer> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<Integer> permissions) {
+        this.permissions = permissions;
     }
 }

@@ -10,4 +10,6 @@ public interface WebPerimissionService {
     List<WebPermission> getPermissions(Integer userId,  List<Integer> types);
 
     Set<String> findPermissions(String userName);
+
+    List<Integer> getPermsByRoleId(Integer roleId);
 }

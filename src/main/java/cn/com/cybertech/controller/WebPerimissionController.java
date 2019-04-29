@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/web/perimission")
+@RequestMapping("/web/permission")
 public class WebPerimissionController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebPerimissionController.class);
@@ -24,8 +24,8 @@ public class WebPerimissionController {
 
     //查询用户权限列表
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public RestResponse getPerimissionList(Integer userId) {
-        List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(1));
+    public RestResponse getPermissionList(Integer userId, Integer type) {
+        List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(type));
         return RestResponse.success().setData(permissions);
     }
 
