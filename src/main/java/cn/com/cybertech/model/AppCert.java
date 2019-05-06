@@ -22,6 +22,8 @@ public class AppCert extends BaseEntity {
 
     private String apkName;
 
+    private Integer certEnviron;
+
     private byte[] certFile;
 
     private byte[] keyFile;
@@ -175,5 +177,13 @@ public class AppCert extends BaseEntity {
 
     public void setUpdateTimeStr(String updateTimeStr) {
         this.updateTimeStr = updateTimeStr;
+    }
+
+    public Integer getCertEnviron() {
+        return certEnviron;
+    }
+
+    public void setCertEnviron(Integer certEnviron) {
+        this.certEnviron = certEnviron;
     }
 }

@@ -36,4 +36,7 @@ public class MessageCode {
     public static final int COMPANYINFO_ERR_SELECT = 40101; //未查到公司
     public static final int COMPANYINFO_ERR_OPERATION = 40102; //添加或修改公司失败
     public static final int COMPANYINFO_ERR_DELECT = 40103; //删除公司失败
+
+    //证书
+    public static final int CERT_ERR_SAVE = 50101; //保存证书失败
 }

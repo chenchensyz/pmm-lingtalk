@@ -39,8 +39,8 @@ public class AppInfoController {
                 .setTotal(appInfoPage.getTotal()).setPage(appInfoPage.getLastPage());
     }
 
-    @RequestMapping("addOrEdid")
-    public RestResponse addOrEdidAppInfo(HttpServletRequest request, AppInfo appInfo) {
+    @RequestMapping("addOrEditAppInfo")
+    public RestResponse addOrEditAppInfo(HttpServletRequest request, AppInfo appInfo) {
         String token = request.getHeader("token");
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
