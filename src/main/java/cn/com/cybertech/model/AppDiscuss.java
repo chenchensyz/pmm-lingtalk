@@ -1,31 +1,41 @@
 package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
+import cn.com.cybertech.tools.DateUtil;
 
 import java.util.Date;
+import java.util.List;
 
 public class AppDiscuss extends BaseEntity {
-    private Long discussId;
+    private Integer discussId;
 
     private String discussName;
 
     private String creatorId;
 
+    private Integer appId;
+
     private Integer discussVersion;
 
-    private Long appId;
+    private Integer disabled;
 
-    private Integer state;
+    private Integer companyId;
 
     private Date createTime;
 
     private Date updateTime;
 
-    public Long getDiscussId() {
+    private String createTimeStr;
+
+    private String updateTimeStr;
+
+    private List<String> userList;
+
+    public Integer getDiscussId() {
         return discussId;
     }
 
-    public void setDiscussId(Long discussId) {
+    public void setDiscussId(Integer discussId) {
         this.discussId = discussId;
     }
 
@@ -45,6 +55,14 @@ public class AppDiscuss extends BaseEntity {
         this.creatorId = creatorId == null ? null : creatorId.trim();
     }
 
+    public Integer getAppId() {
+        return appId;
+    }
+
+    public void setAppId(Integer appId) {
+        this.appId = appId;
+    }
+
     public Integer getDiscussVersion() {
         return discussVersion;
     }
@@ -53,20 +71,20 @@ public class AppDiscuss extends BaseEntity {
         this.discussVersion = discussVersion;
     }
 
-    public Long getAppId() {
-        return appId;
+    public Integer getDisabled() {
+        return disabled;
     }
 
-    public void setAppId(Long appId) {
-        this.appId = appId;
+    public void setDisabled(Integer disabled) {
+        this.disabled = disabled;
     }
 
-    public Integer getState() {
-        return state;
+    public Integer getCompanyId() {
+        return companyId;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setCompanyId(Integer companyId) {
+        this.companyId = companyId;
     }
 
     public Date getCreateTime() {
@@ -83,5 +101,29 @@ public class AppDiscuss extends BaseEntity {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getCreateTimeStr() {
+        return createTime == null ? "" : DateUtil.format(createTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setCreateTimeStr(String createTimeStr) {
+        this.createTimeStr = createTimeStr;
+    }
+
+    public String getUpdateTimeStr() {
+        return updateTime == null ? "" : DateUtil.format(updateTime, DateUtil.YMD_DASH_WITH_TIME);
+    }
+
+    public void setUpdateTimeStr(String updateTimeStr) {
+        this.updateTimeStr = updateTimeStr;
+    }
+
+    public List<String> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<String> userList) {
+        this.userList = userList;
     }
 }

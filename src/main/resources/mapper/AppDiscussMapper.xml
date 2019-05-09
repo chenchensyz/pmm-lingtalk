@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.AppDiscussMapper">
+  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.AppDiscuss">
+    <id column="DISCUSS_ID" jdbcType="INTEGER" property="discussId" />
+    <result column="DISCUSS_NAME" jdbcType="VARCHAR" property="discussName" />
+    <result column="CREATOR_ID" jdbcType="VARCHAR" property="creatorId" />
+    <result column="APP_ID" jdbcType="INTEGER" property="appId" />
+    <result column="DISCUSS_VERSION" jdbcType="INTEGER" property="discussVersion" />
+    <result column="DISABLED" jdbcType="INTEGER" property="disabled" />
+    <result column="COMPANY_ID" jdbcType="INTEGER" property="companyId" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <!--返回值增加userName-->
+  <resultMap id="DiscussMap" type="cn.com.cybertech.model.AppDiscuss" extends="BaseResultMap">
+    <collection property="userList" ofType="string">
+      <id column="USER_ID"/>
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    DISCUSS_ID, DISCUSS_NAME, CREATOR_ID, APP_ID, DISCUSS_VERSION, DISABLED, COMPANY_ID, 
+    CREATE_TIME, UPDATE_TIME
+  </sql>
+  <select id="selectAppDiscussById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pm_tp_discuss
+    where DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pm_tp_discuss
+    where DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insertAppDiscuss" parameterType="cn.com.cybertech.model.AppDiscuss">
+    insert into pm_tp_discuss
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="discussId != null">
+        DISCUSS_ID,
+      </if>
+      <if test="discussName != null">
+        DISCUSS_NAME,
+      </if>
+      <if test="creatorId != null">
+        CREATOR_ID,
+      </if>
+      <if test="appId != null">
+        APP_ID,
+      </if>
+      <if test="discussVersion != null">
+        DISCUSS_VERSION,
+      </if>
+      <if test="disabled != null">
+        DISABLED,
+      </if>
+      <if test="companyId != null">
+        COMPANY_ID,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="discussId != null">
+        #{discussId,jdbcType=INTEGER},
+      </if>
+      <if test="discussName != null">
+        #{discussName,jdbcType=VARCHAR},
+      </if>
+      <if test="creatorId != null">
+        #{creatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="appId != null">
+        #{appId,jdbcType=INTEGER},
+      </if>
+      <if test="discussVersion != null">
+        #{discussVersion,jdbcType=INTEGER},
+      </if>
+      <if test="disabled != null">
+        #{disabled,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateAppDiscuss" parameterType="cn.com.cybertech.model.AppDiscuss">
+    update pm_tp_discuss
+    <set>
+      <if test="discussName != null">
+        DISCUSS_NAME = #{discussName,jdbcType=VARCHAR},
+      </if>
+        DISCUSS_VERSION = DISCUSS_VERSION + 1,
+      <if test="disabled != null">
+        DISABLED = #{disabled,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null">
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+  </update>
+  <sql id="sql_where">
+    <where>
+      <if test="discussId != null">
+         and DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+      </if>
+      <if test="discussName != null and discussName !=''">
+         and DISCUSS_NAME = #{discussName,jdbcType=VARCHAR}
+      </if>
+      <if test="creatorId != null and creatorId !=''">
+         and CREATOR_ID = #{creatorId,jdbcType=VARCHAR}
+      </if>
+      <if test="appId != null">
+         and APP_ID = #{appId,jdbcType=INTEGER}
+      </if>
+      <if test="discussVersion != null">
+         and DISCUSS_VERSION = #{discussVersion,jdbcType=INTEGER}
+      </if>
+      <if test="disabled != null">
+         and DISABLED = #{disabled,jdbcType=INTEGER}
+      </if>
+      <if test="companyId != null">
+         and COMPANY_ID = #{companyId,jdbcType=INTEGER}
+      </if>
+      <if test="createTime != null">
+         and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTime != null">
+         and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+      </if>
+    </where>
+  </sql>
+  <!--<select id="getAppDiscussList" parameterType="cn.com.cybertech.model.AppDiscuss" resultMap="BaseResultMap">-->
+     <!--select * from pm_tp_discuss-->
+    <!--<include refid="sql_where" />-->
+  <!--</select>-->
+
+  <select id="getAppDiscussCount" parameterType="cn.com.cybertech.model.AppDiscuss" resultType="int">
+    SELECT count(DISCUSS_ID)  FROM pm_tp_discuss  WHERE DISABLED = 0 AND APP_ID = #{appId}
+    <if test="discussId != null">
+      and DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <select id="getAppDiscussList" parameterType="list" resultMap="DiscussMap">
+     SELECT ptd.DISCUSS_ID, ptd.DISCUSS_NAME, ptd.CREATOR_ID, su.USER_ID, ptd.DISABLED,  ptd.CREATE_TIME,
+	    ptd.DISCUSS_VERSION, ptd.app_id
+     FROM pm_tp_discuss ptd
+	LEFT JOIN pm_tp_discuss_users ptu ON ptd.DISCUSS_ID = ptu.DISCUSS_ID
+    LEFT JOIN sg_tp_users su ON su.ID = ptu.USER_ID
+    WHERE ptd.DISCUSS_ID IN
+    <foreach collection="list" item="discussId" open="(" separator="," close=")">
+      #{discussId}
+    </foreach>
+  </select>
+
+  <select id="getAppDiscussIdList" parameterType="cn.com.cybertech.model.AppDiscuss" resultType="int">
+    SELECT DISCUSS_ID FROM pm_tp_discuss WHERE DISABLED = 0 AND APP_ID = #{appId} limit #{pageNum},#{pageSize}
+  </select>
+
+</mapper>

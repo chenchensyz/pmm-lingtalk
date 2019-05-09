@@ -17,4 +17,6 @@ public interface AppCertService {
     List<AppCert> getAppCertList(AppCert appCert);
 
     void addOrEditAppCert(HttpServletRequest request,AppCert appCert);
+
+    int deleteAppCert(Long certId);
 }

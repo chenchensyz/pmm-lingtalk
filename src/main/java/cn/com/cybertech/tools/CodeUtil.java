@@ -33,4 +33,8 @@ public class CodeUtil {
     public static final String CERT_HUAWEI = "Huawei";
     public static final String CERT_XIAOMI = "Xiaomi";
 
+    //im用户
+    public static final String DEFAULT_ROLE_ID = "RID_PRIVILEGE";
+    public static final int PMUSER_STATE_ACTIVATED  = 1;
+
 }

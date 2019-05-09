@@ -69,6 +69,13 @@ public class AppCertServicempl implements AppCertService {
     @Override
     public List<AppCert> getAppCertList(AppCert appCert) {
         List<AppCert> appCerts = appCertMapper.getAppCertList(appCert);
+        if (appCerts != null && appCerts.size() > 0) {
+            for (AppCert cert : appCerts) {
+                if (cert.getCertFile() != null && cert.getKeyFile() != null) {
+                    cert.setCertUpload(true);
+                }
+            }
+        }
         return appCerts;
     }
 
@@ -111,5 +118,10 @@ public class AppCertServicempl implements AppCertService {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    public int deleteAppCert(Long certId) {
+        return appCertMapper.deleteByPrimaryKey(certId);
     }
 }

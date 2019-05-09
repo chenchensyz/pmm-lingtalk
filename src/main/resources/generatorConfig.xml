@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="sdk_app_cert" domainObjectName="AppCertw"
+        <table  tableName="pm_tp_discuss" domainObjectName="AppDiscuss"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >

@@ -43,6 +43,8 @@ public class AppCert extends BaseEntity {
 
     private String updateTimeStr;
 
+    private Boolean certUpload = false;
+
     public Long getId() {
         return id;
     }
@@ -185,5 +187,13 @@ public class AppCert extends BaseEntity {
 
     public void setCertEnviron(Integer certEnviron) {
         this.certEnviron = certEnviron;
+    }
+
+    public Boolean getCertUpload() {
+        return certUpload;
+    }
+
+    public void setCertUpload(Boolean certUpload) {
+        this.certUpload = certUpload;
     }
 }

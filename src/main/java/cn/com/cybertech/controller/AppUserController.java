@@ -1,8 +1,8 @@
 package cn.com.cybertech.controller;
 
 
-import cn.com.cybertech.model.AppCert;
-import cn.com.cybertech.service.AppCertService;
+import cn.com.cybertech.model.AppUser;
+import cn.com.cybertech.service.AppUserService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
@@ -18,43 +18,43 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
-@RequestMapping("/app/cert")
-public class AppCertController {
+@RequestMapping("/app/user")
+public class AppUserController {
 
 
     @Autowired
-    private AppCertService appCertService;
+    private AppUserService appUserService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
-    public RestResponse queryAppCertList(AppCert appCert) {
-        PageHelper.startPage(appCert.getPageNum(), appCert.getPageSize());
-        List<AppCert> appCertList = appCertService.getAppCertList(appCert);
-        PageInfo<AppCert> appCertPage = new PageInfo<AppCert>(appCertList);
-        return RestResponse.success().setData(appCertList)
-                .setTotal(appCertPage.getTotal()).setPage(appCertPage.getLastPage());
+    public RestResponse queryAppCertList(AppUser appUser) {
+        PageHelper.startPage(appUser.getPageNum(), appUser.getPageSize());
+        List<AppUser> appUserList = appUserService.getAppUserList(appUser);
+        PageInfo<AppUser> appUserPage = new PageInfo<AppUser>(appUserList);
+        return RestResponse.success().setData(appUserList)
+                .setTotal(appUserPage.getTotal()).setPage(appUserPage.getLastPage());
     }
 
-    @RequestMapping(value = "/addOrEditAppCert")
-    public RestResponse addOrEditAppCert(HttpServletRequest request, AppCert appCert) {
+    @RequestMapping(value = "/addOrEditAppUser")
+    public RestResponse addOrEditAppUser(HttpServletRequest request, AppUser appUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-            appCertService.addOrEditAppCert(request, appCert);
+            appUserService.addOrEditAppUser(appUser);
         } catch (ValueRuntimeException e) {
-            msgCode = Integer.valueOf(e.getMessage());
+            msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-    @RequestMapping(value = "/delAppCert")
-    public RestResponse delAppCert(Long certId) {
+    @RequestMapping(value = "/delAppUser")
+    public RestResponse delAppUser(Long userId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-        int count = appCertService.deleteAppCert(certId);
-        if (count == 0) {
-            msgCode = MessageCode.CERT_ERR_DELETE;
-        }
+//        int count = appCertService.delectAppCert(certId);
+//        if (count == 0) {
+//            msgCode = MessageCode.CERT_ERR_DELETE;
+//        }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 

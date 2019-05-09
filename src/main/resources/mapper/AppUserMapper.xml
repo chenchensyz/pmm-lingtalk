@@ -2,51 +2,83 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.cybertech.dao.AppUserMapper">
   <resultMap id="BaseResultMap" type="cn.com.cybertech.model.AppUser">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="VARCHAR" property="userId" />
-    <result column="user_name" jdbcType="VARCHAR" property="userName" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="app_id" jdbcType="INTEGER" property="appId" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="APP_ID" jdbcType="INTEGER" property="appId" />
+    <result column="LOGIN_INFO_ID" jdbcType="INTEGER" property="loginInfoId" />
+    <result column="USER_PASSWD" jdbcType="VARCHAR" property="userPasswd" />
+    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
+    <result column="DISABLED" jdbcType="INTEGER" property="disabled" />
+    <result column="PASSWD_STATUS" jdbcType="INTEGER" property="passwdStatus" />
+    <result column="COMPANY_ID" jdbcType="INTEGER" property="companyId" />
+    <result column="USER_FULLID" jdbcType="VARCHAR" property="userFullid" />
+    <result column="IS_ADMIN" jdbcType="INTEGER" property="isAdmin" />
+    <result column="USER_STATE" jdbcType="INTEGER" property="userState" />
+    <result column="IS_FROZEN" jdbcType="INTEGER" property="isFrozen" />
+    <result column="authority_department" jdbcType="VARCHAR" property="authorityDepartment" />
+    <result column="user_role_id" jdbcType="INTEGER" property="userRoleId" />
+    <result column="IS_CS" jdbcType="INTEGER" property="isCs" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_id, user_name, password, state, app_id, create_time
+    ID, USER_ID, USER_NAME, APP_ID, LOGIN_INFO_ID, USER_PASSWD, CREATE_TIME, ROLE_ID, 
+    DISABLED, PASSWD_STATUS, COMPANY_ID, USER_FULLID, IS_ADMIN, USER_STATE, IS_FROZEN, 
+    authority_department, user_role_id, IS_CS
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+  <select id="selectAppUserById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from app_app_user
-    where id = #{id,jdbcType=INTEGER}
+    from sg_tp_users
+    where ID = #{id,jdbcType=VARCHAR}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from app_app_user
-    where id = #{id,jdbcType=INTEGER}
+  <delete id="deleteAppUserById" parameterType="java.lang.String">
+    delete from sg_tp_users
+    where ID = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insertSelective" parameterType="cn.com.cybertech.model.AppUser">
-    insert into app_app_user
+
+  <insert id="insertAppUser" parameterType="cn.com.cybertech.model.AppUser">
+    insert into sg_tp_users
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        id,
+        ID,
       </if>
       <if test="userId != null">
-        user_id,
+        USER_ID,
       </if>
       <if test="userName != null">
-        user_name,
-      </if>
-      <if test="password != null">
-        password,
+        USER_NAME,
       </if>
       <if test="appId != null">
-        app_id,
+        APP_ID,
       </if>
-      state,create_time
+      <if test="userPasswd != null">
+        USER_PASSWD,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+      <if test="roleId != null">
+        ROLE_ID,
+      </if>
+      <if test="disabled != null">
+        DISABLED,
+      </if>
+      <if test="passwdStatus != null">
+        PASSWD_STATUS,
+      </if>
+      <if test="companyId != null">
+        COMPANY_ID,
+      </if>
+      <if test="userState != null">
+        USER_STATE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=INTEGER},
+        #{id,jdbcType=VARCHAR},
       </if>
       <if test="userId != null">
         #{userId,jdbcType=VARCHAR},
@@ -54,66 +86,64 @@
       <if test="userName != null">
         #{userName,jdbcType=VARCHAR},
       </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
       <if test="appId != null">
         #{appId,jdbcType=INTEGER},
       </if>
-        1,sysdate()
+      <if test="userPasswd != null">
+        #{userPasswd,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="disabled != null">
+        #{disabled,jdbcType=INTEGER},
+      </if>
+      <if test="passwdStatus != null">
+        #{passwdStatus,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="userState != null">
+        #{userState,jdbcType=INTEGER},
+      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.AppUser">
-    update app_app_user
+  <update id="updateAppUser" parameterType="cn.com.cybertech.model.AppUser">
+    update sg_tp_users
     <set>
       <if test="userId != null">
-        user_id = #{userId,jdbcType=VARCHAR},
+        USER_ID = #{userId,jdbcType=VARCHAR},
       </if>
       <if test="userName != null">
-        user_name = #{userName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=INTEGER},
+        USER_NAME = #{userName,jdbcType=VARCHAR},
       </if>
       <if test="appId != null">
-        app_id = #{appId,jdbcType=INTEGER},
+        APP_ID = #{appId,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
+      <if test="userPasswd != null">
+        USER_PASSWD = #{userPasswd,jdbcType=VARCHAR},
+      </if>
+      <if test="disabled != null">
+        DISABLED = #{disabled,jdbcType=INTEGER},
+      </if>
+      <if test="passwdStatus != null">
+        PASSWD_STATUS = #{passwdStatus,jdbcType=INTEGER},
+      </if>
+      <if test="userState != null">
+        USER_STATE = #{userState,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=VARCHAR}
   </update>
-  <sql id="sql_where">
-    <where>
-      <if test="id != null">
-         and id = #{id,jdbcType=INTEGER}
-      </if>
-      <if test="userId != null and userId !=''">
-         and user_id = #{userId,jdbcType=VARCHAR}
-      </if>
-      <if test="userName != null and userName !=''">
-         and user_name = #{userName,jdbcType=VARCHAR}
-      </if>
-      <if test="password != null and password !=''">
-         and password = #{password,jdbcType=VARCHAR}
-      </if>
-      <if test="state != null">
-         and state = #{state,jdbcType=INTEGER}
-      </if>
-      <if test="appId != null">
-         and app_id = #{appId,jdbcType=INTEGER}
-      </if>
-      <if test="createTime != null">
-         and create_time = #{createTime,jdbcType=TIMESTAMP}
-      </if>
-    </where>
-  </sql>
-  <select id="getList" parameterType="cn.com.cybertech.model.AppUser" resultMap="BaseResultMap">
-     select * from app_app_user
-    <include refid="sql_where" />
+
+  <select id="getAppUserList" parameterType="cn.com.cybertech.model.AppUser" resultMap="BaseResultMap">
+     select * from sg_tp_users where APP_ID = #{appId}
+    <if test="userId != null and userId !=''">
+      and USER_ID = #{userId}
+    </if>
   </select>
 </mapper>

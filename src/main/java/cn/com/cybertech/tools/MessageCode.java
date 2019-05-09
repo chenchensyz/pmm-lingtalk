@@ -16,6 +16,14 @@ public class MessageCode {
     public static final int APPINFO_ERR_SELECT = 10101; //未查到应用
     public static final int APPINFO_ERR_OPERATION = 10102; //添加或修改应用失败
     public static final int APPINFO_ERR_UNENABLE = 10103; //应用未通过审核
+
+    //证书
+    public static final int CERT_ERR_SAVE = 11101; //保存证书失败
+    public static final int CERT_ERR_DELETE = 11102; //删除证书失败
+
+    //讨论组
+    public static final int DISCUSS_ERR_SAVE = 12101; //保存讨论组失败
+
     //用户
     public static final int USERINFO_ERR_SELECT = 20101; //用户不存在
     public static final int USERINFO_DISABLE = 20102; //用户已被禁用
@@ -37,6 +45,4 @@ public class MessageCode {
     public static final int COMPANYINFO_ERR_OPERATION = 40102; //添加或修改公司失败
     public static final int COMPANYINFO_ERR_DELECT = 40103; //删除公司失败
 
-    //证书
-    public static final int CERT_ERR_SAVE = 50101; //保存证书失败
 }
