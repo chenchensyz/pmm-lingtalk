@@ -1,5 +1,7 @@
 package cn.com.cybertech.service.impl;
 
+import cn.com.cybertech.dao.AppDiscussMapper;
+import cn.com.cybertech.dao.AppDiscussUserMapper;
 import cn.com.cybertech.dao.AppInfoMapper;
 import cn.com.cybertech.dao.AppUserMapper;
 import cn.com.cybertech.model.AppInfo;
@@ -24,6 +26,12 @@ public class AppUserServicempl implements AppUserService {
     @Autowired
     private AppInfoMapper appInfoMapper;
 
+    @Autowired
+    private AppDiscussUserMapper appDiscussUserMapper;
+
+    @Autowired
+    private AppDiscussMapper appDiscussMapper;
+
     @Override
     public List<AppUser> getAppUserList(AppUser appUser) {
         return appUserMapper.getAppUserList(appUser);
@@ -31,7 +39,7 @@ public class AppUserServicempl implements AppUserService {
 
     @Override
     public void addOrEditAppUser(AppUser appUser) {
-        AppInfo appInfo = appInfoMapper.selectByPrimaryKey(Long.valueOf(appUser.getAppId()));
+        AppInfo appInfo = appInfoMapper.getAppInfoById(appUser.getAppId());
         if (appInfo == null) {
             throw new ValueRuntimeException(MessageCode.APPINFO_ERR_SELECT);
         }
@@ -54,8 +62,13 @@ public class AppUserServicempl implements AppUserService {
     }
 
     @Override
-    public int deleteAppUser(String userId) {
-        return appUserMapper.deleteAppUserById(userId);
+    public void deleteAppUser(String userId) {
+        appDiscussUserMapper.deleteUserByUserId(userId);   //从讨论组中删除
+        appDiscussMapper.deleteDiscussByCreatorId(userId); //删除用户创建的讨论组
+        int count = appUserMapper.deleteAppUserById(userId);
+        if (count == 0) {
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_DEL);
+        }
     }
 
     //通过appId和userId组成sdk的im用户id

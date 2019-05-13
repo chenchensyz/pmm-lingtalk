@@ -6,9 +6,13 @@ import java.util.List;
 
 public interface AppInfoService {
 
-    AppInfo queryAppById(Long id);
+    AppInfo queryAppById(Integer id);
 
-    List<AppInfo> queryAppList(AppInfo appInfo);
+    List<AppInfo> queryAppList(String token, AppInfo appInfo);
 
-    void insertAppInfo(String token,AppInfo appInfo);
+    void addOrEditAppInfo(String token, AppInfo appInfo);
+
+    List<AppInfo> queryCompanyAppInfoList(String token);
+
+
 }

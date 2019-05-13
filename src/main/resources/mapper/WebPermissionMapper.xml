@@ -23,11 +23,7 @@
     from sdk_web_permission
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from sdk_web_permission
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insertSelective" parameterType="cn.com.cybertech.model.WebPermission">
+  <insert id="insertWebPermission" parameterType="cn.com.cybertech.model.WebPermission">
     insert into sdk_web_permission
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -59,9 +55,6 @@
       </if>
       <if test="createTime != null">
         create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -95,12 +88,9 @@
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.WebPermission">
+  <update id="updateWebPermission" parameterType="cn.com.cybertech.model.WebPermission">
     update sdk_web_permission
     <set>
       <if test="name != null">
@@ -108,9 +98,6 @@
       </if>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="parentId != null">
-        parent_id = #{parentId,jdbcType=BIGINT},
       </if>
       <if test="url != null">
         url = #{url,jdbcType=VARCHAR},
@@ -126,9 +113,6 @@
       </if>
       <if test="orderNum != null">
         order_num = #{orderNum,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -194,4 +178,20 @@
     SELECT id FROM sdk_web_permission WHERE id in
     ( SELECT perimission_id FROM sdk_web_role_perm WHERE role_id = #{roleId} )
   </select>
+
+  <!--获取最大的order_num-->
+  <select id="getMaxOrderNum" parameterType="map" resultType="int">
+    select ifnull(max(order_num),0) FROM sdk_web_permission WHERE parent_id =  #{parentId}
+    <if test="type != null">
+      and type = #{type}
+    </if>
+  </select>
+
+  <delete id="deleteWebPermInIds" parameterType="map">
+    delete from sdk_web_permission where id in
+    <foreach collection="ids" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
+  </delete>
+
 </mapper>

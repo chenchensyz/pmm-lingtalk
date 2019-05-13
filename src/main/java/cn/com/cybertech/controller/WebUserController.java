@@ -12,6 +12,7 @@ import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,22 +37,18 @@ public class WebUserController {
     @Autowired
     private MessageCodeUtil messageCodeUtil;
 
-    @Autowired
-    private RedisTool redisTool;
 
     @RequestMapping("/list")
-    public RestResponse queryWebUserList(HttpServletRequest request,WebUser webUser) {
+    public RestResponse queryWebUserList(HttpServletRequest request, WebUser webUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
-        try{
-            WebUser user = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
-            webUser.setCompanyId(user.getCompanyId());
+        try {
             PageHelper.startPage(webUser.getPageNum(), webUser.getPageSize());
-            List<WebUser> webUserList = webUserService.getWebUserList(webUser);
+            List<WebUser> webUserList = webUserService.getWebUserList(token, webUser);
             PageInfo<WebUser> webInfoPage = new PageInfo<>(webUserList);
             return RestResponse.success().setData(webUserList)
                     .setTotal(webInfoPage.getTotal()).setPage(webInfoPage.getLastPage());
-        }catch (ValueRuntimeException e){
+        } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
@@ -62,9 +59,34 @@ public class WebUserController {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         try {
-            WebUser user = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
-            webUser.setCompanyId(user.getCompanyId());
-            webUserService.addOrEdidUser(webUser);
+            webUserService.addOrEdidUser(token, webUser);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+    }
+
+    //查询：用户绑定应用
+    @RequestMapping("/getUserApp")
+    public RestResponse getUserApp(HttpServletRequest request, Long userId) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        String token = request.getHeader("token");
+        List<Integer> userApp = Lists.newArrayList();
+        try {
+            userApp = webUserService.getUserApp(token, userId);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(userApp);
+    }
+
+    //修改用户状态
+    @RequestMapping("/optionUser")
+    public RestResponse optionUser(HttpServletRequest request,Long userId, Integer state) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        String platform = request.getHeader("platform");
+        try {
+            webUserService.optionUser(platform,userId, state);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

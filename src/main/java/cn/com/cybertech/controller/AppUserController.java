@@ -2,6 +2,7 @@ package cn.com.cybertech.controller;
 
 
 import cn.com.cybertech.model.AppUser;
+import cn.com.cybertech.service.AppInfoService;
 import cn.com.cybertech.service.AppUserService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
@@ -24,6 +25,9 @@ public class AppUserController {
 
     @Autowired
     private AppUserService appUserService;
+
+    @Autowired
+    private AppInfoService appInfoService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
@@ -49,12 +53,13 @@ public class AppUserController {
     }
 
     @RequestMapping(value = "/delAppUser")
-    public RestResponse delAppUser(Long userId) {
+    public RestResponse delAppUser(String userId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-//        int count = appCertService.delectAppCert(certId);
-//        if (count == 0) {
-//            msgCode = MessageCode.CERT_ERR_DELETE;
-//        }
+        try {
+            appUserService.deleteAppUser(userId);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 

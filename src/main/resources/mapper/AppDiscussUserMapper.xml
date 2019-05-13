@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.AppDiscussUserMapper">
+  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.AppDiscussUser">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="DISCUSS_ID" jdbcType="INTEGER" property="discussId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ADDED" jdbcType="VARCHAR" property="added" />
+    <result column="ADD_TIME" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="CARDNAME" jdbcType="VARCHAR" property="cardname" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, DISCUSS_ID, USER_ID, ADDED, ADD_TIME, CARDNAME
+  </sql>
+  <select id="getUsersByDiscussId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select USER_ID from pm_tp_discuss_users where  DISCUSS_ID = #{discussId}
+  </select>
+
+  <delete id="deleteAppDiscussUser" parameterType="map">
+    delete from pm_tp_discuss_users  where  DISCUSS_ID = #{discussId} and  USER_ID = #{userId}
+  </delete>
+
+  <select id="getByDiscussIdAndUserId" parameterType="cn.com.cybertech.model.AppDiscussUser" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" /> from pm_tp_discuss_users
+    where DISCUSS_ID = #{discussId} and  USER_ID = #{userId}
+  </select>
+
+  <insert id="insertAppDiscussUser" parameterType="cn.com.cybertech.model.AppDiscussUser">
+    insert into pm_tp_discuss_users
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="discussId != null">
+        DISCUSS_ID,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="added != null">
+        ADDED,
+      </if>
+      <if test="addTime != null">
+        ADD_TIME,
+      </if>
+      <if test="cardname != null">
+        CARDNAME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="discussId != null">
+        #{discussId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="added != null">
+        #{added,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardname != null">
+        #{cardname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateAppDiscussUser" parameterType="cn.com.cybertech.model.AppDiscussUser">
+    update pm_tp_discuss_users
+    <set>
+      <if test="discussId != null">
+        DISCUSS_ID = #{discussId,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="added != null">
+        ADDED = #{added,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        ADD_TIME = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cardname != null">
+        CARDNAME = #{cardname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="sql_where">
+    <where>
+      <if test="id != null">
+         and ID = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="discussId != null">
+         and DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+      </if>
+      <if test="userId != null and userId !=''">
+         and USER_ID = #{userId,jdbcType=VARCHAR}
+      </if>
+      <if test="added != null and added !=''">
+         and ADDED = #{added,jdbcType=VARCHAR}
+      </if>
+      <if test="addTime != null">
+         and ADD_TIME = #{addTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="cardname != null and cardname !=''">
+         and CARDNAME = #{cardname,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </sql>
+  <select id="getAppDiscussUserList" parameterType="cn.com.cybertech.model.AppDiscussUser" resultMap="BaseResultMap">
+     select * from pm_tp_discuss_users
+    <include refid="sql_where" />
+  </select>
+
+  <delete id="deleteUserByDiscussId" parameterType="map">
+    delete from pm_tp_discuss_users  where  DISCUSS_ID = #{discussId}
+  </delete>
+
+  <delete id="deleteUserByUserId" parameterType="map">
+    delete from pm_tp_discuss_users  where  USER_ID = #{userId}
+  </delete>
+
+</mapper>

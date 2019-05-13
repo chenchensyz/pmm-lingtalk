@@ -25,9 +25,10 @@ public class RedisTool {
         try {
             stringMap = jedis.hgetAll(key);
         } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
             jedis.close();
         }
-        jedis.close();
         return stringMap;
     }
 

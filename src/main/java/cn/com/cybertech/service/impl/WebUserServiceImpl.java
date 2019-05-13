@@ -1,5 +1,6 @@
 package cn.com.cybertech.service.impl;
 
+import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.dao.WebCompanyMapper;
 import cn.com.cybertech.dao.WebUserMapper;
 import cn.com.cybertech.model.WebCompany;
@@ -36,8 +37,13 @@ public class WebUserServiceImpl implements WebUserService {
     @Autowired
     private JedisPool jedisPool;
 
+    @Autowired
+    private RedisTool redisTool;
+
     @Override
-    public List<WebUser> getWebUserList(WebUser webUser) {
+    public List<WebUser> getWebUserList(String token, WebUser webUser) {
+        WebUser user = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        webUser.setCompanyId(user.getCompanyId());
         return webUserMapper.getList(webUser);
     }
 
@@ -115,8 +121,10 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     @Transactional
-    public void addOrEdidUser(WebUser webUser) {
+    public void addOrEdidUser(String token, WebUser webUser) {
         int count = 0;
+        WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        webUser.setCompanyId(localUser.getCompanyId());
         if (webUser.getId() == null) {  //新增
             if (StringUtils.isBlank(webUser.getPhone()) || StringUtils.isBlank(webUser.getPassword())) {
                 throw new ValueRuntimeException(MessageCode.USERINFO_PARAM_NULL);
@@ -134,10 +142,45 @@ public class WebUserServiceImpl implements WebUserService {
             webUser.setPassword(newPwd);
             count = webUserMapper.insertWebUser(webUser);
         } else {  //编辑
+            List<Integer> userApp = webUserMapper.getUserApp(webUser.getId(), webUser.getCompanyId());
+            if (userApp != null && userApp.size() > 0) {
+                webUserMapper.deleteUserApp(webUser.getId(), webUser.getCompanyId());
+            }
             count = webUserMapper.updateWebUser(webUser);
         }
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
+        }
+        if (webUser.getAppCheckedList() != null) {
+            webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), webUser.getAppCheckedList());
+        }
+    }
+
+    @Override
+    public List<Integer> getUserApp(String token, Long userId) {
+        WebUser user = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        List<Integer> userApp = webUserMapper.getUserApp(userId, user.getCompanyId());
+        return userApp;
+    }
+
+    @Override
+    public void optionUser(String platform, Long userId, Integer state) {
+        WebUser user = webUserMapper.getWebUserById(userId);
+        user.setState(0);
+        int count = webUserMapper.updateWebUser(user);
+        if (count == 0) {
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
+        }
+        Jedis jedis = jedisPool.getResource();
+        jedis.select(CodeUtil.REDIS_DBINDEX);
+        try {
+            String token = EncryptUtils.MD5Encode(platform + user.getPhone() + user.getCompanyId());
+            jedis.del(CodeUtil.REDIS_PREFIX + token); //清除用户session，重新登陆
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败
+        } finally {
+            jedis.close();
         }
     }
 }

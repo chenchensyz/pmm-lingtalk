@@ -1,13 +1,12 @@
 package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
-
 import java.util.Date;
 
 public class AppDiscussUser extends BaseEntity {
-    private Long id;
+    private Integer id;
 
-    private Long discussId;
+    private Integer discussId;
 
     private String userId;
 
@@ -15,21 +14,21 @@ public class AppDiscussUser extends BaseEntity {
 
     private Date addTime;
 
-    private String cardName;
+    private String cardname;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getDiscussId() {
+    public Integer getDiscussId() {
         return discussId;
     }
 
-    public void setDiscussId(Long discussId) {
+    public void setDiscussId(Integer discussId) {
         this.discussId = discussId;
     }
 
@@ -57,11 +56,11 @@ public class AppDiscussUser extends BaseEntity {
         this.addTime = addTime;
     }
 
-    public String getCardName() {
-        return cardName;
+    public String getCardname() {
+        return cardname;
     }
 
-    public void setCardName(String cardName) {
-        this.cardName = cardName == null ? null : cardName.trim();
+    public void setCardname(String cardname) {
+        this.cardname = cardname == null ? null : cardname.trim();
     }
 }

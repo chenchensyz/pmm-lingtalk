@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface AppDiscussMapper extends BaseDao<AppDiscuss> {
 
-    AppDiscuss selectAppDiscussById(Integer discussId);
+    AppDiscuss getAppDiscussById(Integer discussId);
 
     int insertAppDiscuss(AppDiscuss appDiscuss);
 
@@ -19,4 +19,6 @@ public interface AppDiscussMapper extends BaseDao<AppDiscuss> {
     List<Integer> getAppDiscussIdList(AppDiscuss appDiscuss);
 
     List<AppDiscuss> getAppDiscussList(List<Integer> discussIds);
+
+    int  deleteDiscussByCreatorId(String creatorId);
 }

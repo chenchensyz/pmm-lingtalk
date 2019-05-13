@@ -13,4 +13,6 @@ public interface WebRoleService {
 
     void addOrEdidRole(WebRole webRole);
 
+    void deleteRole(Integer roleId);
+
 }

@@ -1,161 +1,186 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.cybertech.dao.WebUserMapper">
-  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.WebUser">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="phone" jdbcType="VARCHAR" property="phone" />
-    <result column="password" jdbcType="VARCHAR" property="password" />
-    <result column="nick_name" jdbcType="VARCHAR" property="nickName" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="company_id" jdbcType="INTEGER" property="companyId" />
-    <result column="role_id" jdbcType="INTEGER" property="roleId" />
-    <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="remak" jdbcType="VARCHAR" property="remak" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="cn.com.cybertech.model.WebUser">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="company_id" jdbcType="INTEGER" property="companyId"/>
+        <result column="role_id" jdbcType="INTEGER" property="roleId"/>
+        <result column="state" jdbcType="INTEGER" property="state"/>
+        <result column="remak" jdbcType="VARCHAR" property="remak"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     id, phone, nick_name, email, company_id, role_id, state, remak, create_time,
     update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from sdk_web_user
-    where id = #{id,jdbcType=BIGINT}
-  </select>
+    <select id="getWebUserById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from sdk_web_user
+        where id = #{id}
+    </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from sdk_web_user
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser">
-    insert into sdk_web_user
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="phone != null">
-        phone,
-      </if>
-      <if test="nickName != null">
-        nick_name,
-      </if>
-      <if test="password != null">
-        password,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="companyId != null">
-        company_id,
-      </if>
-      <if test="roleId != null">
-        role_id,
-      </if>
-      <if test="remak != null">
-        remak,
-      </if>
-        state,create_time,
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="phone != null">
-        #{phone,jdbcType=VARCHAR},
-      </if>
-      <if test="nickName != null">
-        #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="companyId != null">
-        #{companyId,jdbcType=INTEGER},
-      </if>
-      <if test="roleId != null">
-        #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="remak != null">
-        #{remak,jdbcType=VARCHAR},
-      </if>
-      1,sysdate()
-    </trim>
-  </insert>
-  <update id="updateWebUser" parameterType="cn.com.cybertech.model.WebUser">
-    update sdk_web_user
-    <set>
-      <if test="nickName != null">
-        nick_name = #{nickName,jdbcType=VARCHAR},
-      </if>
-      <if test="password != null">
-        password = #{password,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="roleId != null">
-        role_id = #{roleId,jdbcType=INTEGER},
-      </if>
-      <if test="state != null">
-        state = #{state,jdbcType=INTEGER},
-      </if>
-      <if test="remak != null">
-        remak = #{remak,jdbcType=VARCHAR},
-      </if>
-        update_time = sysdate()
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <sql id="sql_where">
-    <where>
-      <if test="id != null">
-         and id = #{id,jdbcType=BIGINT}
-      </if>
-      <if test="phone != null and phone !=''">
-         and phone = #{phone,jdbcType=VARCHAR}
-      </if>
-      <if test="nickName != null and nickName !=''">
-         and nick_name = #{nickName,jdbcType=VARCHAR}
-      </if>
-      <if test="email != null and email !=''">
-         and email = #{email,jdbcType=VARCHAR}
-      </if>
-      <if test="companyId != null">
-         and company_id = #{companyId,jdbcType=INTEGER}
-      </if>
-      <if test="state != null">
-         and state = #{state,jdbcType=INTEGER}
-      </if>
-      <if test="remak != null and remak !=''">
-         and remak = #{remak,jdbcType=VARCHAR}
-      </if>
-      <if test="updateTime != null">
-         and update_time = #{updateTime,jdbcType=TIMESTAMP}
-      </if>
-    </where>
-  </sql>
-  <select id="getList" parameterType="cn.com.cybertech.model.WebUser" resultMap="BaseResultMap">
-     select * from sdk_web_user
-    <include refid="sql_where" />
-  </select>
+    <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser">
+        insert into sdk_web_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="nickName != null">
+                nick_name,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="companyId != null">
+                company_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+            <if test="remak != null">
+                remak,
+            </if>
+            state,create_time,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="nickName != null">
+                #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="companyId != null">
+                #{companyId,jdbcType=INTEGER},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="remak != null">
+                #{remak,jdbcType=VARCHAR},
+            </if>
+            1,sysdate()
+        </trim>
+    </insert>
+    <update id="updateWebUser" parameterType="cn.com.cybertech.model.WebUser">
+        update sdk_web_user
+        <set>
+            <if test="nickName != null">
+                nick_name = #{nickName,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=INTEGER},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="remak != null">
+                remak = #{remak,jdbcType=VARCHAR},
+            </if>
+            update_time = sysdate()
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <sql id="sql_where">
+        <where>
+            <if test="id != null">
+                and id = #{id,jdbcType=BIGINT}
+            </if>
+            <if test="phone != null and phone !=''">
+                and phone = #{phone,jdbcType=VARCHAR}
+            </if>
+            <if test="nickName != null and nickName !=''">
+                and nick_name = #{nickName,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null and email !=''">
+                and email = #{email,jdbcType=VARCHAR}
+            </if>
+            <if test="companyId != null">
+                and company_id = #{companyId,jdbcType=INTEGER}
+            </if>
+            <if test="state != null">
+                and state = #{state,jdbcType=INTEGER}
+            </if>
+            <if test="remak != null and remak !=''">
+                and remak = #{remak,jdbcType=VARCHAR}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </sql>
+    <select id="getList" parameterType="cn.com.cybertech.model.WebUser" resultMap="BaseResultMap">
+        select * from sdk_web_user
+        <include refid="sql_where"/>
+    </select>
 
     <select id="getWebUserByPhone" parameterType="map" resultMap="BaseResultMap">
-    SELECT swu.id, swu.phone, swu.password, swu.nick_name, swu.company_id, swu.role_id, swu.state
-    FROM sdk_web_user swu WHERE swu.phone = #{phone}
-      <choose>
-        <when test="companyId != null">
-          AND swu.company_id= #{companyId}
-        </when>
-        <otherwise>
-          group by  swu.phone
-        </otherwise>
-      </choose>
-  </select>
+        SELECT swu.id, swu.phone, swu.password, swu.nick_name, swu.company_id, swu.role_id, swu.state
+        FROM sdk_web_user swu WHERE swu.phone = #{phone}
+        <choose>
+            <when test="companyId != null">
+                AND swu.company_id= #{companyId}
+            </when>
+            <otherwise>
+                group by swu.phone
+            </otherwise>
+        </choose>
+    </select>
+
+
+    <!--查询：用户绑定应用-->
+    <select id="getUserApp" parameterType="map" resultType="int">
+        SELECT app_id FROM sdk_web_user_app WHERE user_id = #{userId} and company_id=#{companyId}
+    </select>
+
+    <!--新增：用户绑定应用-->
+    <insert id="insertUserApp" parameterType="map">
+        INSERT INTO sdk_web_user_app(user_id,company_id,app_id)
+        VALUES
+        <foreach collection="appIds" item="appId" separator=",">
+            (#{userId},#{companyId},#{appId})
+        </foreach>
+    </insert>
+
+    <!--删除：用户绑定应用-->
+    <delete id="deleteUserApp" parameterType="map">
+        delete  FROM sdk_web_user_app WHERE user_id = #{userId} and company_id=#{companyId}
+    </delete>
+
+    <!--根据角色查询用户-->
+    <select id="getWebUserByRoleId" parameterType="int" resultType="int">
+        SELECT count(id) FROM sdk_web_user WHERE role_id = #{roleId}
+    </select>
 
 </mapper>

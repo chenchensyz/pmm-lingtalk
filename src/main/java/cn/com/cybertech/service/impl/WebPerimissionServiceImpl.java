@@ -3,15 +3,16 @@ package cn.com.cybertech.service.impl;
 import cn.com.cybertech.dao.WebPermissionMapper;
 import cn.com.cybertech.model.WebPermission;
 import cn.com.cybertech.service.WebPerimissionService;
+import cn.com.cybertech.tools.MessageCode;
+import cn.com.cybertech.tools.exception.ValueRuntimeException;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service("webPerimissionService")
 public class WebPerimissionServiceImpl implements WebPerimissionService {
@@ -88,5 +89,41 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
     @Override
     public List<Integer> getPermsByRoleId(Integer roleId) {
         return webPermissionMapper.getPermsByRoleId(roleId);
+    }
+
+    @Override
+    @Transactional
+    public void addOrEditPerm(WebPermission webPermission) {
+        int count;
+        if (webPermission.getId() == null) { //新增权限或子节点
+            if (webPermission.getParentId() > 0 || webPermission.getType() == 2) {  //新增子节点
+                int maxOrderNum = webPermissionMapper.getMaxOrderNum(webPermission.getParentId(), webPermission.getType());
+                webPermission.setOrderNum(maxOrderNum + 1);
+            } else {
+                webPermission.setOrderNum(1);
+            }
+            webPermission.setCreateTime(new Date());
+            count = webPermissionMapper.insertWebPermission(webPermission);
+        } else {
+            webPermission.setUpdateTime(new Date());
+            count = webPermissionMapper.updateWebPermission(webPermission);
+        }
+        if (count == 0) {
+            throw new ValueRuntimeException(MessageCode.PERM_ERR_SAVE);
+        }
+    }
+
+    @Override
+    @Transactional
+    public void deletePerm(String ids) {
+        List<Integer> idList = Lists.newArrayList();
+        String[] idArray = ids.split(",");
+        for (int i = 0; i < idArray.length; i++) {
+            idList.add(Integer.valueOf(idArray[i]));
+        }
+        int count = webPermissionMapper.deleteWebPermInIds(idList);
+        if (count != idArray.length) {
+            throw new ValueRuntimeException(MessageCode.PERM_ERR_DEL);
+        }
     }
 }

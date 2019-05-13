@@ -6,7 +6,7 @@ import cn.com.cybertech.tools.DateUtil;
 import java.util.Date;
 
 public class AppInfo extends BaseEntity {
-    private Long id;
+    private Integer id;
 
     private String name;
 
@@ -34,11 +34,14 @@ public class AppInfo extends BaseEntity {
 
     private String updateTimeStr;
 
-    public Long getId() {
+    //非数据库字段
+    private Long userId; //绑定的用户
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -144,5 +147,13 @@ public class AppInfo extends BaseEntity {
 
     public void setUpdateTimeStr(String updateTimeStr) {
         this.updateTimeStr = updateTimeStr;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

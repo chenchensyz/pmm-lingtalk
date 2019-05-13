@@ -10,5 +10,5 @@ public interface AppUserService {
 
     void addOrEditAppUser(AppUser appUser);
 
-    int deleteAppUser(String userId);
+    void deleteAppUser(String userId);
 }

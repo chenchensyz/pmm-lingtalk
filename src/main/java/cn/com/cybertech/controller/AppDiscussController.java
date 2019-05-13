@@ -46,21 +46,36 @@ public class AppDiscussController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
+    //删除讨论组
     @RequestMapping(value = "/delAppDiscuss")
-    public RestResponse delAppDiscuss(Long userId) {
+    public RestResponse delAppDiscuss(Integer appId, Integer discussId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-//        int count = appCertService.delectAppCert(certId);
-//        if (count == 0) {
-//            msgCode = MessageCode.CERT_ERR_DELETE;
-//        }
+        try {
+            appDiscussService.deleteAppDiscuss(appId, discussId);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
+    //添加讨论组成员
     @RequestMapping(value = "/addAppDiscussUser")
-    public RestResponse addAppDiscussUser(Integer discussId, String userId) {
+    public RestResponse addAppDiscussUser(Integer appId, Integer discussId, String userId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-//            appDiscussService.addOrEditAppDiscuss(appDiscuss);
+            appDiscussService.addAppDiscussUser(appId, discussId, userId);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+    }
+
+    //删除讨论组成员
+    @RequestMapping(value = "/delAppDiscussUser")
+    public RestResponse delAppDiscussUser(Integer appId, Integer discussId, String userId) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            appDiscussService.delAppDiscussUser(appId, discussId, userId);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

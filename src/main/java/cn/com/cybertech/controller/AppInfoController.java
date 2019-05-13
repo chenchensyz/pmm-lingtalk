@@ -13,6 +13,7 @@ import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,32 +32,41 @@ public class AppInfoController {
     private MessageCodeUtil messageCodeUtil;
 
     @RequestMapping("/list")
-    public RestResponse queryAppInfoList(AppInfo appInfo) {
+    public RestResponse queryAppInfoList(HttpServletRequest request, AppInfo appInfo) {
+        String token = request.getHeader("token");
         PageHelper.startPage(appInfo.getPageNum(), appInfo.getPageSize());
-        List<AppInfo> appInfos = appInfoService.queryAppList(appInfo);
+        List<AppInfo> appInfos = appInfoService.queryAppList(token, appInfo);
         PageInfo<AppInfo> appInfoPage = new PageInfo<AppInfo>(appInfos);
         return RestResponse.success().setData(appInfos)
                 .setTotal(appInfoPage.getTotal()).setPage(appInfoPage.getLastPage());
     }
 
-    @RequestMapping("addOrEditAppInfo")
+    @RequestMapping(value = "addOrEditAppInfo", method = RequestMethod.POST)
     public RestResponse addOrEditAppInfo(HttpServletRequest request, AppInfo appInfo) {
         String token = request.getHeader("token");
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-            appInfoService.insertAppInfo(token, appInfo);
+            appInfoService.addOrEditAppInfo(token, appInfo);
         } catch (ValueRuntimeException e) {
             msgCode = (int) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-
+    //应用基本信息
     @RequestMapping("detail")
-    public RestResponse getAppDetail(HttpServletRequest request, Long appId) {
+    public RestResponse getAppDetail(Integer appId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         AppInfo appInfo = appInfoService.queryAppById(appId);
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(appInfo);
+    }
+
+    //获取当前公司所有应用
+    @RequestMapping("/queryCompanyAppInfoList")
+    public RestResponse queryCompanyAppInfoList(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        List<AppInfo> appInfos = appInfoService.queryCompanyAppInfoList(token);
+        return RestResponse.success().setData(appInfos);
     }
 
     public static void main(String[] args) {

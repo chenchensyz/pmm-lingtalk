@@ -40,9 +40,6 @@ public class WebRoleController {
     @Autowired
     private WebPerimissionService webPerimissionService;
 
-    @Autowired
-    private RedisTool redisTool;
-
     @RequestMapping("/list")
     public RestResponse queryWebUserList(WebRole webRole) {
         if (webRole.getPageSize() == 0) {
@@ -68,11 +65,22 @@ public class WebRoleController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-
     //根据角色查询拥有的权限
     @RequestMapping(value = "/rolePerms", method = RequestMethod.GET)
     public RestResponse getRolePerms(Integer roleId) {
         List<Integer> permissions = webPerimissionService.getPermsByRoleId(roleId);
         return RestResponse.success().setData(permissions);
+    }
+
+    //删除角色
+    @RequestMapping(value = "/deleteRole", method = RequestMethod.GET)
+    public RestResponse deleteRole(Integer roleId) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            webRoleService.deleteRole(roleId);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 }

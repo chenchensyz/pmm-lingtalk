@@ -4,6 +4,7 @@ import cn.com.cybertech.model.common.BaseEntity;
 import cn.com.cybertech.tools.DateUtil;
 
 import java.util.Date;
+import java.util.List;
 
 public class WebUser extends BaseEntity {
     private Long id;
@@ -31,6 +32,9 @@ public class WebUser extends BaseEntity {
     private String createTimeStr;
 
     private String updateTimeStr;
+
+    //绑定的应用
+    private List<Integer> appCheckedList;
 
     public Long getId() {
         return id;
@@ -134,5 +138,13 @@ public class WebUser extends BaseEntity {
 
     public void setUpdateTimeStr(String updateTimeStr) {
         this.updateTimeStr = updateTimeStr;
+    }
+
+    public List<Integer> getAppCheckedList() {
+        return appCheckedList;
+    }
+
+    public void setAppCheckedList(List<Integer> appCheckedList) {
+        this.appCheckedList = appCheckedList;
     }
 }

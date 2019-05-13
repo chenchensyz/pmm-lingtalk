@@ -1,13 +1,14 @@
 package cn.com.cybertech.service;
 
 import cn.com.cybertech.model.WebUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
 
 public interface WebUserService {
 
-    List<WebUser> getWebUserList(WebUser webUser);
+    List<WebUser> getWebUserList(String token, WebUser webUser);
 
     WebUser getWebUserByPhone(String phone, Integer companyId);
 
@@ -17,5 +18,11 @@ public interface WebUserService {
     void registerUser(WebUser webUser, String companyName, String introduction);
 
     //管理员添加用户
-    void addOrEdidUser(WebUser webUser);
+    void addOrEdidUser(String token, WebUser webUser);
+
+    //查询：用户绑定应用
+    List<Integer> getUserApp(String token, Long userId);
+
+    //管理员删除用户
+    void optionUser(String platform, Long userId, Integer state);
 }
