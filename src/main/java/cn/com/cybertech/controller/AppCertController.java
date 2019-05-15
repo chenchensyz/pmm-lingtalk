@@ -51,9 +51,10 @@ public class AppCertController {
     @RequestMapping(value = "/delAppCert")
     public RestResponse delAppCert(Long certId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-        int count = appCertService.deleteAppCert(certId);
-        if (count == 0) {
-            msgCode = MessageCode.CERT_ERR_DELETE;
+        try {
+            appCertService.deleteAppCert(certId);
+        } catch (ValueRuntimeException e) {
+            msgCode = Integer.valueOf(e.getMessage());
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }

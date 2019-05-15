@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/cert")
+@RequestMapping("/app/api/cert")
 public class AppCertApiController {
 
     @Autowired

@@ -47,20 +47,12 @@ public class MyInteceptor implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //将所有/static/** 访问都映射到classpath:/static/ 目录下
-        registry.addResourceHandler("/web/**").addResourceLocations("classpath:/views/");
-    }
-
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addRedirectViewController("/web", "/web/login.html");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
     }
 
 //    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        registry.addMapping("/**")
-//                .allowedOrigins("*")
-//                .allowCredentials(true).allowedHeaders("Origin, X-Requested-With, Content-Type, Accept")
-//                .allowedMethods("GET", "POST", "DELETE", "PUT", "OPTIONS");
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addRedirectViewController("/lingtalk", "/static/index.html");
 //    }
 
 }

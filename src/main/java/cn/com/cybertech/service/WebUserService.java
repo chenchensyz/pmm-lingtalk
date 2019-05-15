@@ -18,11 +18,16 @@ public interface WebUserService {
     void registerUser(WebUser webUser, String companyName, String introduction);
 
     //管理员添加用户
-    void addOrEdidUser(String token, WebUser webUser);
+    void addOrEditUser(String token, WebUser webUser);
 
     //查询：用户绑定应用
     List<Integer> getUserApp(String token, Long userId);
 
     //管理员删除用户
     void optionUser(String platform, Long userId, Integer state);
+
+    WebUser getUserInfo(String token);
+
+    //修改密码
+    void resetPassword(String token, String oldPassword, String newPassword);
 }

@@ -27,7 +27,7 @@
     authority_department, user_role_id, IS_CS
   </sql>
 
-  <select id="selectAppUserById" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getAppUserById" parameterType="java.lang.String" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from sg_tp_users
@@ -145,5 +145,9 @@
     <if test="userId != null and userId !=''">
       and USER_ID = #{userId}
     </if>
+  </select>
+
+  <select id="getAppUserIdsByAppId" parameterType="int" resultType="int">
+     select count(id) from sg_tp_users where APP_ID = #{appId}
   </select>
 </mapper>

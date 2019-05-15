@@ -15,10 +15,6 @@ import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.RedisUtils;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
-import com.github.pagehelper.PageHelper;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +25,6 @@ import redis.clients.jedis.JedisPool;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Service("appDiscussService")
 public class AppDiscussServicempl implements AppDiscussService {
@@ -71,7 +66,7 @@ public class AppDiscussServicempl implements AppDiscussService {
         List<String> pushUsers; //推送的成员列表
         if (appDiscuss.getDiscussId() == null) {  //新增
             String userId = createAppUserId(appDiscuss.getCreatorId(), appDiscuss.getAppId()); //组装新的id
-            AppUser appUser = appUserMapper.selectAppUserById(userId); //查询用户是否存在
+            AppUser appUser = appUserMapper.getAppUserById(userId); //查询用户是否存在
             if (appUser == null) {
                 throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
             }
@@ -152,7 +147,7 @@ public class AppDiscussServicempl implements AppDiscussService {
             throw new ValueRuntimeException(MessageCode.APPINFO_ERR_SELECT);
         }
         String pmUserId = createAppUserId(userId, appId);
-        AppUser appUser = appUserMapper.selectAppUserById(pmUserId); //查询用户是否存在
+        AppUser appUser = appUserMapper.getAppUserById(pmUserId); //查询用户是否存在
         if (appUser == null) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
         }

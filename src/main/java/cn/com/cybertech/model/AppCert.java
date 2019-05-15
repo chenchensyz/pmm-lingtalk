@@ -36,6 +36,8 @@ public class AppCert extends BaseEntity {
 
     private Date updateTime;
 
+    private String certSuffix; //证书文件后缀类型
+
     //非数据库字段
     private String appName;
 
@@ -44,6 +46,7 @@ public class AppCert extends BaseEntity {
     private String updateTimeStr;
 
     private Boolean certUpload = false;
+
 
     public Long getId() {
         return id;
@@ -195,5 +198,13 @@ public class AppCert extends BaseEntity {
 
     public void setCertUpload(Boolean certUpload) {
         this.certUpload = certUpload;
+    }
+
+    public String getCertSuffix() {
+        return certSuffix;
+    }
+
+    public void setCertSuffix(String certSuffix) {
+        this.certSuffix = certSuffix;
     }
 }

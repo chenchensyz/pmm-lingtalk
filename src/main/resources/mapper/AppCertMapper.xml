@@ -17,11 +17,12 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="cert_file" jdbcType="LONGVARBINARY" property="certFile" />
     <result column="key_file" jdbcType="LONGVARBINARY" property="keyFile" />
+    <result column="cert_suffix" jdbcType="VARCHAR" property="certSuffix" />
     <result column="app_name" jdbcType="VARCHAR" property="appName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, app_id, type, cert_id, cert_key, cert_secret, cert_name, apk_name, version, state,
-    create_time, update_time, cert_file, key_file, cert_environ
+    create_time, update_time, cert_file, key_file, cert_suffix, cert_environ
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -67,6 +68,9 @@
       <if test="keyFile != null">
         key_file,
       </if>
+      <if test="certSuffix != null">
+        cert_suffix,
+      </if>
       <if test="certEnviron != null">
         cert_environ,
       </if>
@@ -103,6 +107,9 @@
       <if test="keyFile != null">
         #{keyFile,jdbcType=LONGVARBINARY},
       </if>
+      <if test="certSuffix != null">
+        #{certSuffix},
+      </if>
       <if test="certEnviron != null">
         #{certEnviron},
       </if>
@@ -138,6 +145,9 @@
       </if>
       <if test="keyFile != null">
         key_file = #{keyFile,jdbcType=LONGVARBINARY},
+      </if>
+      <if test="certSuffix != null">
+        cert_suffix = #{certSuffix,jdbcType=LONGVARBINARY},
       </if>
       <if test="certEnviron != null">
         cert_environ = #{certEnviron},
@@ -196,5 +206,9 @@
   <select id="getAppCertList" parameterType="cn.com.cybertech.model.AppCert" resultMap="BaseResultMap">
      SELECT sac.*,aa.name app_name FROM sdk_app_cert sac
      LEFT JOIN app_app aa on sac.app_id=aa.id where sac.app_id=#{appId}
+  </select>
+
+  <select id="getAppCertIdsByAppId" parameterType="int" resultType="int">
+     SELECT count(id) FROM sdk_app_cert  where app_id=#{appId}
   </select>
 </mapper>

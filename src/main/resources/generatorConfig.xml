@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="pm_tp_discuss_users" domainObjectName="AppDiscussUser"
+        <table  tableName="web_dicts" domainObjectName="CommonDicts"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >

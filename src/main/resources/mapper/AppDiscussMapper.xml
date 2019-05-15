@@ -181,4 +181,13 @@
         where CREATOR_ID = #{creatorId}
     </update>
 
+
+  <select id="getAppDiscussIdsByAppId" parameterType="int" resultType="int">
+    SELECT count(DISCUSS_ID) FROM pm_tp_discuss WHERE APP_ID = #{appId} and DISABLED = 0
+  </select>
+
+  <!--删除应用时，删除app下所有讨论组-->
+  <delete id="deleteAppDiscussIdsByAppId" parameterType="int">
+        delete from pm_tp_discuss where app_id = #{app_Id}
+    </delete>
 </mapper>

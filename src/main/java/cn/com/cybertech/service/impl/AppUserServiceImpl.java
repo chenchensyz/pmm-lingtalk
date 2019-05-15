@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service("appUserService")
-public class AppUserServicempl implements AppUserService {
+public class AppUserServiceImpl implements AppUserService {
 
     @Autowired
     private AppUserMapper appUserMapper;
@@ -46,7 +46,7 @@ public class AppUserServicempl implements AppUserService {
 
         if (StringUtils.isBlank(appUser.getId())) {  //新增
             appUser.setId(createAppUserId(appUser.getUserId(), appInfo.getAppId())); //组装新的id
-            AppUser user = appUserMapper.selectAppUserById(appUser.getId());
+            AppUser user = appUserMapper.getAppUserById(appUser.getId());
             if (user != null) {
                 throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
             }

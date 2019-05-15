@@ -69,4 +69,11 @@ public class RestResponse extends HashMap<String, Object> {
          put("code", code);
         return this;
     }
+
+    public static RestResponse retMsg(Integer ret, String msg){
+        RestResponse restResponse = new RestResponse();
+        restResponse.setAny("ret",ret);
+        restResponse.setAny("msg",msg);
+        return restResponse;
+    }
 }

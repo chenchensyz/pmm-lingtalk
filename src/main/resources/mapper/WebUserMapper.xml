@@ -15,7 +15,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, phone, nick_name, email, company_id, role_id, state, remak, create_time,
+    id, phone, password, nick_name, email, company_id, role_id, state, remak, create_time,
     update_time
   </sql>
     <select id="getWebUserById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -182,5 +182,10 @@
     <select id="getWebUserByRoleId" parameterType="int" resultType="int">
         SELECT count(id) FROM sdk_web_user WHERE role_id = #{roleId}
     </select>
+
+    <update id="updateUserPassByPhone" parameterType="map">
+        update sdk_web_user set  password = #{password} , update_time = sysdate()
+        where  phone = #{phone}
+    </update>
 
 </mapper>

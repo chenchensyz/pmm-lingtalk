@@ -87,6 +87,7 @@ public class WebUserServiceImpl implements WebUserService {
             resultMap.put("nickName", user.getNickName());
             resultMap.put("userId", user.getId());
             resultMap.put("companyId", user.getCompanyId());
+            resultMap.put("createTime", user.getCreateTimeStr());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败
@@ -121,7 +122,7 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     @Transactional
-    public void addOrEdidUser(String token, WebUser webUser) {
+    public void addOrEditUser(String token, WebUser webUser) {
         int count = 0;
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         webUser.setCompanyId(localUser.getCompanyId());
@@ -182,5 +183,30 @@ public class WebUserServiceImpl implements WebUserService {
         } finally {
             jedis.close();
         }
+    }
+
+    @Override
+    public WebUser getUserInfo(String token) {
+        WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        WebUser user = webUserMapper.getWebUserById(localUser.getId());
+        return user;
+    }
+
+    @Override
+    public void resetPassword(String token, String oldPassword, String newPassword) {
+        WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        WebUser user = webUserMapper.getWebUserById(localUser.getId());
+        String localoldPwd = EncryptUtils.MD5Encode(user.getPhone() + oldPassword + "*!!");
+        if (!localoldPwd.equals(user.getPassword())) {
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_OLDPASS); //原密码错误
+        }
+
+        String newPwd = EncryptUtils.MD5Encode(user.getPhone() + newPassword + "*!!");
+        user.setPassword(newPwd);
+        int count = webUserMapper.updateUserPassByPhone(newPwd, user.getPhone());
+        if (count == 0) {
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_RESETPASS); //修改密码失败
+        }
+
     }
 }

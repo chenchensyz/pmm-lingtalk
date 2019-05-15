@@ -128,9 +128,9 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
-    <select id="getAppInfoList" parameterType="cn.com.cybertech.model.AppInfo" resultMap="BaseResultMap">
-        SELECT aa.* FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
-        WHERE swua.company_id=#{companyId}
+    <select id="getAppInfoCount" parameterType="cn.com.cybertech.model.AppInfo" resultType="int">
+        SELECT count(aa.id) FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
+        WHERE aa.company_id=#{companyId}
         <if test="userId != null and userId !=''">
             and swua.user_id =#{userId}
         </if>
@@ -140,6 +140,27 @@
         <if test="name != null and name !=''">
             and aa.name = #{name}
         </if>
+        <if test="state != null">
+            and aa.state = #{state}
+        </if>
+    </select>
+
+    <select id="getAppInfoList" parameterType="cn.com.cybertech.model.AppInfo" resultMap="BaseResultMap">
+        SELECT aa.* FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
+        WHERE aa.company_id=#{companyId}
+        <if test="userId != null and userId !=''">
+            and swua.user_id =#{userId}
+        </if>
+        <if test="appId != null and appId !=''">
+            and aa.app_id = #{appId}
+        </if>
+        <if test="name != null and name !=''">
+            and aa.name = #{name}
+        </if>
+        <if test="state != null">
+            and aa.state = #{state}
+        </if>
+        limit #{pageNum},#{pageSize}
     </select>
 
     <select id="queryAppByAppId" parameterType="string" resultMap="BaseResultMap">
@@ -149,4 +170,10 @@
     <select id="queryUserAppInfo" parameterType="map" resultType="string">
      select app_id from sdk_web_user_app WHERE user_id =#{userId} and company_id=#{companyId}
   </select>
+
+    <update id="updateAppInfoState" parameterType="cn.com.cybertech.model.AppInfo">
+        update app_app
+        set state = #{state}, update_time = sysdate()
+        where id = #{id}
+  </update>
 </mapper>

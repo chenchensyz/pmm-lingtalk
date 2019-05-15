@@ -54,12 +54,12 @@ public class WebUserController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-    @RequestMapping("/addOrEdidUser")
-    public RestResponse addOrEdidUser(HttpServletRequest request, WebUser webUser) {
+    @RequestMapping("/addOrEditUser")
+    public RestResponse addOrEditUser(HttpServletRequest request, WebUser webUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         try {
-            webUserService.addOrEdidUser(token, webUser);
+            webUserService.addOrEditUser(token, webUser);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
@@ -87,6 +87,28 @@ public class WebUserController {
         String platform = request.getHeader("platform");
         try {
             webUserService.optionUser(platform,userId, state);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+    }
+
+    //修改用户状态
+    @RequestMapping("/getUserInfo")
+    public RestResponse getUserInfo(HttpServletRequest request) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        String token = request.getHeader("token");
+        WebUser userDetail = webUserService.getUserInfo(token);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(userDetail);
+    }
+
+    //修改用户状态
+    @RequestMapping("/resetPassword")
+    public RestResponse resetPassword(HttpServletRequest request,String oldPassword, String newPassword) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        String token = request.getHeader("token");
+        try {
+            webUserService.resetPassword(token,oldPassword,newPassword);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

@@ -34,14 +34,11 @@ public class AppInfoController {
     @RequestMapping("/list")
     public RestResponse queryAppInfoList(HttpServletRequest request, AppInfo appInfo) {
         String token = request.getHeader("token");
-        PageHelper.startPage(appInfo.getPageNum(), appInfo.getPageSize());
-        List<AppInfo> appInfos = appInfoService.queryAppList(token, appInfo);
-        PageInfo<AppInfo> appInfoPage = new PageInfo<AppInfo>(appInfos);
-        return RestResponse.success().setData(appInfos)
-                .setTotal(appInfoPage.getTotal()).setPage(appInfoPage.getLastPage());
+        RestResponse restResponse = appInfoService.queryAppList(token, appInfo);
+        return restResponse;
     }
 
-    @RequestMapping(value = "addOrEditAppInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/addOrEditAppInfo", method = RequestMethod.POST)
     public RestResponse addOrEditAppInfo(HttpServletRequest request, AppInfo appInfo) {
         String token = request.getHeader("token");
         int msgCode = MessageCode.BASE_SUCC_CODE;
@@ -54,7 +51,7 @@ public class AppInfoController {
     }
 
     //应用基本信息
-    @RequestMapping("detail")
+    @RequestMapping("/detail")
     public RestResponse getAppDetail(Integer appId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         AppInfo appInfo = appInfoService.queryAppById(appId);
@@ -67,6 +64,18 @@ public class AppInfoController {
         String token = request.getHeader("token");
         List<AppInfo> appInfos = appInfoService.queryCompanyAppInfoList(token);
         return RestResponse.success().setData(appInfos);
+    }
+
+    //获取当前公司所有应用
+    @RequestMapping("/deleteAppInfo")
+    public RestResponse deleteAppInfo(Integer appId) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try{
+            appInfoService.deleteAppInfo(appId);
+        }catch (ValueRuntimeException e){
+            msgCode = (int) e.getValue();
+        }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
     public static void main(String[] args) {

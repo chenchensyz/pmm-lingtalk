@@ -1,19 +1,17 @@
 package cn.com.cybertech.service.impl;
 
-import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.dao.AppCertMapper;
 import cn.com.cybertech.model.AppCert;
-import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.AppCertService;
-import cn.com.cybertech.tools.CodeUtil;
-import cn.com.cybertech.tools.FileConvertUtils;
-import cn.com.cybertech.tools.MessageCode;
+import cn.com.cybertech.tools.*;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -29,6 +27,11 @@ public class AppCertServicempl implements AppCertService {
     @Autowired
     private AppCertMapper appCertMapper;
 
+    @Autowired
+    private MessageCodeUtil messageCodeUtil;
+
+    private String fileSuffix;
+
     @Override
     public List<Map<String, Object>> getApiAppCertList() {
         List<Map<String, Object>> resultList = Lists.newArrayList();
@@ -37,7 +40,8 @@ public class AppCertServicempl implements AppCertService {
             for (AppCert appCert : appCerts) {
                 Map<String, Object> map = Maps.newHashMap();
                 map.put("pushtype", appCert.getType());
-                if (CodeUtil.CERT_IOS.equals(appCert.getType())) { //苹果证书
+                String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+                if (type.equals(appCert.getType())) { //苹果证书
                     map.put("bundleid", appCert.getCertId());
                     String cert = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getCertFile());
                     String key = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getKeyFile());
@@ -80,17 +84,19 @@ public class AppCertServicempl implements AppCertService {
     }
 
     @Override
+    @Transactional
     public void addOrEditAppCert(HttpServletRequest request, AppCert appCert) {
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         List<MultipartFile> keys = ((MultipartHttpServletRequest) request).getFiles("key");
         if (files != null && files.size() > 0) { //保存ios证书密钥文件
             MultipartFile file = files.get(0);
-            appCert.setKeyFile(getBytes(appCert, file, "file"));
+            appCert.setKeyFile(getBytes(appCert, file, CodeUtil.CERT_TYPE_FILE));
         }
         if (keys != null && keys.size() > 0) { //保存key密钥文件
             MultipartFile key = keys.get(0);
-            appCert.setCertFile(getBytes(appCert, key, "key"));
+            appCert.setCertFile(getBytes(appCert, key, CodeUtil.CERT_TYPE_KEY));
         }
+        appCert.setCertSuffix(fileSuffix);
         int count;
         if (appCert.getId() != null) {
             count = appCertMapper.updateAppCert(appCert);
@@ -100,13 +106,32 @@ public class AppCertServicempl implements AppCertService {
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.CERT_ERR_SAVE);
         }
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("pushtype", appCert.getType());
+        String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+        if (type.equals(appCert.getType())) { //苹果证书
+            jsonObject.put("bundleid", appCert.getCertId());
+            String cert = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getCertFile());
+            String key = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getKeyFile());
+            jsonObject.put("cert", cert);
+            jsonObject.put("key", key);
+            jsonObject.put("pass", Base64.encodeBase64String(appCert.getCertSecret().getBytes(CodeUtil.cs)));
+            jsonObject.put("production", true);
+        } else {  //Android证书
+            jsonObject.put("appid", appCert.getCertId());
+            jsonObject.put("secret", appCert.getCertSecret());
+            jsonObject.put("apkname", appCert.getApkName());
+        }
+        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
+        String cert_change_url = messageCodeUtil.getMessage(CodeUtil.CERT_CHANGE_URL);
+        HttpClientUtil.httpRequest(upload_url + cert_change_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
     }
 
     private byte[] getBytes(AppCert appCert, MultipartFile file, String fileKey) {
-        String fileName = appCert.getAppId() + "#" + fileKey;
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-        String filePath = "D:\\" + File.separator + fileName + suffix;
+        String fileName = getNewFileName(appCert, fileKey, suffix);
+        fileSuffix = suffix;
+        String filePath = messageCodeUtil.getMessage(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
         File dest = new File(filePath);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             dest.getParentFile().mkdir();
@@ -120,8 +145,52 @@ public class AppCertServicempl implements AppCertService {
         return null;
     }
 
+    public void deleteFile(AppCert appCert, String fileKey) {
+        String fileName = getNewFileName(appCert, fileKey, appCert.getCertSuffix());
+        String filePath = messageCodeUtil.getMessage(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
+        File file = new File(filePath);
+        // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+        if (file.exists() && file.isFile()) {
+            if (!file.delete()) {
+                if (fileKey.equals(CodeUtil.CERT_TYPE_FILE)) {
+                    throw new ValueRuntimeException(MessageCode.CERT_FILE_ERR_DEL);
+                } else {
+                    throw new ValueRuntimeException(MessageCode.CERT_KEY_ERR_DEL);
+                }
+            }
+        } else {
+            System.out.println("删除单个文件失败：" + fileName + "不存在！");
+        }
+    }
+
+    private String getNewFileName(AppCert appCert, String fileKey, String suffix) {
+        String fileName = appCert.getAppId() + "#" + appCert.getCertId() + "#" + fileKey + suffix;
+        return fileName;
+    }
+
     @Override
-    public int deleteAppCert(Long certId) {
-        return appCertMapper.deleteByPrimaryKey(certId);
+    @Transactional
+    public void deleteAppCert(Long certId) {
+        AppCert appCert = appCertMapper.selectByPrimaryKey(certId);
+        if (appCert == null) {
+            throw new ValueRuntimeException(MessageCode.CERT_NULL);
+        }
+        int count = appCertMapper.deleteByPrimaryKey(certId);
+        if (count == 0) {
+            throw new ValueRuntimeException(MessageCode.CERT_ERR_DELETE);
+        }
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("pushtype", appCert.getType());
+        String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+        if (type.equals(appCert.getType())) { //苹果证书
+            jsonObject.put("bundleid", appCert.getCertId());
+            deleteFile(appCert, CodeUtil.CERT_TYPE_FILE);
+            deleteFile(appCert, CodeUtil.CERT_TYPE_KEY);
+        } else {  //Android证书
+            jsonObject.put("apkname", appCert.getApkName());
+        }
+        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
+        String cert_delete_url = messageCodeUtil.getMessage(CodeUtil.CERT_DELETE_URL);
+        HttpClientUtil.httpRequest(upload_url + cert_delete_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
     }
 }

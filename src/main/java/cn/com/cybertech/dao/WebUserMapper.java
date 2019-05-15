@@ -29,4 +29,6 @@ public interface WebUserMapper {
     //根据角色查询用户
     int getWebUserByRoleId(Integer roleId);
 
+    int  updateUserPassByPhone(@Param("password") String password, @Param("phone") String phone);
+
 }

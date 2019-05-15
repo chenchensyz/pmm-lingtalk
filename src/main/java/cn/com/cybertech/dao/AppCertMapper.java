@@ -12,4 +12,6 @@ public interface AppCertMapper extends BaseDao<AppCert> {
     int updateAppCert(AppCert appCert);
 
     List<AppCert> getAppCertList(AppCert appCert);
+
+    int getAppCertIdsByAppId(Integer appId);
 }
