@@ -46,7 +46,9 @@ public class AppOfflinePushController {
         } else {
             msg = map.get("error").toString();
         }
-        return RestResponse.retMsg(msgCode, msg);
+        RestResponse response = new RestResponse();
+        response.retMsg(response, msgCode, msg);
+        return response;
     }
 
     // 注销推送
@@ -65,6 +67,8 @@ public class AppOfflinePushController {
         } else {
             msg = map.get("error").toString();
         }
-        return RestResponse.retMsg(msgCode, msg);
+        RestResponse response = new RestResponse();
+        response.retMsg(response, msgCode, msg);
+        return response;
     }
 }

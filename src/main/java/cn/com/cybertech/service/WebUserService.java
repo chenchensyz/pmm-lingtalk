@@ -1,7 +1,6 @@
 package cn.com.cybertech.service;
 
 import cn.com.cybertech.model.WebUser;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;

@@ -6,24 +6,25 @@ import java.util.HashMap;
  * ResponseBody构造器。一般用于ajax、rest等类型的Web服务
  */
 public class RestResponse extends HashMap<String, Object> {
-    public static RestResponse success(){
+    public static RestResponse success() {
         return success("操作成功");
     }
-    public static RestResponse success(String message){
+
+    public static RestResponse success(String message) {
         RestResponse restResponse = new RestResponse();
         restResponse.setCode(0);
         restResponse.setMessage(message);
         return restResponse;
     }
 
-    public static RestResponse failure(String message){
+    public static RestResponse failure(String message) {
         RestResponse restResponse = new RestResponse();
         restResponse.setCode(1);
         restResponse.setMessage(message);
         return restResponse;
     }
 
-    public static RestResponse res(Integer code, String message){
+    public static RestResponse res(Integer code, String message) {
         RestResponse restResponse = new RestResponse();
         restResponse.setCode(code);
         restResponse.setMessage(message);
@@ -66,14 +67,18 @@ public class RestResponse extends HashMap<String, Object> {
     }
 
     public RestResponse setCode(Integer code) {
-         put("code", code);
+        put("code", code);
         return this;
     }
 
-    public static RestResponse retMsg(Integer ret, String msg){
-        RestResponse restResponse = new RestResponse();
-        restResponse.setAny("ret",ret);
-        restResponse.setAny("msg",msg);
-        return restResponse;
+    public RestResponse retMsg(RestResponse response, Integer ret, String msg) {
+        response.setAny("ret", ret);
+        response.setAny("msg", msg);
+        return response;
+    }
+
+    public RestResponse retDatas(Object datas) {
+        if (datas != null) put("datas", datas);
+        return this;
     }
 }

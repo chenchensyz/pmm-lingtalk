@@ -32,8 +32,9 @@ public class WebPerimissionController {
     //查询用户权限列表
     @RequestMapping(value = "list", method = RequestMethod.GET)
     public RestResponse getPermissionList(Integer userId, Integer type) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
         List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(type));
-        return RestResponse.success().setData(permissions);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(permissions);
     }
 
     //查找用户的菜单权限标识集合
@@ -59,7 +60,7 @@ public class WebPerimissionController {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         System.out.println(ids);
         try {
-           webPerimissionService.deletePerm(ids);
+            webPerimissionService.deletePerm(ids);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

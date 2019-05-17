@@ -175,8 +175,7 @@
   </select>
 
   <select id="getPermsByRoleId" parameterType="int" resultType="int">
-    SELECT id FROM sdk_web_permission WHERE id in
-    ( SELECT perimission_id FROM sdk_web_role_perm WHERE role_id = #{roleId} )
+     SELECT perimission_id FROM sdk_web_role_perm WHERE role_id = #{roleId}  order by perimission_id
   </select>
 
   <!--获取最大的order_num-->

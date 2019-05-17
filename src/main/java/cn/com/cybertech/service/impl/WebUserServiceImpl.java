@@ -167,7 +167,7 @@ public class WebUserServiceImpl implements WebUserService {
     @Override
     public void optionUser(String platform, Long userId, Integer state) {
         WebUser user = webUserMapper.getWebUserById(userId);
-        user.setState(0);
+        user.setState(state);
         int count = webUserMapper.updateWebUser(user);
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);

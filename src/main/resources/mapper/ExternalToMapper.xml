@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.ExternalToMapper">
+  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.ExternalTo">
+    <result column="MSG_TO" property="to" jdbcType="VARCHAR"/>
+    <result column="STATE" property="state" jdbcType="INTEGER"/>
+    <result column="PUSHTIME" property="pushtime" jdbcType="TIMESTAMP"/>
+    <result column="ACKTIME" property="acktime" jdbcType="TIMESTAMP"/>
+    <result column="MSG_UUID" property="uuid" jdbcType="VARCHAR"/>
+    <result column="EXPIRE" property="expire" jdbcType="VARCHAR"/>
+    <result column="OFF_LINE" property="offLine" jdbcType="VARCHAR"/>
+    <association property="push" javaType="cn.com.cybertech.model.ExternalPush">
+      <id property="uuid" column="PUSH_UUID"/>
+      <result property="from" column="PUSH_FROM"/>
+      <result property="content" column="PUSH_CONTENT"/>
+    </association>
+  </resultMap>
+
+  <select id="selectByTo" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select * from web_external_to where MSG_TO = #{to,jdbcType=VARCHAR}
+  </select>
+
+  <delete id="deleteByTo" parameterType="java.lang.String">
+    delete from web_external_to where MSG_TO = #{to,jdbcType=VARCHAR}
+  </delete>
+
+  <insert id="insertExternalTo" parameterType="cn.com.cybertech.model.ExternalTo" useGeneratedKeys="true" keyProperty="id">
+    insert into web_external_to
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="to != null">
+        MSG_TO,
+      </if>
+      <if test="state != null">
+        STATE,
+      </if>
+      <if test="pushtime != null">
+        PUSHTIME,
+      </if>
+      <if test="acktime != null">
+        ACKTIME,
+      </if>
+      <if test="uuid != null">
+        MSG_UUID,
+      </if>
+      <if test="expire != null">
+        expire,
+      </if>
+      <if test="offLine != null">
+        off_line
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="to != null">
+        #{to,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=DECIMAL},
+      </if>
+      <if test="pushtime != null">
+        #{pushtime,jdbcType=VARCHAR},
+      </if>
+      <if test="acktime != null">
+        #{acktime,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null">
+        #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="expire != null">
+        #{expire,jdbcType=VARCHAR},
+      </if>
+      <if test="offLine != null">
+        #{offLine,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateExternalTo" parameterType="cn.com.cybertech.model.ExternalTo">
+    update web_external_to
+    <set>
+      <if test="state != null">
+        STATE = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="pushtime != null">
+        PUSHTIME = #{pushtime,jdbcType=VARCHAR},
+      </if>
+      <if test="acktime != null">
+        ACKTIME = #{acktime,jdbcType=VARCHAR},
+      </if>
+      <if test="uuid != null">
+        MSG_UUID = #{uuid,jdbcType=VARCHAR},
+      </if>
+      <if test="expire != null">
+        EXPIRE = #{expire},
+      </if>
+      <if test="offLine != null">
+        off_line = #{offLine}
+      </if>
+    </set>
+    where MSG_TO = #{to,jdbcType=VARCHAR} and MSG_UUID = #{uuid,jdbcType=VARCHAR}
+  </update>
+
+  <select id="getByUuid" resultMap="BaseResultMap" parameterType="string">
+    select * from web_external_to where MSG_UUID = #{uuid}
+  </select>
+
+  <select id="getByUuidAndTo" resultMap="BaseResultMap" parameterType="map">
+    select * from web_external_to where MSG_UUID = #{uuid}
+    <if test="to != null">
+      and MSG_TO = #{to}
+    </if>
+  </select>
+
+  <select id="getPushUserDetail" resultMap="BaseResultMap" parameterType="string">
+    SELECT  et.*,  ep.msg_uuid PUSH_UUID, ep.msg_from PUSH_FROM, ep.msg_content PUSH_CONTENT
+    FROM  web_external_to et
+    LEFT JOIN web_external_push ep ON et.msg_uuid = ep.msg_uuid
+    LEFT JOIN app_app aa ON aa.id = ep.app_id
+    WHERE  et.msg_to= #{to}
+    and et.state != 2
+    and et.off_line = 1
+    and (date_add(et.pushtime, interval et.expire minute) >= SYSDATE() or et.expire is null)
+    <if test="appId != null">
+      and aa.app_id = #{appId}
+    </if>
+  </select>
+
+  <insert id="addExternalToMore" parameterType="map">
+    INSERT INTO web_external_to( msg_to, state, pushtime, msg_uuid
+    <if test="expire != null">
+      ,expire
+    </if>
+    <if test="offLine != null">
+      ,off_line
+    </if>
+    )
+    VALUES
+    <foreach collection="tos" item="to" separator=",">
+      (#{to},1,sysdate(),#{uuid}
+      <if test="expire != null">
+        ,#{expire}
+      </if>
+      <if test="offLine != null">
+        ,#{offLine}
+      </if>
+      )
+    </foreach>
+  </insert>
+</mapper>

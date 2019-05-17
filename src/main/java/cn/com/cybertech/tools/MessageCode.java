@@ -75,4 +75,8 @@ public class MessageCode {
     public static final int PLATFORM_NEXIST_ERR = 251001;    // 平台不存在
     public static final int PLATFORM_ERR_VERSION = 251002;   // 版本号不正确
     public static final int PLATFORM_ERR_TOKEN = 251003;    // 登陆缓存失败
+
+    //推送
+    public static final int EXTERNALPUSH_NULL = 261001;    // 推送记录不存在
+    public static final int EXTERNALPUSH_STATE_ERR = 261002;    // 推送状态修改失败
 }

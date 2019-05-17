@@ -7,6 +7,7 @@ import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,7 +33,8 @@ public class AppSecurityController {
 //        }
 //    }
     @RequestMapping(value = "/userlogin")
-    public RestResponse userlogin(String appId, String userId, String password, String platform) {
+    public RestResponse userlogin(@RequestParam String appId, @RequestParam String userId,
+                                  @RequestParam String password, @RequestParam String platform) {
         RestResponse response = new RestResponse();
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
@@ -40,6 +42,7 @@ public class AppSecurityController {
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
-        return RestResponse.retMsg(msgCode, messageCodeUtil.getMessage(msgCode)).setData(response);
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
     }
 }

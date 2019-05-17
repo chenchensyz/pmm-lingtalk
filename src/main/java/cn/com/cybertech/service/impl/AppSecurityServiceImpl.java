@@ -61,19 +61,21 @@ public class AppSecurityServiceImpl implements AppSecurityService {
         }
 
         // 获取用户及企业的相关信息
-        Map<String, Object> userMap = new HashMap<String, Object>();
+        Map<String, Object> infos = Maps.newHashMap();
+        Map<String, Object> userMap = Maps.newHashMap();
         userMap.put("id", user.getId());
         userMap.put("username", user.getUserName());
-        response.put("user", userMap);
+        infos.put("user", userMap);
 
         List<AppConfig> appConfigs = appConfigMapper.getAppConfigListByAppId(appInfo.getId());
         Object appConfigsFilter = FilterParamUtil.filterParam(appConfigs, FilterParamUtil.APPCONFIG_FILTER);
-        response.put("settingList", appConfigsFilter);
+        infos.put("settingList", appConfigsFilter);
 
         List<CommonConfig> commonList = findCommonConfig(platform, null);
         Object commonFilter = FilterParamUtil.filterParam(commonList, FilterParamUtil.COMMON_FILTER);
-        response.put("commonList", commonFilter);
-        addToken(response, user, platform);
+        infos.put("commonList", commonFilter);
+        addToken(infos, user, platform);
+        response.retDatas(infos);
         return response;
     }
 
@@ -108,7 +110,7 @@ public class AppSecurityServiceImpl implements AppSecurityService {
         return versionStr;
     }
 
-    private void addToken(RestResponse restResponse, AppUser user, String platform) {
+    private void addToken(Map<String, Object> infos, AppUser user, String platform) {
         Jedis jedis = jedisPool.getResource();
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {
@@ -117,8 +119,8 @@ public class AppSecurityServiceImpl implements AppSecurityService {
             int expiredTime = 7 * 24 * 3600;
             jedis.hset(redis_key, platform, token + ":" + expiredTime);
 
-            restResponse.put("expire_time", expiredTime);
-            restResponse.put("token", token);
+            infos.put("expire_time", expiredTime);
+            infos.put("token", token);
         } catch (Exception e) {
             throw new ValueRuntimeException(MessageCode.PLATFORM_ERR_TOKEN);
         } finally {

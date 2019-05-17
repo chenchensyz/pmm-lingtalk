@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="web_dicts" domainObjectName="CommonDicts"
+        <table  tableName="web_external_push" domainObjectName="ExternalPush"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >

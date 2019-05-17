@@ -52,7 +52,7 @@ public class MyInteceptor implements WebMvcConfigurer {
 
 //    @Override
 //    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addRedirectViewController("/lingtalk", "/static/index.html");
+//        registry.addRedirectViewController("/admin", "/static/index.html");
 //    }
 
 }
