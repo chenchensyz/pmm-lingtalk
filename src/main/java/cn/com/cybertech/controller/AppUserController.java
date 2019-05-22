@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/app/user")
@@ -60,6 +61,15 @@ public class AppUserController {
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+    }
+
+    //修改用户状态
+    @RequestMapping("/delAppUsers")
+    public RestResponse delAppUsers(Map<String,Object> paramMap) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        System.out.println(paramMap);
+
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 

@@ -17,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -93,7 +90,7 @@ public class WebUserController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-    //修改用户状态
+    //获取用户详情
     @RequestMapping("/getUserInfo")
     public RestResponse getUserInfo(HttpServletRequest request) {
         int msgCode = MessageCode.BASE_SUCC_CODE;

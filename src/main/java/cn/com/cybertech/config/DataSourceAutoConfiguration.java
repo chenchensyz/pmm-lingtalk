@@ -9,15 +9,15 @@ import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 
-@Configuration
+//@Configuration
 //@EnableConfigurationProperties(DataSourceProperties.class)
-@PropertySource(value = {"classpath:/resources/config/db.properties"}, encoding = "utf-8", ignoreResourceNotFound = true)
+//@PropertySource(value = {"classpath:/resources/config/db.properties"}, encoding = "utf-8", ignoreResourceNotFound = true)
 public class DataSourceAutoConfiguration {
 
     @Autowired
     private Environment env;
 
-    @Bean
+//    @Bean
     public DataSource dataSource() {
         //可以在此处调用相关接口获取数据库的配置信息进行 DataSource 的配置
         DruidDataSource dataSource = new DruidDataSource();

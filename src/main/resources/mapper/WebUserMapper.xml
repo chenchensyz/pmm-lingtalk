@@ -30,7 +30,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-    <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser">
+    <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser" useGeneratedKeys="true" keyProperty="id">
         insert into sdk_web_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

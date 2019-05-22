@@ -154,7 +154,9 @@
         SELECT aa.* FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
         WHERE aa.company_id=#{companyId}
         <include refid="sql_where"/>
-        limit #{pageNum},#{pageSize}
+        <if test="pageSize > 0 ">
+            limit #{pageNum},#{pageSize}
+        </if>
     </select>
 
     <select id="queryAppByAppId" parameterType="string" resultMap="BaseResultMap">
