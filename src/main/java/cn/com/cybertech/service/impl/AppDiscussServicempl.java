@@ -15,6 +15,7 @@ import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.RedisUtils;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
+import com.google.common.collect.Lists;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -124,18 +125,15 @@ public class AppDiscussServicempl implements AppDiscussService {
 
     @Override
     @Transactional
-    public void deleteAppDiscuss(Integer appId, Integer discussId) {
-        AppDiscuss appDiscuss = appDiscussMapper.getAppDiscussById(discussId); //验证讨论组
-        if (appDiscuss == null) {
-            throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
+    public void deleteAppDiscuss(String checkedIds) {
+        String[] idArray = checkedIds.split(",");
+        List<Integer> discussIds = Lists.newArrayList();
+        for (String id : idArray) {
+            discussIds.add(Integer.valueOf(id));
         }
-        int count = appDiscussUserMapper.deleteUserByDiscussId(discussId); //删除成员
-        if (appDiscuss.getUserList().size() != count) {
-            throw new ValueRuntimeException(MessageCode.DISCUSS_USER_ERR_DEL);
-        }
-        appDiscuss.setDisabled(1);
-        int count2 = appDiscussMapper.updateAppDiscuss(appDiscuss);
-        if (count2==0){
+        appDiscussUserMapper.deleteUserInDiscussIds(discussIds); //删除成员
+        int count = appDiscussMapper.updateAppDiscussDisabled(discussIds);//批量修改为已删除
+        if (count != discussIds.size()) {
             throw new ValueRuntimeException(MessageCode.DISCUSS_ERR_DEL);
         }
     }

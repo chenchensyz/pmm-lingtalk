@@ -13,7 +13,9 @@ import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -62,11 +64,13 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
-    public void deleteAppUser(String userId) {
-        appDiscussUserMapper.deleteUserByUserId(userId);   //从讨论组中删除
-        appDiscussMapper.deleteDiscussByCreatorId(userId); //删除用户创建的讨论组
-        int count = appUserMapper.deleteAppUserById(userId);
-        if (count == 0) {
+    @Transactional
+    public void deleteAppUsers(String checkedIds) {
+        List<String> userIds = Arrays.asList(checkedIds.split(","));
+        appDiscussUserMapper.deleteDiscussUserInUserIds(userIds);   //从讨论组中删除
+        appDiscussMapper.deleteDiscussInCreatorIds(userIds); //删除用户创建的讨论组
+        int count = appUserMapper.deleteAppUserInIds(userIds);
+        if (count != userIds.size()) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_DEL);
         }
     }

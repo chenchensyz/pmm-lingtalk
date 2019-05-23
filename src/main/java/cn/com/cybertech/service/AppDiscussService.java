@@ -11,7 +11,7 @@ public interface AppDiscussService {
 
     RestResponse getAppDiscussList(AppDiscuss appDiscuss);
 
-    void deleteAppDiscuss(Integer appId, Integer discussId);
+    void deleteAppDiscuss(String checkedIds);
 
     void addAppDiscussUser(Integer appId, Integer discussId, String userId);
 

@@ -23,7 +23,7 @@ public class WebUser extends BaseEntity {
 
     private Integer state;
 
-    private String remak;
+    private String remark;
 
     private Date createTime;
 
@@ -92,12 +92,12 @@ public class WebUser extends BaseEntity {
         this.state = state;
     }
 
-    public String getRemak() {
-        return remak;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setRemak(String remak) {
-        this.remak = remak == null ? null : remak.trim();
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public Date getCreateTime() {

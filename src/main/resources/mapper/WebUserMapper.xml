@@ -10,12 +10,12 @@
         <result column="company_id" jdbcType="INTEGER" property="companyId"/>
         <result column="role_id" jdbcType="INTEGER" property="roleId"/>
         <result column="state" jdbcType="INTEGER" property="state"/>
-        <result column="remak" jdbcType="VARCHAR" property="remak"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, phone, password, nick_name, email, company_id, role_id, state, remak, create_time,
+    id, phone, password, nick_name, email, company_id, role_id, state, remark, create_time,
     update_time
   </sql>
     <select id="getWebUserById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -54,8 +54,8 @@
             <if test="roleId != null">
                 role_id,
             </if>
-            <if test="remak != null">
-                remak,
+            <if test="remark != null">
+                remark,
             </if>
             state,create_time,
         </trim>
@@ -81,8 +81,8 @@
             <if test="roleId != null">
                 #{roleId,jdbcType=INTEGER},
             </if>
-            <if test="remak != null">
-                #{remak,jdbcType=VARCHAR},
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
             </if>
             1,sysdate()
         </trim>
@@ -105,8 +105,8 @@
             <if test="state != null">
                 state = #{state,jdbcType=INTEGER},
             </if>
-            <if test="remak != null">
-                remak = #{remak,jdbcType=VARCHAR},
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
             </if>
             update_time = sysdate()
         </set>
@@ -133,8 +133,8 @@
             <if test="state != null">
                 and state = #{state,jdbcType=INTEGER}
             </if>
-            <if test="remak != null and remak !=''">
-                and remak = #{remak,jdbcType=VARCHAR}
+            <if test="remark != null and remark !=''">
+                and remark = #{remark,jdbcType=VARCHAR}
             </if>
             <if test="updateTime != null">
                 and update_time = #{updateTime,jdbcType=TIMESTAMP}

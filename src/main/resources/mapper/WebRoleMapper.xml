@@ -81,12 +81,12 @@
         </where>
     </sql>
     <select id="getRoleList" parameterType="cn.com.cybertech.model.WebRole" resultMap="BaseResultMap">
-        select * from sdk_web_role
+        select <include refid="Base_Column_List"/> from sdk_web_role
         <include refid="sql_where"/>
     </select>
 
     <select id="getCompanyRoleList" resultMap="BaseResultMap">
-     select * from sdk_web_role
+     select <include refid="Base_Column_List"/> from sdk_web_role where id > 1
   </select>
 
     <!--删除角色权限对应关系-->

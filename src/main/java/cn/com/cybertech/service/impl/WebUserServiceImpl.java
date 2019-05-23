@@ -152,7 +152,7 @@ public class WebUserServiceImpl implements WebUserService {
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
         }
-        if (webUser.getAppCheckedList() != null) {
+        if (webUser.getAppCheckedList() != null && webUser.getAppCheckedList().size() > 0) {
             webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), webUser.getAppCheckedList());
         }
     }

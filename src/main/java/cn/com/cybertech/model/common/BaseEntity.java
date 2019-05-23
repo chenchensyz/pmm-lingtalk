@@ -12,7 +12,7 @@ public class BaseEntity {
 	private String column;//排序 字段
 	
 	private String sort;//desc 降序  asc 升序
-	
+
 
 
 	@JsonIgnore
@@ -55,5 +55,5 @@ public class BaseEntity {
 	public void setSort(String sort) {
 		this.sort = sort;
 	}
-	
+
 }

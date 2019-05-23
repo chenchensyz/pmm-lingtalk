@@ -15,7 +15,7 @@ public interface AppUserMapper extends BaseDao<AppUser> {
 
     int updateAppUser(AppUser appUser);
 
-    int deleteAppUserById(String id);
+    int deleteAppUserInIds(List<String> ids);
 
     int getAppUserIdsByAppId(Integer appId);
 }

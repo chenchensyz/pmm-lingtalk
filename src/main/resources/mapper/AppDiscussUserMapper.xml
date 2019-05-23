@@ -116,12 +116,18 @@
     <include refid="sql_where" />
   </select>
 
-  <delete id="deleteUserByDiscussId" parameterType="map">
-    delete from pm_tp_discuss_users  where  DISCUSS_ID = #{discussId}
+  <delete id="deleteUserInDiscussIds">
+    delete from pm_tp_discuss_users  where  DISCUSS_ID in
+    <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
   </delete>
 
-  <delete id="deleteUserByUserId" parameterType="map">
-    delete from pm_tp_discuss_users  where  USER_ID = #{userId}
+  <delete id="deleteDiscussUserInUserIds">
+    delete from pm_tp_discuss_users where USER_ID in
+    <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
   </delete>
 
 </mapper>

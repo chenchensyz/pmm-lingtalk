@@ -34,9 +34,11 @@
     where ID = #{id,jdbcType=VARCHAR}
   </select>
 
-  <delete id="deleteAppUserById" parameterType="java.lang.String">
-    delete from sg_tp_users
-    where ID = #{id,jdbcType=VARCHAR}
+  <delete id="deleteAppUserInIds" >
+    delete from sg_tp_users where ID in
+    <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+      #{id}
+    </foreach>
   </delete>
 
   <insert id="insertAppUser" parameterType="cn.com.cybertech.model.AppUser">

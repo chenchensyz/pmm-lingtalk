@@ -7,16 +7,10 @@ import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/app/discuss")
@@ -48,10 +42,10 @@ public class AppDiscussController {
 
     //删除讨论组
     @RequestMapping(value = "/delAppDiscuss")
-    public RestResponse delAppDiscuss(Integer appId, Integer discussId) {
+    public RestResponse delAppDiscuss(String checkedIds) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-            appDiscussService.deleteAppDiscuss(appId, discussId);
+            appDiscussService.deleteAppDiscuss(checkedIds);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

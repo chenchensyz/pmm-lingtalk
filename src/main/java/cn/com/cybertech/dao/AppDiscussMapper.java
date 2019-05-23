@@ -20,11 +20,15 @@ public interface AppDiscussMapper extends BaseDao<AppDiscuss> {
 
     List<AppDiscuss> getAppDiscussList(List<Integer> discussIds);
 
-    int  deleteDiscussByCreatorId(String creatorId);
+    //根据创建者批量删除讨论组
+    int deleteDiscussInCreatorIds(List<String> creatorId);
 
     //获取app下所有讨论组id
     int getAppDiscussIdsByAppId(Integer appId);
 
     //删除app下所有讨论组
     int deleteAppDiscussIdsByAppId(Integer appId);
+
+    //批量修改为已删除
+    int updateAppDiscussDisabled(List<Integer> discussIds);
 }

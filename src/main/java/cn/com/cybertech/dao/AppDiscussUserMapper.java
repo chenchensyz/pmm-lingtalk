@@ -18,7 +18,7 @@ public interface AppDiscussUserMapper extends BaseDao<AppDiscussUser> {
 
     int deleteAppDiscussUser(@Param("discussId") Integer discussId, @Param("userId") String userId);
 
-    int deleteUserByDiscussId(Integer discussId);
+    int deleteUserInDiscussIds(List<Integer> discussIds);
 
-    int deleteUserByUserId(String userId);
+    int deleteDiscussUserInUserIds(List<String> userIds);
 }
