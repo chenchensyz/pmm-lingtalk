@@ -60,7 +60,7 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
             List<WebPermission> children = new ArrayList<>();
             for (WebPermission menu : menus) {
                 if (permission.getId() != null && permission.getId() == menu.getParentId()) {
-//                    menu.setParentName(permission.getName());
+                    menu.setParentName(permission.getName());
                     menu.setLevel(permission.getLevel() + 1);
                     if (!exists(children, menu)) {
                         children.add(menu);
@@ -87,8 +87,9 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
 
     //根据角色查询拥有的权限
     @Override
-    public List<Integer> getPermsByRoleId(Integer roleId) {
-        return webPermissionMapper.getPermsByRoleId(roleId);
+    public List<WebPermission> getPermsByRoleId(Integer roleId) {
+        List<WebPermission> perms = webPermissionMapper.getPermsByRoleId(roleId);
+        return perms;
     }
 
     @Override

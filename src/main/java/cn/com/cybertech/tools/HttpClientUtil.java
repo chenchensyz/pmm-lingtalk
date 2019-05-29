@@ -29,7 +29,6 @@ public class HttpClientUtil {
 
     public static Map<String, Object> httpRequest(String requestUrl, String method, String contentType, String outputStr) {
         LOGGER.info("进入连接:{}", requestUrl);
-        boolean flag = true;
         Map<String, Object> map = Maps.newHashMap();
         String result = null;
         HttpURLConnection conn = null;
@@ -60,27 +59,24 @@ public class HttpClientUtil {
                 // 注意编码格式
                 outputStream.write(outputStr.getBytes("UTF-8"));
             }
-            int available;
-            int i = 0;
-            do {
-                inputStream = conn.getInputStream(); // 从输入流读取返回内容
-                available = inputStream.available();
-                i++;
-            } while (available <= 0 && i < 3);
-            LOGGER.info("读取返回值 available:{}", available);
-            if (available > 0) {
+            int responseCode = conn.getResponseCode();
+            if (CodeUtil.HTTP_OK == responseCode) {
+                inputStream = conn.getInputStream();
                 inputStreamReader = new InputStreamReader(inputStream, "utf-8");
                 bufferedReader = new BufferedReader(inputStreamReader);
-                String str = null;
+                String str;
                 StringBuffer buffer = new StringBuffer();
                 while ((str = bufferedReader.readLine()) != null) {
                     buffer.append(str);
                 }
-                LOGGER.info("buffer:{}", buffer.toString() == null ? "读取为null" : "读取到返回值");
                 result = buffer.toString();
+                LOGGER.info("请求成功:{}", result);
+            } else {
+                map.put("error", responseCode + ":" + conn.getResponseMessage());
+                LOGGER.error("响应异常code:{}, requestUrl:{} ,msg:{}", responseCode, requestUrl, conn.getResponseMessage());
             }
+            map.put("code", responseCode);
         } catch (Exception e) {
-            flag = false;
             LOGGER.error("请求异常:{}", e.getMessage());
             map.put("error", e.getMessage());
         } finally {
@@ -105,7 +101,6 @@ public class HttpClientUtil {
                 e.printStackTrace();
             }
         }
-        map.put("flag", flag);
         map.put("result", result);
         return map;
     }

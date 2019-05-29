@@ -19,9 +19,13 @@ public class CodeUtil {
     public static final String CONTEXT_FORM_DATA = "application/form_data";
     public static final String CONTEXT_JSON = "application/json";
 
+    public static final int HTTP_OK = 200;
     public static final String METHOD_POST = "POST";
     public static final String METHOD_GET = "GET";
     public static final String METHOD_DELETE = "DELETE";
+
+    public static final String USER_TYPE_SYS = "sys";
+    public static final String USER_TYPE_WEB = "web";
 
     public static final int REDIS_DBINDEX = 2;    //token报存在redis第二个库
     public static final String REDIS_PREFIX = "session:";    //token保存在redis第二个库
@@ -47,7 +51,6 @@ public class CodeUtil {
     //im用户
     public static final String DEFAULT_ROLE_ID = "RID_PRIVILEGE";
     public static final int PMUSER_STATE_ACTIVATED  = 1;
-
 
     //http
     public static final String REQUEST_MAXTIME = "request_maxtime";

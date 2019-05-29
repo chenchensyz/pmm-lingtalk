@@ -21,9 +21,9 @@ public class WebCompanyController {
     @Autowired
     private WebCompanyService webCompanyService;
 
-    @RequestMapping(value = "/list/{phone}", method = RequestMethod.GET)
-    public RestResponse getCompanyList(@PathVariable("phone") String phone) {
-        List<WebCompany> companyInfos = webCompanyService.selectWebCompanyByPhone(phone);
+    @RequestMapping(value = "/list/{userName}", method = RequestMethod.GET)
+    public RestResponse getCompanyList(@PathVariable("userName") String userName) {
+        List<WebCompany> companyInfos = webCompanyService.getWebCompanyByUserName(userName);
         return RestResponse.success().setData(companyInfos);
     }
 

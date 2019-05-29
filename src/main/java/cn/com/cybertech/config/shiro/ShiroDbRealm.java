@@ -56,7 +56,7 @@ public class ShiroDbRealm extends AuthorizingRealm {
         if (user.getState() == 0) {
             throw new DisabledAccountException();
         }
-        String valiedToken = EncryptUtils.MD5Encode(param[1] + user.getPhone() + user.getCompanyId());
+        String valiedToken = EncryptUtils.MD5Encode(param[1] + user.getUserName() + user.getCompanyId());
         return new SimpleAuthenticationInfo(valiedToken, user.getPassword(), getName());
     }
 

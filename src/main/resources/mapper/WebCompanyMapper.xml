@@ -6,12 +6,13 @@
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_email" jdbcType="VARCHAR" property="companyEmail" />
     <result column="introduction" jdbcType="VARCHAR" property="introduction" />
+    <result column="owner" property="owner" />
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, company_name, company_email, introduction, state, create_time, update_time
+    id, company_name, company_email, introduction, owner, state, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -36,6 +37,7 @@
       <if test="introduction != null">
         introduction,
       </if>
+        owner,
         state,
         create_time
     </trim>
@@ -49,7 +51,7 @@
       <if test="introduction != null">
         #{introduction,jdbcType=VARCHAR},
       </if>
-      1,SYSDATE()
+      #{owner},1,SYSDATE()
     </trim>
   </insert>
 
@@ -104,8 +106,8 @@
     <include refid="sql_where" />
   </select>
 
-  <select id="selectWebCompanyByPhone" parameterType="string" resultMap="BaseResultMap">
+  <select id="getWebCompanyByUserName" parameterType="string" resultMap="BaseResultMap">
     SELECT * FROM sdk_web_company WHERE
-	id IN ( SELECT company_id FROM sdk_web_user WHERE phone = #{phone} )
+	id IN ( SELECT company_id FROM sdk_web_user WHERE user_name = #{userName} )
   </select>
 </mapper>

@@ -10,7 +10,7 @@ public interface WebPermissionMapper extends BaseDao<WebPermission> {
 
     List<WebPermission> getPermByUserId(@Param("userId") Integer userId, @Param("types") List<Integer> types);
 
-    List<Integer> getPermsByRoleId(Integer roleId);
+    List<WebPermission> getPermsByRoleId(Integer roleId);
 
     int insertWebPermission(WebPermission webPermission);
 

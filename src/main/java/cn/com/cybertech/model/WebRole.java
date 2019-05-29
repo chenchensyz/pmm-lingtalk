@@ -11,6 +11,8 @@ public class WebRole extends BaseEntity {
 
     private String roleName;
 
+    private String roleType;
+
     private String introduction;
 
     private List<Integer> permissions;
@@ -53,5 +55,13 @@ public class WebRole extends BaseEntity {
 
     public void setPermissions(List<Integer> permissions) {
         this.permissions = permissions;
+    }
+
+    public String getRoleType() {
+        return roleType;
+    }
+
+    public void setRoleType(String roleType) {
+        this.roleType = roleType;
     }
 }

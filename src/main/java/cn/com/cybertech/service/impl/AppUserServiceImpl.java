@@ -66,6 +66,9 @@ public class AppUserServiceImpl implements AppUserService {
     @Override
     @Transactional
     public void deleteAppUsers(String checkedIds) {
+        if (StringUtils.isBlank(checkedIds.trim())) {
+            throw new ValueRuntimeException(MessageCode.BASE_PARAMS_ERR_VALIDE);
+        }
         List<String> userIds = Arrays.asList(checkedIds.split(","));
         appDiscussUserMapper.deleteDiscussUserInUserIds(userIds);   //从讨论组中删除
         appDiscussMapper.deleteDiscussInCreatorIds(userIds); //删除用户创建的讨论组

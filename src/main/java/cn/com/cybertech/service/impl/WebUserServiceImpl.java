@@ -49,18 +49,18 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     public WebUser getWebUserByPhone(String phone, Integer companyId) {
-        return webUserMapper.getWebUserByPhone(phone, companyId);
+        return webUserMapper.getWebUserByUserName(phone, companyId);
     }
 
     @Override
     public Map<String, Object> login(WebUser webUser, String platform) {
-        WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), webUser.getCompanyId());
+        WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), webUser.getCompanyId());
         Map<String, Object> resultMap = Maps.newHashMap();
         if (user == null) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT); //用户不存在
         }
 
-        String newPwd = EncryptUtils.MD5Encode(webUser.getPhone() + webUser.getPassword() + "*!!");
+        String newPwd = EncryptUtils.MD5Encode(webUser.getUserName() + webUser.getPassword() + "*!!");
         if (!newPwd.equals(user.getPassword())) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_PASSWORD); //用户不存在
         }
@@ -69,17 +69,18 @@ public class WebUserServiceImpl implements WebUserService {
             throw new ValueRuntimeException(MessageCode.USERINFO_DISABLE); //用户已被禁用
         }
         //生成token
-        String token = EncryptUtils.MD5Encode(platform + webUser.getPhone() + webUser.getCompanyId());
-        LOGGER.info(token);
+        String token = EncryptUtils.MD5Encode(platform + webUser.getUserName() + webUser.getCompanyId());
 
         Jedis jedis = jedisPool.getResource();
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {
             Map<String, String> map = Maps.newHashMap();
             map.put("userId", user.getId() + "");
-            map.put("phone", user.getPhone());
+            map.put("phone", user.getUserName());
             map.put("nickName", user.getNickName());
             map.put("companyId", user.getCompanyId() + "");
+            map.put("roleId", user.getRoleId() + "");
+            map.put("source", CodeUtil.USER_TYPE_WEB);
             map.put("timestamp", System.currentTimeMillis() + "");
             jedis.hmset(CodeUtil.REDIS_PREFIX + token, map);
 
@@ -104,12 +105,12 @@ public class WebUserServiceImpl implements WebUserService {
         webCompany.setCompanyName(companyName);
         webCompany.setIntroduction(introduction);
         int count1 = webCompanyMapper.insertSelective(webCompany);
-        WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), null);
+        WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), null);
         String newPwd;
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {
             newPwd = user.getPassword();
         } else {
-            newPwd = EncryptUtils.MD5Encode(webUser.getPhone() + webUser.getPassword() + "*!!");
+            newPwd = EncryptUtils.MD5Encode(webUser.getUserName() + webUser.getPassword() + "*!!");
         }
         webUser.setPassword(newPwd);
         webUser.setCompanyId(webCompany.getId());
@@ -127,11 +128,11 @@ public class WebUserServiceImpl implements WebUserService {
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         webUser.setCompanyId(localUser.getCompanyId());
         if (webUser.getId() == null) {  //新增
-            if (StringUtils.isBlank(webUser.getPhone()) || StringUtils.isBlank(webUser.getPassword())) {
+            if (StringUtils.isBlank(webUser.getUserName()) || StringUtils.isBlank(webUser.getPassword())) {
                 throw new ValueRuntimeException(MessageCode.USERINFO_PARAM_NULL);
             }
-            WebUser user = webUserMapper.getWebUserByPhone(webUser.getPhone(), null);
-            String newPwd = EncryptUtils.MD5Encode(webUser.getPhone() + webUser.getPassword() + "*!!");
+            WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), null);
+            String newPwd = EncryptUtils.MD5Encode(webUser.getUserName() + webUser.getPassword() + "*!!");
             if (user != null) {
                 if (user.getCompanyId() == webUser.getCompanyId()) {
                     throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
@@ -142,6 +143,9 @@ public class WebUserServiceImpl implements WebUserService {
             }
             webUser.setPassword(newPwd);
             count = webUserMapper.insertWebUser(webUser);
+            if (webUser.getRoleId() == CodeUtil.ROLE_COMPANY_DEVELOPER) {
+                webUser.getAppCheckedList().add(0); //为开发者绑定为0的应用
+            }
         } else {  //编辑
             List<Integer> userApp = webUserMapper.getUserApp(webUser.getId(), webUser.getCompanyId());
             if (userApp != null && userApp.size() > 0) {
@@ -175,7 +179,7 @@ public class WebUserServiceImpl implements WebUserService {
         Jedis jedis = jedisPool.getResource();
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {
-            String token = EncryptUtils.MD5Encode(platform + user.getPhone() + user.getCompanyId());
+            String token = EncryptUtils.MD5Encode(platform + user.getUserName() + user.getCompanyId());
             jedis.del(CodeUtil.REDIS_PREFIX + token); //清除用户session，重新登陆
         } catch (Exception e) {
             e.printStackTrace();
@@ -196,14 +200,14 @@ public class WebUserServiceImpl implements WebUserService {
     public void resetPassword(String token, String oldPassword, String newPassword) {
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         WebUser user = webUserMapper.getWebUserById(localUser.getId());
-        String localoldPwd = EncryptUtils.MD5Encode(user.getPhone() + oldPassword + "*!!");
+        String localoldPwd = EncryptUtils.MD5Encode(user.getUserName() + oldPassword + "*!!");
         if (!localoldPwd.equals(user.getPassword())) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_OLDPASS); //原密码错误
         }
 
-        String newPwd = EncryptUtils.MD5Encode(user.getPhone() + newPassword + "*!!");
+        String newPwd = EncryptUtils.MD5Encode(user.getUserName() + newPassword + "*!!");
         user.setPassword(newPwd);
-        int count = webUserMapper.updateUserPassByPhone(newPwd, user.getPhone());
+        int count = webUserMapper.updateUserPassByUserName(newPwd, user.getUserName());
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_RESETPASS); //修改密码失败
         }

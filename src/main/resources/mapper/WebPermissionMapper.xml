@@ -174,8 +174,11 @@
      </if>
   </select>
 
-  <select id="getPermsByRoleId" parameterType="int" resultType="int">
-     SELECT perimission_id FROM sdk_web_role_perm WHERE role_id = #{roleId}  order by perimission_id
+  <select id="getPermsByRoleId" parameterType="int" resultMap="BaseResultMap">
+     SELECT swp.* FROM sdk_web_permission swp
+     LEFT JOIN sdk_web_role_perm swrp  on swp.id=swrp.perimission_id
+     WHERE swrp.role_id = #{roleId}
+     ORDER BY swrp.perimission_id
   </select>
 
   <!--获取最大的order_num-->

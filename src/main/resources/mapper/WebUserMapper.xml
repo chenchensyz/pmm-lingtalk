@@ -3,7 +3,7 @@
 <mapper namespace="cn.com.cybertech.dao.WebUserMapper">
     <resultMap id="BaseResultMap" type="cn.com.cybertech.model.WebUser">
         <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="phone" jdbcType="VARCHAR" property="phone"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
         <result column="password" jdbcType="VARCHAR" property="password"/>
         <result column="nick_name" jdbcType="VARCHAR" property="nickName"/>
         <result column="email" jdbcType="VARCHAR" property="email"/>
@@ -15,7 +15,7 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, phone, password, nick_name, email, company_id, role_id, state, remark, create_time,
+    id, user_name, password, nick_name, email, company_id, role_id, state, remark, create_time,
     update_time
   </sql>
     <select id="getWebUserById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -26,9 +26,8 @@
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sdk_web_user
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
+    delete from sdk_web_user where id = #{id,jdbcType=BIGINT}
+    </delete>
 
     <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser" useGeneratedKeys="true" keyProperty="id">
         insert into sdk_web_user
@@ -36,8 +35,8 @@
             <if test="id != null">
                 id,
             </if>
-            <if test="phone != null">
-                phone,
+            <if test="userName != null">
+                user_name,
             </if>
             <if test="nickName != null">
                 nick_name,
@@ -63,8 +62,8 @@
             <if test="id != null">
                 #{id,jdbcType=BIGINT},
             </if>
-            <if test="phone != null">
-                #{phone,jdbcType=VARCHAR},
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
             </if>
             <if test="nickName != null">
                 #{nickName,jdbcType=VARCHAR},
@@ -117,8 +116,8 @@
             <if test="id != null">
                 and id = #{id,jdbcType=BIGINT}
             </if>
-            <if test="phone != null and phone !=''">
-                and phone = #{phone,jdbcType=VARCHAR}
+            <if test="userName != null and userName !=''">
+                and user_name = #{userName,jdbcType=VARCHAR}
             </if>
             <if test="nickName != null and nickName !=''">
                 <bind name="nickNameSec" value="'%' + nickName + '%'" />
@@ -146,15 +145,15 @@
         <include refid="sql_where"/>
     </select>
 
-    <select id="getWebUserByPhone" parameterType="map" resultMap="BaseResultMap">
-        SELECT swu.id, swu.phone, swu.password, swu.nick_name, swu.company_id, swu.role_id, swu.state
-        FROM sdk_web_user swu WHERE swu.phone = #{phone}
+    <select id="getWebUserByUserName" parameterType="map" resultMap="BaseResultMap">
+        SELECT swu.id, swu.user_name, swu.password, swu.nick_name, swu.company_id, swu.role_id, swu.state
+        FROM sdk_web_user swu WHERE swu.user_name = #{userName}
         <choose>
             <when test="companyId != null">
                 AND swu.company_id= #{companyId}
             </when>
             <otherwise>
-                group by swu.phone
+                group by swu.user_name
             </otherwise>
         </choose>
     </select>
@@ -162,7 +161,9 @@
 
     <!--查询：用户绑定应用-->
     <select id="getUserApp" parameterType="map" resultType="int">
-        SELECT app_id FROM sdk_web_user_app WHERE user_id = #{userId} and company_id=#{companyId}
+        SELECT swua.app_id FROM app_app aa LEFT JOIN sdk_web_user_app swua ON aa.id = swua.app_id
+        WHERE swua.user_id = #{userId}  AND swua.company_id = #{companyId}  AND aa.state =2
+        and swua.app_id  &gt; 0
     </select>
 
     <!--新增：用户绑定应用-->
@@ -177,6 +178,7 @@
     <!--删除：用户绑定应用-->
     <delete id="deleteUserApp" parameterType="map">
         delete  FROM sdk_web_user_app WHERE user_id = #{userId} and company_id=#{companyId}
+        and app_id  &gt; 0
     </delete>
 
     <!--根据角色查询用户-->
@@ -184,9 +186,9 @@
         SELECT count(id) FROM sdk_web_user WHERE role_id = #{roleId}
     </select>
 
-    <update id="updateUserPassByPhone" parameterType="map">
+    <update id="updateUserPassByUserName" parameterType="map">
         update sdk_web_user set  password = #{password} , update_time = sysdate()
-        where  phone = #{phone}
+        where  user_name = #{userName}
     </update>
 
 </mapper>

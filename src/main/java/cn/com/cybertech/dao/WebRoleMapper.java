@@ -2,6 +2,7 @@ package cn.com.cybertech.dao;
 
 import cn.com.cybertech.dao.common.BaseDao;
 import cn.com.cybertech.model.WebRole;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface WebRoleMapper{
 
     List<WebRole> getRoleList(WebRole webRole);
 
-    List<WebRole> getCompanyRoleList();
+    List<WebRole> getCompanyRoleList(String roleType);
 
     int deleteRolePerm(Integer roleId);
 

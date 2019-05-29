@@ -1,9 +1,12 @@
 package cn.com.cybertech.service.impl;
 
+import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.dao.WebRoleMapper;
 import cn.com.cybertech.dao.WebUserMapper;
 import cn.com.cybertech.model.WebRole;
+import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.WebRoleService;
+import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +24,18 @@ public class WebRoleServiceImpl implements WebRoleService {
     @Autowired
     private WebUserMapper webUserMapper;
 
+    @Autowired
+    private RedisTool redisTool;
+
     @Override
     public List<WebRole> getRoleList(WebRole webRole) {
         return webRoleMapper.getRoleList(webRole);
     }
 
     @Override
-    public List<WebRole> getCompanyRoleList() {
-        return webRoleMapper.getCompanyRoleList();
+    public List<WebRole> getCompanyRoleList(String token) {
+        WebUser webUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        return webRoleMapper.getCompanyRoleList(webUser.getSource());
     }
 
     @Override

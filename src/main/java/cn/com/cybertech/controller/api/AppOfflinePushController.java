@@ -4,6 +4,7 @@ package cn.com.cybertech.controller.api;
  */
 
 import cn.com.cybertech.tools.*;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,11 +41,11 @@ public class AppOfflinePushController {
         jsonArray.add(jsonObject);
         Map<String, Object> map = HttpClientUtil.httpRequest(upload_url + push_status_url, CodeUtil.METHOD_POST,
                 CodeUtil.CONTEXT_JSON, jsonArray.toString());
-        if (map.get("flag") != null && (boolean) map.get("flag")) {
+        if (map.get("code") != null && CodeUtil.HTTP_OK == (Integer) map.get("code")) {
             msgCode = MessageCode.BASE_SUCC_CODE;
             msg = messageCodeUtil.getMessage(msgCode);
         } else {
-            msg = map.get("error").toString();
+            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + map.get("error")));
         }
         RestResponse response = new RestResponse();
         response.retMsg(response, msgCode, msg);
@@ -61,11 +62,11 @@ public class AppOfflinePushController {
         String requestUrl = upload_url + push_status_url + "/" + userId + "@" + appId;
         Map<String, Object> map =
                 HttpClientUtil.httpRequest(requestUrl, CodeUtil.METHOD_DELETE, null, null);
-        if (map.get("flag") != null && (boolean) map.get("flag")) {
+        if (map.get("code") != null && CodeUtil.HTTP_OK == (Integer) map.get("code")) {
             msgCode = MessageCode.BASE_SUCC_CODE;
             msg = messageCodeUtil.getMessage(msgCode);
         } else {
-            msg = map.get("error").toString();
+            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + map.get("error")));
         }
         RestResponse response = new RestResponse();
         response.retMsg(response, msgCode, msg);

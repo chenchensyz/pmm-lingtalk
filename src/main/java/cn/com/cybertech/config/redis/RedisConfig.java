@@ -14,7 +14,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * 类名：RedisConfig
  */
 @Configuration
-@PropertySource(value = {"classpath:/resources/config/redis.properties"}, encoding = "utf-8", ignoreResourceNotFound = true)
+//@PropertySource(value = {"classpath:/resources/config/redis.properties"}, encoding = "utf-8", ignoreResourceNotFound = true)
 public class RedisConfig {
     Logger logger = LoggerFactory.getLogger(RedisConfig.class);
 
@@ -23,15 +23,14 @@ public class RedisConfig {
 
     @Bean
     public JedisPool redisPoolFactory() {
-        logger.info("JedisPool注入成功！！");
-        String host = env.getProperty("host");
-        int port = Integer.valueOf(env.getProperty("port"));
-        int timeout = Integer.valueOf(env.getProperty("timeout"));
+        String host = env.getProperty("spring.redis.host");
+        int port = Integer.valueOf(env.getProperty("spring.redis.port"));
+        int timeout = Integer.valueOf(env.getProperty("spring.redis.timeout"));
         logger.info("redis地址：{}:{}", host, port);
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxIdle(Integer.valueOf(env.getProperty("pool.maxIdle")));
-        jedisPoolConfig.setMaxWaitMillis(Integer.valueOf(env.getProperty("pool.maxWait")));
-        jedisPoolConfig.setMaxTotal(Integer.valueOf(env.getProperty("pool.maxActive")));
+        jedisPoolConfig.setMaxIdle(Integer.valueOf(env.getProperty("spring.redis.jedis.pool.max-idle")));
+        jedisPoolConfig.setMaxWaitMillis(Integer.valueOf(env.getProperty("spring.redis.jedis.pool.max-wait")));
+        jedisPoolConfig.setMaxTotal(Integer.valueOf(env.getProperty("spring.redis.jedis.pool.max-active")));
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
         return jedisPool;
     }

@@ -41,9 +41,10 @@ public class WebRoleController {
     private WebPerimissionService webPerimissionService;
 
     @RequestMapping("/list")
-    public RestResponse queryWebUserList(WebRole webRole) {
+    public RestResponse queryWebUserList(HttpServletRequest request,WebRole webRole) {
+        String token = request.getHeader("token");
         if (webRole.getPageSize() == 0) {
-            List<WebRole> companyRoleList = webRoleService.getCompanyRoleList();
+            List<WebRole> companyRoleList = webRoleService.getCompanyRoleList(token);
             return RestResponse.success().setData(companyRoleList);
         } else {
             PageHelper.startPage(webRole.getPageNum(), webRole.getPageSize());
@@ -68,8 +69,9 @@ public class WebRoleController {
     //根据角色查询拥有的权限
     @RequestMapping(value = "/rolePerms", method = RequestMethod.GET)
     public RestResponse getRolePerms(Integer roleId) {
-        List<Integer> permissions = webPerimissionService.getPermsByRoleId(roleId);
-        return RestResponse.success().setData(permissions);
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        List<WebPermission> permissions = webPerimissionService.getPermsByRoleId(roleId);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(permissions);
     }
 
     //删除角色

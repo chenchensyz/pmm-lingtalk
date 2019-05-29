@@ -30,7 +30,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-    <insert id="insertAppInfo" parameterType="cn.com.cybertech.model.AppInfo">
+    <insert id="insertAppInfo" parameterType="cn.com.cybertech.model.AppInfo"  useGeneratedKeys="true" keyProperty="id">
         insert into app_app
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

@@ -2,6 +2,7 @@ package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
 import cn.com.cybertech.tools.DateUtil;
+import com.google.common.collect.Lists;
 
 import java.util.Date;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
 public class WebUser extends BaseEntity {
     private Long id;
 
-    private String phone;
+    private String userName;
 
     private String password;
 
@@ -34,7 +35,9 @@ public class WebUser extends BaseEntity {
     private String updateTimeStr;
 
     //绑定的应用
-    private List<Integer> appCheckedList;
+    private List<Integer> appCheckedList = Lists.newArrayList();
+
+    private String source;   //用户来源  sys后台用户，web公司用户
 
     public Long getId() {
         return id;
@@ -44,12 +47,12 @@ public class WebUser extends BaseEntity {
         this.id = id;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {
@@ -146,5 +149,13 @@ public class WebUser extends BaseEntity {
 
     public void setAppCheckedList(List<Integer> appCheckedList) {
         this.appCheckedList = appCheckedList;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

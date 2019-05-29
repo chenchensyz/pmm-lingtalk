@@ -106,47 +106,20 @@
     </set>
     where DISCUSS_ID = #{discussId,jdbcType=INTEGER}
   </update>
+
   <sql id="sql_where">
-    <where>
       <if test="discussId != null">
-         and DISCUSS_ID = #{discussId,jdbcType=INTEGER}
+         and DISCUSS_ID = #{discussId}
       </if>
       <if test="discussName != null and discussName !=''">
-         and DISCUSS_NAME = #{discussName,jdbcType=VARCHAR}
+        <bind name="discussNameSec" value="'%' + discussName + '%'" />
+        and DISCUSS_NAME  LIKE #{discussNameSec}
       </if>
-      <if test="creatorId != null and creatorId !=''">
-         and CREATOR_ID = #{creatorId,jdbcType=VARCHAR}
-      </if>
-      <if test="appId != null">
-         and APP_ID = #{appId,jdbcType=INTEGER}
-      </if>
-      <if test="discussVersion != null">
-         and DISCUSS_VERSION = #{discussVersion,jdbcType=INTEGER}
-      </if>
-      <if test="disabled != null">
-         and DISABLED = #{disabled,jdbcType=INTEGER}
-      </if>
-      <if test="companyId != null">
-         and COMPANY_ID = #{companyId,jdbcType=INTEGER}
-      </if>
-      <if test="createTime != null">
-         and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="updateTime != null">
-         and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
-      </if>
-    </where>
   </sql>
-  <!--<select id="getAppDiscussList" parameterType="cn.com.cybertech.model.AppDiscuss" resultMap="BaseResultMap">-->
-     <!--select * from pm_tp_discuss-->
-    <!--<include refid="sql_where" />-->
-  <!--</select>-->
 
   <select id="getAppDiscussCount" parameterType="cn.com.cybertech.model.AppDiscuss" resultType="int">
     SELECT count(DISCUSS_ID)  FROM pm_tp_discuss  WHERE DISABLED = 0 AND APP_ID = #{appId}
-    <if test="discussId != null">
-      and DISCUSS_ID = #{discussId}
-    </if>
+    <include refid="sql_where" />
   </select>
 
   <select id="getAppDiscussList" parameterType="list" resultMap="DiscussMap">
@@ -165,9 +138,7 @@
 
   <select id="getAppDiscussIdList" parameterType="cn.com.cybertech.model.AppDiscuss" resultType="int">
     SELECT DISCUSS_ID FROM pm_tp_discuss WHERE DISABLED = 0 AND APP_ID = #{appId}
-    <if test="discussId != null">
-      and DISCUSS_ID = #{discussId}
-    </if>
+    <include refid="sql_where" />
      limit #{pageNum},#{pageSize}
   </select>
 

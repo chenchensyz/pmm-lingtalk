@@ -1,6 +1,7 @@
 package cn.com.cybertech.model;
 
 import cn.com.cybertech.model.common.BaseEntity;
+
 import java.util.Date;
 
 public class WebCompany extends BaseEntity {
@@ -12,7 +13,7 @@ public class WebCompany extends BaseEntity {
 
     private String introduction;
 
-    private Integer managerId;
+    private Long owner;
 
     private Integer state;
 
@@ -52,12 +53,12 @@ public class WebCompany extends BaseEntity {
         this.introduction = introduction == null ? null : introduction.trim();
     }
 
-    public Integer getManagerId() {
-        return managerId;
+    public Long getOwner() {
+        return owner;
     }
 
-    public void setManagerId(Integer managerId) {
-        this.managerId = managerId;
+    public void setOwner(Long owner) {
+        this.owner = owner;
     }
 
     public Integer getState() {

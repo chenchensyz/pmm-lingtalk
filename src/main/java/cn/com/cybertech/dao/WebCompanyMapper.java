@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface WebCompanyMapper extends BaseDao<WebCompany> {
 
-    List<WebCompany> selectWebCompanyByPhone(String phone);
+    List<WebCompany> getWebCompanyByUserName(String userName);
 }

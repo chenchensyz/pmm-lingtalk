@@ -21,7 +21,7 @@ public class WebCompanyServiceImpl implements WebCompanyService {
     }
 
     @Override
-    public List<WebCompany> selectWebCompanyByPhone(String phone) {
-        return webCompanyMapper.selectWebCompanyByPhone(phone);
+    public List<WebCompany> getWebCompanyByUserName(String userName) {
+        return webCompanyMapper.getWebCompanyByUserName(userName);
     }
 }

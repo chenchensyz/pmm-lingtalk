@@ -39,9 +39,11 @@ public class RedisTool {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
         }
         webUser.setId(Long.valueOf(map.get("userId")));
-        webUser.setPhone(map.get("phone"));
+        webUser.setUserName(map.get("userName"));
         webUser.setNickName(map.get("nickName"));
         webUser.setCompanyId(Integer.valueOf(map.get("companyId")));
+        webUser.setRoleId(Integer.valueOf(map.get("roleId")));
+        webUser.setSource(map.get("source"));
         return webUser;
     }
 }

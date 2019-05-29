@@ -9,7 +9,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,11 +27,16 @@ import java.util.Map;
 @Service("appCertService")
 public class AppCertServicempl implements AppCertService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppCertServicempl.class);
+
     @Autowired
     private AppCertMapper appCertMapper;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
+
+    @Autowired
+    private Environment env;
 
     private String fileSuffix;
 
@@ -90,11 +98,11 @@ public class AppCertServicempl implements AppCertService {
         List<MultipartFile> keys = ((MultipartHttpServletRequest) request).getFiles("key");
         if (files != null && files.size() > 0) { //保存ios证书密钥文件
             MultipartFile file = files.get(0);
-            appCert.setKeyFile(getBytes(appCert, file, CodeUtil.CERT_TYPE_FILE));
+            appCert.setCertFile(getBytes(appCert, file, CodeUtil.CERT_TYPE_FILE));
         }
         if (keys != null && keys.size() > 0) { //保存key密钥文件
             MultipartFile key = keys.get(0);
-            appCert.setCertFile(getBytes(appCert, key, CodeUtil.CERT_TYPE_KEY));
+            appCert.setKeyFile(getBytes(appCert, key, CodeUtil.CERT_TYPE_KEY));
         }
         appCert.setCertSuffix(fileSuffix);
         int count;
@@ -116,14 +124,15 @@ public class AppCertServicempl implements AppCertService {
             jsonObject.put("cert", cert);
             jsonObject.put("key", key);
             jsonObject.put("pass", Base64.encodeBase64String(appCert.getCertSecret().getBytes(CodeUtil.cs)));
-            jsonObject.put("production", true);
+            jsonObject.put("production", appCert.getCertEnviron() == 0 ? false : true);
         } else {  //Android证书
             jsonObject.put("appid", appCert.getCertId());
             jsonObject.put("secret", appCert.getCertSecret());
             jsonObject.put("apkname", appCert.getApkName());
         }
-        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
-        String cert_change_url = messageCodeUtil.getMessage(CodeUtil.CERT_CHANGE_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String cert_change_url = env.getProperty(CodeUtil.CERT_CHANGE_URL);
+        LOGGER.info("发送证书：{}", jsonObject);
         HttpClientUtil.httpRequest(upload_url + cert_change_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
     }
 
@@ -131,7 +140,7 @@ public class AppCertServicempl implements AppCertService {
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
         String fileName = getNewFileName(appCert, fileKey, suffix);
         fileSuffix = suffix;
-        String filePath = messageCodeUtil.getMessage(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
+        String filePath = env.getProperty(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
         File dest = new File(filePath);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             dest.getParentFile().mkdir();
@@ -147,7 +156,7 @@ public class AppCertServicempl implements AppCertService {
 
     public void deleteFile(AppCert appCert, String fileKey) {
         String fileName = getNewFileName(appCert, fileKey, appCert.getCertSuffix());
-        String filePath = messageCodeUtil.getMessage(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
+        String filePath = env.getProperty(CodeUtil.CERT_SAVE_PATH) + File.separator + fileName;
         File file = new File(filePath);
         // 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
         if (file.exists() && file.isFile()) {
@@ -189,8 +198,8 @@ public class AppCertServicempl implements AppCertService {
         } else {  //Android证书
             jsonObject.put("apkname", appCert.getApkName());
         }
-        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
-        String cert_delete_url = messageCodeUtil.getMessage(CodeUtil.CERT_DELETE_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String cert_delete_url = env.getProperty(CodeUtil.CERT_DELETE_URL);
         HttpClientUtil.httpRequest(upload_url + cert_delete_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
     }
 }

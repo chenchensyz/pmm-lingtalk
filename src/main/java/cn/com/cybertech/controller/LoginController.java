@@ -41,7 +41,7 @@ public class LoginController {
     @RequestMapping(method = RequestMethod.POST)
     public RestResponse login(WebUser webUser, HttpServletRequest request) {
         LOGGER.debug("登录:{}");
-        if (StringUtils.isBlank(webUser.getPhone()) || StringUtils.isBlank(webUser.getPassword())
+        if (StringUtils.isBlank(webUser.getUserName()) || StringUtils.isBlank(webUser.getPassword())
                 || webUser.getCompanyId() == null) {
             return RestResponse.failure("请填写完整登录信息");
         }
@@ -57,9 +57,9 @@ public class LoginController {
     }
 
     //获取用户所在的公司列表
-    @RequestMapping(value = "/companys/{phone}", method = RequestMethod.GET)
-    public RestResponse getCompanyList(@PathVariable("phone") String phone) {
-        List<WebCompany> companyInfos = webCompanyService.selectWebCompanyByPhone(phone);
+    @RequestMapping(value = "/companys/{userName}", method = RequestMethod.GET)
+    public RestResponse getCompanyList(@PathVariable("userName") String userName) {
+        List<WebCompany> companyInfos = webCompanyService.getWebCompanyByUserName(userName);
         return RestResponse.success().setData(companyInfos);
     }
 

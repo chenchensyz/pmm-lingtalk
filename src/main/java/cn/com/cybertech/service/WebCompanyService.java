@@ -8,5 +8,5 @@ public interface WebCompanyService{
 
     void saveWebCompany(WebCompany webCompany);
 
-    List<WebCompany> selectWebCompanyByPhone(String phone);
+    List<WebCompany> getWebCompanyByUserName(String userName);
 }

@@ -3,7 +3,6 @@ package cn.com.cybertech.service.impl;
 import cn.com.cybertech.dao.*;
 import cn.com.cybertech.model.*;
 import cn.com.cybertech.service.AppSecurityService;
-import cn.com.cybertech.service.AppUserService;
 import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.HttpClientUtil;
 import cn.com.cybertech.tools.MessageCode;
@@ -17,7 +16,8 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 @Service("appSecurityService")
 public class AppSecurityServiceImpl implements AppSecurityService {
@@ -117,10 +117,10 @@ public class AppSecurityServiceImpl implements AppSecurityService {
             String token = HttpClientUtil.getUUID();
             String redis_key = CodeUtil.REDIS_APPLOGIN_PREFIX + user.getId();
             int expiredTime = 7 * 24 * 3600;
-            jedis.hset(redis_key, platform, token + ":" + expiredTime);
+            jedis.hset(redis_key, platform, token + ":" + System.currentTimeMillis());
 
             infos.put("expire_time", expiredTime);
-            infos.put("token", token);
+            infos.put("token", token + "@" + platform);
         } catch (Exception e) {
             throw new ValueRuntimeException(MessageCode.PLATFORM_ERR_TOKEN);
         } finally {

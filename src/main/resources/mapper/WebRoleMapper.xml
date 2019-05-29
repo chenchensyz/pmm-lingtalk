@@ -5,10 +5,11 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_type" jdbcType="VARCHAR" property="roleType"/>
         <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, role_code, role_name, introduction
+    id, role_code, role_name, role_type,  introduction
   </sql>
     <select id="getWebRoleByCode" parameterType="string" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"/> from sdk_web_role
@@ -30,6 +31,9 @@
             <if test="roleName != null">
                 role_name,
             </if>
+            <if test="roleType != null">
+                role_type,
+            </if>
             <if test="introduction != null">
                 introduction,
             </if>
@@ -44,6 +48,9 @@
             <if test="roleName != null">
                 #{roleName,jdbcType=VARCHAR},
             </if>
+            <if test="roleType != null">
+                #{roleType,jdbcType=VARCHAR},
+            </if>
             <if test="introduction != null">
                 #{introduction,jdbcType=VARCHAR},
             </if>
@@ -57,6 +64,9 @@
             </if>
             <if test="roleName != null">
                 role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleType != null">
+                role_type = #{roleType,jdbcType=VARCHAR},
             </if>
             <if test="introduction != null">
                 introduction = #{introduction,jdbcType=VARCHAR},
@@ -75,6 +85,9 @@
             <if test="roleName != null and roleName !=''">
                 and role_name = #{roleName,jdbcType=VARCHAR}
             </if>
+            <if test="roleType != null">
+                and role_type = #{roleType,jdbcType=VARCHAR},
+            </if>
             <if test="introduction != null and introduction !=''">
                 and introduction = #{introduction,jdbcType=VARCHAR}
             </if>
@@ -85,8 +98,9 @@
         <include refid="sql_where"/>
     </select>
 
-    <select id="getCompanyRoleList" resultMap="BaseResultMap">
-     select <include refid="Base_Column_List"/> from sdk_web_role where id > 1
+    <select id="getCompanyRoleList" resultMap="BaseResultMap" parameterType="map">
+     select <include refid="Base_Column_List"/> from sdk_web_role
+     where role_type = #{roleType}
   </select>
 
     <!--删除角色权限对应关系-->

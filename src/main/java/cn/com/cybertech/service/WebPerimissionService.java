@@ -11,7 +11,7 @@ public interface WebPerimissionService {
 
     Set<String> findPermissions(String userName);
 
-    List<Integer> getPermsByRoleId(Integer roleId);
+    List<WebPermission> getPermsByRoleId(Integer roleId);
 
     void addOrEditPerm(WebPermission webPermission);
 

@@ -77,6 +77,7 @@ public class AppInfoServiceImpl implements AppInfoService {
     }
 
     @Override
+    @Transactional
     public void addOrEditAppInfo(String token, AppInfo appInfo) {
         int count;
         if (appInfo.getId() == null) { //新增
@@ -95,12 +96,20 @@ public class AppInfoServiceImpl implements AppInfoService {
             appInfo.setType(1);
             appInfo.setCreateTime(new Date());
             count = appInfoMapper.insertAppInfo(appInfo);
+            if (count == 0) {
+                throw new ValueRuntimeException(MessageCode.APPINFO_ERR_OPERATION);
+            }
+            if (webUser.getRoleId() == CodeUtil.ROLE_COMPANY_DEVELOPER) { //开发者绑定自己创建的应用
+                List<Integer> appIds = Lists.newArrayList();
+                appIds.add(appInfo.getId());
+                webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), appIds);
+            }
         } else {
             appInfo.setUpdateTime(new Date());
             count = appInfoMapper.updateAppInfo(appInfo);
-        }
-        if (count == 0) {
-            throw new ValueRuntimeException(MessageCode.APPINFO_ERR_OPERATION);
+            if (count == 0) {
+                throw new ValueRuntimeException(MessageCode.APPINFO_ERR_OPERATION);
+            }
         }
     }
 
@@ -108,6 +117,7 @@ public class AppInfoServiceImpl implements AppInfoService {
     public List<AppInfo> queryCompanyAppInfoList(String token) {
         WebUser webUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         AppInfo appInfo = new AppInfo();
+        appInfo.setState(2);
         appInfo.setCompanyId(webUser.getCompanyId());
         List<AppInfo> appInfoList = appInfoMapper.getAppInfoList(appInfo);
         return appInfoList;

@@ -66,7 +66,7 @@ public class AppInfoController {
         return RestResponse.success().setData(appInfos);
     }
 
-    //获取当前公司所有应用
+    //删除应用
     @RequestMapping("/deleteAppInfo")
     public RestResponse deleteAppInfo(Integer appId) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
