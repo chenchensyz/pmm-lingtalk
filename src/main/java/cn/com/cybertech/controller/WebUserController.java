@@ -79,11 +79,11 @@ public class WebUserController {
 
     //修改用户状态
     @RequestMapping("/optionUser")
-    public RestResponse optionUser(HttpServletRequest request,Long userId, Integer state) {
+    public RestResponse optionUser(HttpServletRequest request, Long userId, Integer state) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String platform = request.getHeader("platform");
         try {
-            webUserService.optionUser(platform,userId, state);
+            webUserService.optionUser(platform, userId, state);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
@@ -101,11 +101,11 @@ public class WebUserController {
 
     //修改用户状态
     @RequestMapping("/resetPassword")
-    public RestResponse resetPassword(HttpServletRequest request,String oldPassword, String newPassword) {
+    public RestResponse resetPassword(HttpServletRequest request, String oldPassword, String newPassword) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         try {
-            webUserService.resetPassword(token,oldPassword,newPassword);
+            webUserService.resetPassword(token, oldPassword, newPassword);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

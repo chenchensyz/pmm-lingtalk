@@ -25,8 +25,8 @@
         where id = #{id}
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from sdk_web_user where id = #{id,jdbcType=BIGINT}
+    <delete id="deleteWebUserById" parameterType="java.lang.Long">
+    delete from sdk_web_user where id = #{id}
     </delete>
 
     <insert id="insertWebUser" parameterType="cn.com.cybertech.model.WebUser" useGeneratedKeys="true" keyProperty="id">
@@ -149,12 +149,17 @@
         </choose>
     </select>
 
+    <!--查询：根据appId查询是否有用户绑定-->
+    <select id="getUserAppByAppId" parameterType="int" resultType="string">
+       SELECT SELECT GROUP_CONCAT(swu.user_name)  FROM sdk_web_user swu
+       LEFT JOIN sdk_web_user_app swa on swu.id =swa.user_id
+       WHERE swa.app_id = #{appId}
+    </select>
 
     <!--查询：用户绑定应用-->
     <select id="getUserApp" parameterType="map" resultType="int">
         SELECT swua.app_id FROM app_app aa LEFT JOIN sdk_web_user_app swua ON aa.id = swua.app_id
         WHERE swua.user_id = #{userId}  AND swua.company_id = #{companyId}  AND aa.state =2
-        and swua.app_id  &gt; 0
     </select>
 
     <!--新增：用户绑定应用-->
@@ -169,7 +174,6 @@
     <!--删除：用户绑定应用-->
     <delete id="deleteUserApp" parameterType="map">
         delete  FROM sdk_web_user_app WHERE user_id = #{userId} and company_id=#{companyId}
-        and app_id  &gt; 0
     </delete>
 
     <!--根据角色查询用户-->

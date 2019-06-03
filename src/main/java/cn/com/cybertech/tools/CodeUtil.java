@@ -31,6 +31,7 @@ public class CodeUtil {
     public static final String REDIS_PREFIX = "session:";    //token保存在redis第二个库
     public static final String REDIS_APPLOGIN_PREFIX = "as:";   //IM用户登陆
 
+    public static final int ROLE_COMPANY_ADMIN = 2;   //系统 公司管理员/创建者
     public static final int ROLE_COMPANY_MANAGER = 3;   //角色 公司管理员
     public static final int ROLE_COMPANY_DEVELOPER = 4;   //角色 公司开发者
 
@@ -41,7 +42,8 @@ public class CodeUtil {
     public static final String CERT_OPPO = "oppo";
     public static final String CERT_VIVO= "vivo";
     public static final String CERT_SAVE_PATH = "cert_save_path";
-    public static final String CERT_UPLOAD_URL = "cert_upload_url";
+    public static final String CERT_UPLOAD_URL = "cert_upload_url";  //测试环境地址
+    public static final String CERT_PROD_UPLOAD_URL = "cert_prod_upload_url"; //生产环境地址
     public static final String CERT_CHANGE_URL = "change_app";
     public static final String CERT_DELETE_URL = "delete_cert";
     public static final String PUSH_STATUS_URL = "push_status";

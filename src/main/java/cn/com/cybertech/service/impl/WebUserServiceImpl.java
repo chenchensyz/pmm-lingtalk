@@ -115,11 +115,16 @@ public class WebUserServiceImpl implements WebUserService {
         }
         webUser.setPassword(newPwd);
         webUser.setCompanyId(webCompany.getId());
-        webUser.setRoleId(CodeUtil.ROLE_COMPANY_MANAGER);
+        webUser.setRoleId(CodeUtil.ROLE_COMPANY_ADMIN);
         int count2 = webUserMapper.insertWebUser(webUser);
         if (count1 + count2 < 2) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
         }
+    }
+
+    @Override
+    public String getUserAppByAppId(Integer appId) {
+        return webUserMapper.getUserAppByAppId(appId);
     }
 
     @Override
@@ -144,9 +149,6 @@ public class WebUserServiceImpl implements WebUserService {
             }
             webUser.setPassword(newPwd);
             count = webUserMapper.insertWebUser(webUser);
-            if (webUser.getRoleId() == CodeUtil.ROLE_COMPANY_DEVELOPER) {
-                webUser.getAppCheckedList().add(0); //为开发者绑定为0的应用
-            }
         } else {  //编辑
             List<Integer> userApp = webUserMapper.getUserApp(webUser.getId(), webUser.getCompanyId());
             if (userApp != null && userApp.size() > 0) {
@@ -170,13 +172,23 @@ public class WebUserServiceImpl implements WebUserService {
     }
 
     @Override
+    @Transactional
     public void optionUser(String platform, Long userId, Integer state) {
         WebUser user = webUserMapper.getWebUserById(userId);
-        user.setState(state);
-        int count = webUserMapper.updateWebUser(user);
-        if (count == 0) {
-            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
+        if (state == -1) {  //删除
+            webUserMapper.deleteUserApp(userId, user.getCompanyId());
+            int count = webUserMapper.deleteWebUserById(userId);
+            if(count==0){
+                throw new ValueRuntimeException(MessageCode.USERINFO_ERR_DEL);
+            }
+        } else {   //禁用/启用
+            user.setState(state);
+            int count = webUserMapper.updateWebUser(user);
+            if (count == 0) {
+                throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
+            }
         }
+
         Jedis jedis = jedisPool.getResource();
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {

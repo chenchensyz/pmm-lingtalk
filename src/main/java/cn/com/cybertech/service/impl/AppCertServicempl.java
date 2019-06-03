@@ -117,6 +117,7 @@ public class AppCertServicempl implements AppCertService {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("pushtype", appCert.getType());
         String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+        String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);
         if (type.equals(appCert.getType())) { //苹果证书
             jsonObject.put("bundleid", appCert.getCertId());
             String cert = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getCertFile());
@@ -124,13 +125,17 @@ public class AppCertServicempl implements AppCertService {
             jsonObject.put("cert", cert);
             jsonObject.put("key", key);
             jsonObject.put("pass", Base64.encodeBase64String(appCert.getCertSecret().getBytes(CodeUtil.cs)));
-            jsonObject.put("production", appCert.getCertEnviron() == 0 ? false : true);
+            if(appCert.getCertEnviron() == 0){
+                upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);  //测试环境
+                jsonObject.put("production", false);
+            }else {
+                jsonObject.put("production", true);
+            }
         } else {  //Android证书
             jsonObject.put("appid", appCert.getCertId());
             jsonObject.put("secret", appCert.getCertSecret());
             jsonObject.put("apkname", appCert.getApkName());
         }
-        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
         String cert_change_url = env.getProperty(CodeUtil.CERT_CHANGE_URL);
         LOGGER.info("发送证书：{}", jsonObject);
         HttpClientUtil.httpRequest(upload_url + cert_change_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
@@ -191,6 +196,7 @@ public class AppCertServicempl implements AppCertService {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("pushtype", appCert.getType());
         String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+        String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);  //地址
         if (type.equals(appCert.getType())) { //苹果证书
             jsonObject.put("bundleid", appCert.getCertId());
             deleteFile(appCert, CodeUtil.CERT_TYPE_FILE);
@@ -198,7 +204,9 @@ public class AppCertServicempl implements AppCertService {
         } else {  //Android证书
             jsonObject.put("apkname", appCert.getApkName());
         }
-        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        if(appCert.getCertEnviron() == 0){
+            upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        }
         String cert_delete_url = env.getProperty(CodeUtil.CERT_DELETE_URL);
         HttpClientUtil.httpRequest(upload_url + cert_delete_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonObject.toString());
     }

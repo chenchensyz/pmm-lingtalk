@@ -13,9 +13,14 @@ public interface WebUserMapper {
 
     int updateWebUser(WebUser webUser);
 
+    int deleteWebUserById(Long id);
+
     WebUser getWebUserById(Long id);
 
     WebUser getWebUserByUserName(@Param("userName") String userName, @Param("companyId") Integer companyId);
+
+    //查询：根据appId查询是否有用户绑定
+    String getUserAppByAppId(Integer appId);
 
     //查询：用户绑定应用
     List<Integer> getUserApp(@Param("userId") Long userId, @Param("companyId") Integer companyId);

@@ -184,17 +184,8 @@
       <if test="apkName != null and apkName !=''">
          and apk_name = #{apkName,jdbcType=VARCHAR}
       </if>
-      <if test="version != null">
-         and version = #{version,jdbcType=INTEGER}
-      </if>
       <if test="state != null">
          and state = #{state,jdbcType=INTEGER}
-      </if>
-      <if test="createTime != null">
-         and create_time = #{createTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="updateTime != null">
-         and update_time = #{updateTime,jdbcType=TIMESTAMP}
       </if>
     </where>
   </sql>
@@ -206,6 +197,13 @@
   <select id="getAppCertList" parameterType="cn.com.cybertech.model.AppCert" resultMap="BaseResultMap">
      SELECT sac.*,aa.name app_name FROM sdk_app_cert sac
      LEFT JOIN app_app aa on sac.app_id=aa.id where sac.app_id=#{appId}
+    <if test="certId != null and certId !=''">
+      and sac.cert_id = #{certId}
+    </if>
+    <if test="apkName != null and apkName !=''">
+      <bind name="apkNameSec" value="'%' + apkName + '%'" />
+      and sac.apk_name LIKE #{apkNameSec}
+    </if>
   </select>
 
   <select id="getAppCertIdsByAppId" parameterType="int" resultType="int">
