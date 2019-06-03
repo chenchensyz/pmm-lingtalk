@@ -9,7 +9,7 @@ public interface WebUserService {
 
     List<WebUser> getWebUserList(String token, WebUser webUser);
 
-    WebUser getWebUserByPhone(String phone, Integer companyId);
+    WebUser getWebUserByUserName(String userName, Integer companyId);
 
     Map<String, Object> login(WebUser webUser, String platform);
 

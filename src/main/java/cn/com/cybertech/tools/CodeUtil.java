@@ -31,8 +31,8 @@ public class CodeUtil {
     public static final String REDIS_PREFIX = "session:";    //token保存在redis第二个库
     public static final String REDIS_APPLOGIN_PREFIX = "as:";   //IM用户登陆
 
-    public static final int ROLE_COMPANY_MANAGER = 2;   //角色 公司管理员
-    public static final int ROLE_COMPANY_DEVELOPER = 3;   //角色 公司开发者
+    public static final int ROLE_COMPANY_MANAGER = 3;   //角色 公司管理员
+    public static final int ROLE_COMPANY_DEVELOPER = 4;   //角色 公司开发者
 
     //证书
     public static final String CERT_IOS = "apple";

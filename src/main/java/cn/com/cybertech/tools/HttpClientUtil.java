@@ -77,8 +77,8 @@ public class HttpClientUtil {
             }
             map.put("code", responseCode);
         } catch (Exception e) {
-            LOGGER.error("请求异常:{}", e.getMessage());
-            map.put("error", e.getMessage());
+            LOGGER.error(e.toString(), e);
+            map.put("error", e.toString());
         } finally {
             // 释放资源
             try {

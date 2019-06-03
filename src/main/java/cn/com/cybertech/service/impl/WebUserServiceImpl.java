@@ -48,8 +48,8 @@ public class WebUserServiceImpl implements WebUserService {
     }
 
     @Override
-    public WebUser getWebUserByPhone(String phone, Integer companyId) {
-        return webUserMapper.getWebUserByUserName(phone, companyId);
+    public WebUser getWebUserByUserName(String userName, Integer companyId) {
+        return webUserMapper.getWebUserByUserName(userName, companyId);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class WebUserServiceImpl implements WebUserService {
         try {
             Map<String, String> map = Maps.newHashMap();
             map.put("userId", user.getId() + "");
-            map.put("phone", user.getUserName());
+            map.put("userName", user.getUserName());
             map.put("nickName", user.getNickName());
             map.put("companyId", user.getCompanyId() + "");
             map.put("roleId", user.getRoleId() + "");
@@ -89,6 +89,7 @@ public class WebUserServiceImpl implements WebUserService {
             resultMap.put("userId", user.getId());
             resultMap.put("companyId", user.getCompanyId());
             resultMap.put("createTime", user.getCreateTimeStr());
+            resultMap.put("roleId", user.getRoleId());
         } catch (Exception e) {
             e.printStackTrace();
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败

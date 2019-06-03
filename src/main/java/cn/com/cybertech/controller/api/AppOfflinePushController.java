@@ -8,6 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,9 @@ public class AppOfflinePushController {
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
+
+    @Autowired
+    private Environment env;
 
     //注册推送
     @RequestMapping("/register")
@@ -35,8 +39,8 @@ public class AppOfflinePushController {
         }
         int msgCode = MessageCode.OFFLINEPUSH_ERR_REGISTER;
         String msg;
-        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
-        String push_status_url = messageCodeUtil.getMessage(CodeUtil.PUSH_STATUS_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
         Map<String, Object> map = HttpClientUtil.httpRequest(upload_url + push_status_url, CodeUtil.METHOD_POST,
@@ -57,8 +61,8 @@ public class AppOfflinePushController {
     public RestResponse unregisterOffline(String userId, String appId) {
         int msgCode = MessageCode.OFFLINEPUSH_ERR_UNREGISTER;
         String msg;
-        String upload_url = messageCodeUtil.getMessage(CodeUtil.CERT_UPLOAD_URL);
-        String push_status_url = messageCodeUtil.getMessage(CodeUtil.PUSH_STATUS_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         String requestUrl = upload_url + push_status_url + "/" + userId + "@" + appId;
         Map<String, Object> map =
                 HttpClientUtil.httpRequest(requestUrl, CodeUtil.METHOD_DELETE, null, null);

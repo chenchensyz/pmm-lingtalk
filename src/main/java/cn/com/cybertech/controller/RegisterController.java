@@ -35,10 +35,10 @@ public class RegisterController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
 
-    @RequestMapping(value = "/findPasswordFlag/{phone}", method = RequestMethod.GET)
-    public RestResponse findPasswordFlag(@PathVariable("phone") String phone) {
+    @RequestMapping(value = "/findPasswordFlag/{userName}", method = RequestMethod.GET)
+    public RestResponse findPasswordFlag(@PathVariable("userName") String userName) {
         boolean flag = false;
-        WebUser user = webUserService.getWebUserByPhone(phone, null);
+        WebUser user = webUserService.getWebUserByUserName(userName, null);
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {
             flag = true;
         }
