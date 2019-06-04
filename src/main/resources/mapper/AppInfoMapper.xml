@@ -165,8 +165,8 @@
      select * from app_app where app_id=#{appId}
   </select>
 
-    <select id="queryUserAppInfo" parameterType="map" resultType="string">
-     select app_id from sdk_web_user_app WHERE user_id =#{userId} and company_id=#{companyId}
+    <select id="countUserAppInfo" parameterType="map" resultType="int">
+     select count(app_id) from sdk_web_user_app WHERE user_id =#{userId} and company_id=#{companyId}
   </select>
 
     <update id="updateAppInfoState" parameterType="cn.com.cybertech.model.AppInfo">

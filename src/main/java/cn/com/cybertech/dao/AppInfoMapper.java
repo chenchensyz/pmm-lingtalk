@@ -19,7 +19,7 @@ public interface AppInfoMapper {
 
     List<AppInfo> getAppInfoList(AppInfo appInfo);
 
-    String queryUserAppInfo(@Param("userId") Long userId, @Param("companyId") Integer companyId);
+    int countUserAppInfo(@Param("userId") Long userId, @Param("companyId") Integer companyId);
 
     int updateAppInfoState(AppInfo appInfo);
 }

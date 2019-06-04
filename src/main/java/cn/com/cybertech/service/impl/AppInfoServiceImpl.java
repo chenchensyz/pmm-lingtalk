@@ -119,6 +119,10 @@ public class AppInfoServiceImpl implements AppInfoService {
         AppInfo appInfo = new AppInfo();
         appInfo.setState(2);
         appInfo.setCompanyId(webUser.getCompanyId());
+        int userAppInfo = appInfoMapper.countUserAppInfo(webUser.getId(), webUser.getCompanyId());
+        if (userAppInfo > 0) { //绑定过应用
+            appInfo.setUserId(webUser.getId());
+        }
         List<AppInfo> appInfoList = appInfoMapper.getAppInfoList(appInfo);
         return appInfoList;
     }
