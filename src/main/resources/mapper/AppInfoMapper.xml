@@ -151,9 +151,11 @@
     </select>
 
     <select id="getAppInfoList" parameterType="cn.com.cybertech.model.AppInfo" resultMap="BaseResultMap">
-        SELECT aa.* FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
+        SELECT DISTINCT(aa.id), aa.name, aa.introduction, aa.create_time, aa.app_id, aa.app_secret
+        FROM app_app aa left JOIN sdk_web_user_app swua on aa.id = swua.app_id
         WHERE aa.company_id=#{companyId}
         <include refid="sql_where"/>
+        order by aa.create_time DESC
         <if test="pageSize > 0 ">
             limit #{pageNum},#{pageSize}
         </if>

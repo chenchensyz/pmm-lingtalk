@@ -129,7 +129,7 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     @Transactional
-    public void addOrEditUser(String token, WebUser webUser) {
+    public void addOrEditUser(String token, String platform, WebUser webUser) {
         int count = 0;
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         webUser.setCompanyId(localUser.getCompanyId());
@@ -155,6 +155,7 @@ public class WebUserServiceImpl implements WebUserService {
                 webUserMapper.deleteUserApp(webUser.getId(), webUser.getCompanyId());
             }
             count = webUserMapper.updateWebUser(webUser);
+            clearUserSession(platform, webUser);
         }
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
@@ -178,7 +179,7 @@ public class WebUserServiceImpl implements WebUserService {
         if (state == -1) {  //删除
             webUserMapper.deleteUserApp(userId, user.getCompanyId());
             int count = webUserMapper.deleteWebUserById(userId);
-            if(count==0){
+            if (count == 0) {
                 throw new ValueRuntimeException(MessageCode.USERINFO_ERR_DEL);
             }
         } else {   //禁用/启用
@@ -188,7 +189,10 @@ public class WebUserServiceImpl implements WebUserService {
                 throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
             }
         }
+        clearUserSession(platform, user);
+    }
 
+    private void clearUserSession(String platform, WebUser user) {
         Jedis jedis = jedisPool.getResource();
         jedis.select(CodeUtil.REDIS_DBINDEX);
         try {

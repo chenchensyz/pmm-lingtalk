@@ -17,7 +17,7 @@ public interface WebUserService {
     void registerUser(WebUser webUser, String companyName, String introduction);
 
     //管理员添加用户
-    void addOrEditUser(String token, WebUser webUser);
+    void addOrEditUser(String token, String platform, WebUser webUser);
 
     //查询：根据appId查询是否有用户绑定
     String getUserAppByAppId(Integer appId);

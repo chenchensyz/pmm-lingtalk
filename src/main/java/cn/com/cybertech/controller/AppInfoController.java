@@ -70,7 +70,7 @@ public class AppInfoController {
     public RestResponse deleteAppInfo(Integer appId) {
         String users = webUserService.getUserAppByAppId(appId);
         if (StringUtils.isNotBlank(users)) {
-            return RestResponse.res(MessageCode.APPINFO_ERR_DEL, users+"绑定此应用，请解除用户绑定后删除");
+            return RestResponse.res(MessageCode.APPINFO_ERR_DEL, "用户："+users+"绑定此应用，请解除用户绑定后删除");
         }
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {

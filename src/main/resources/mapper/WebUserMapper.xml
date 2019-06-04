@@ -151,7 +151,7 @@
 
     <!--查询：根据appId查询是否有用户绑定-->
     <select id="getUserAppByAppId" parameterType="int" resultType="string">
-       SELECT SELECT GROUP_CONCAT(swu.user_name)  FROM sdk_web_user swu
+      SELECT GROUP_CONCAT(swu.user_name)  FROM sdk_web_user swu
        LEFT JOIN sdk_web_user_app swa on swu.id =swa.user_id
        WHERE swa.app_id = #{appId}
     </select>

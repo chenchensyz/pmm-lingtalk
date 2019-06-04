@@ -55,8 +55,9 @@ public class WebUserController {
     public RestResponse addOrEditUser(HttpServletRequest request, WebUser webUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
+        String platform = request.getHeader("platform");
         try {
-            webUserService.addOrEditUser(token, webUser);
+            webUserService.addOrEditUser(token, platform, webUser);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
