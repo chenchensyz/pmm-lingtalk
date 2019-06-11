@@ -41,9 +41,6 @@
             <if test="nickName != null">
                 nick_name,
             </if>
-            <if test="password != null">
-                password,
-            </if>
             <if test="email != null">
                 email,
             </if>
@@ -68,9 +65,6 @@
             <if test="nickName != null">
                 #{nickName,jdbcType=VARCHAR},
             </if>
-            <if test="password != null">
-                #{password,jdbcType=VARCHAR},
-            </if>
             <if test="email != null">
                 #{email,jdbcType=VARCHAR},
             </if>
@@ -91,9 +85,6 @@
         <set>
             <if test="nickName != null">
                 nick_name = #{nickName,jdbcType=VARCHAR},
-            </if>
-            <if test="password != null">
-                password = #{password,jdbcType=VARCHAR},
             </if>
             <if test="email != null">
                 email = #{email,jdbcType=VARCHAR},
@@ -136,18 +127,24 @@
        order by swu.id
     </select>
 
-    <select id="getWebUserByUserName" parameterType="map" resultMap="BaseResultMap">
-        SELECT swu.id, swu.user_name, swu.password, swu.nick_name, swu.company_id, swu.role_id, swu.state
-        FROM sdk_web_user swu WHERE swu.user_name = #{userName}
-        <choose>
-            <when test="companyId != null">
-                AND swu.company_id= #{companyId}
-            </when>
-            <otherwise>
-                group by swu.user_name
-            </otherwise>
-        </choose>
+    <select id="getWebUserLogin" parameterType="map" resultMap="BaseResultMap">
+        SELECT  swu.id, swu.user_name,  swl.password, swu.nick_name,  swu.company_id, swu.role_id, swu.state
+        FROM sdk_web_user swu left join sdk_web_user_login swl
+        on swu.user_name=swl.user_name WHERE swu.user_name = #{userName} AND swu.company_id= #{companyId}
     </select>
+
+    <select id="getWebUserLoginPass" parameterType="string" resultMap="BaseResultMap">
+        SELECT  id, user_name,password FROM sdk_web_user_login   WHERE user_name = #{userName}
+    </select>
+
+    <insert id="insertWebUserLogin" parameterType="cn.com.cybertech.model.WebUser">
+        INSERT INTO sdk_web_user_login (user_name ,password)
+        VALUES (#{userName},#{password})
+    </insert>
+
+    <update id="updateWebUserLogin" parameterType="cn.com.cybertech.model.WebUser">
+        update sdk_web_user_login set  password=#{password} where user_name =#{userName}
+    </update>
 
     <!--查询：根据appId查询是否有用户绑定-->
     <select id="getUserAppByAppId" parameterType="int" resultType="string">
@@ -180,10 +177,5 @@
     <select id="getWebUserByRoleId" parameterType="int" resultType="int">
         SELECT count(id) FROM sdk_web_user WHERE role_id = #{roleId}
     </select>
-
-    <update id="updateUserPassByUserName" parameterType="map">
-        update sdk_web_user set  password = #{password} , update_time = sysdate()
-        where  user_name = #{userName}
-    </update>
 
 </mapper>

@@ -34,5 +34,4 @@ public class RedisConfig {
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
         return jedisPool;
     }
-
 }

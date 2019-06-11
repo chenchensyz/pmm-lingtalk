@@ -8,6 +8,7 @@ import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,7 +57,11 @@ public class AppCertServicempl implements AppCertService {
                     map.put("cert", cert);
                     map.put("key", key);
                     map.put("pass", Base64.encodeBase64String(appCert.getCertSecret().getBytes(CodeUtil.cs)));
-                    map.put("production", true);
+                    if (appCert.getCertEnviron() == 0) {
+                        map.put("production", false);
+                    } else {
+                        map.put("production", true);
+                    }
                 } else {  //Android证书
                     map.put("appid", appCert.getCertId());
                     map.put("secret", appCert.getCertSecret());
@@ -94,6 +99,10 @@ public class AppCertServicempl implements AppCertService {
     @Override
     @Transactional
     public void addOrEditAppCert(HttpServletRequest request, AppCert appCert) {
+        String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
+        if (type.equals(appCert.getType())) { //苹果证书
+            appCert.setApkName(appCert.getCertId());
+        }
         List<MultipartFile> files = ((MultipartHttpServletRequest) request).getFiles("file");
         List<MultipartFile> keys = ((MultipartHttpServletRequest) request).getFiles("key");
         if (files != null && files.size() > 0) { //保存ios证书密钥文件
@@ -105,10 +114,24 @@ public class AppCertServicempl implements AppCertService {
             appCert.setKeyFile(getBytes(appCert, key, CodeUtil.CERT_TYPE_KEY));
         }
         appCert.setCertSuffix(fileSuffix);
+        String cert = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getCertFile());
+        String key = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getKeyFile());
         int count;
         if (appCert.getId() != null) {
+            if (type.equals(appCert.getType()) && (StringUtils.isBlank(cert) || StringUtils.isBlank(key))) {
+                AppCert isCert = appCertMapper.selectByPrimaryKey(appCert.getId()); //查询已存在的苹果证书
+                if (isCert == null) {
+                    throw new ValueRuntimeException(MessageCode.CERT_BIND_NULL);
+                }
+                cert = Base64.encodeBase64String(isCert.getCertFile());
+                key = Base64.encodeBase64String(isCert.getKeyFile());
+            }
             count = appCertMapper.updateAppCert(appCert);
         } else {
+            AppCert isCert = appCertMapper.getAppCertByApkNameAndType(appCert.getApkName(), appCert.getType());
+            if (isCert != null) { //证书已绑定，同类型，包名相同
+                throw new ValueRuntimeException(MessageCode.CERT_APKNAME_BIND_MORE);
+            }
             count = appCertMapper.insertAppCert(appCert);
         }
         if (count == 0) {
@@ -116,19 +139,16 @@ public class AppCertServicempl implements AppCertService {
         }
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("pushtype", appCert.getType());
-        String type = messageCodeUtil.getMessage(CodeUtil.CERT_IOS);
         String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);
         if (type.equals(appCert.getType())) { //苹果证书
             jsonObject.put("bundleid", appCert.getCertId());
-            String cert = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getCertFile());
-            String key = appCert.getCertFile() == null ? "" : Base64.encodeBase64String(appCert.getKeyFile());
             jsonObject.put("cert", cert);
             jsonObject.put("key", key);
             jsonObject.put("pass", Base64.encodeBase64String(appCert.getCertSecret().getBytes(CodeUtil.cs)));
-            if(appCert.getCertEnviron() == 0){
+            if (appCert.getCertEnviron() == 0) {
                 upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);  //测试环境
                 jsonObject.put("production", false);
-            }else {
+            } else {
                 jsonObject.put("production", true);
             }
         } else {  //Android证书
@@ -204,7 +224,7 @@ public class AppCertServicempl implements AppCertService {
         } else {  //Android证书
             jsonObject.put("apkname", appCert.getApkName());
         }
-        if(appCert.getCertEnviron() == 0){
+        if (appCert.getCertEnviron() == 0) {
             upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
         }
         String cert_delete_url = env.getProperty(CodeUtil.CERT_DELETE_URL);

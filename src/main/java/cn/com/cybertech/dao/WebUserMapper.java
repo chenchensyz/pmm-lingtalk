@@ -17,7 +17,13 @@ public interface WebUserMapper {
 
     WebUser getWebUserById(Long id);
 
-    WebUser getWebUserByUserName(@Param("userName") String userName, @Param("companyId") Integer companyId);
+    WebUser getWebUserLogin(@Param("userName") String userName, @Param("companyId") Integer companyId);
+
+    WebUser getWebUserLoginPass(String userName);
+
+    int insertWebUserLogin(WebUser webUser);
+
+    int updateWebUserLogin(WebUser webUser);
 
     //查询：根据appId查询是否有用户绑定
     String getUserAppByAppId(Integer appId);
@@ -33,7 +39,5 @@ public interface WebUserMapper {
 
     //根据角色查询用户
     int getWebUserByRoleId(Integer roleId);
-
-    int  updateUserPassByUserName(@Param("password") String password, @Param("userName") String userName);
 
 }

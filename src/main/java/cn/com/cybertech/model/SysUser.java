@@ -5,16 +5,18 @@ import cn.com.cybertech.tools.DateUtil;
 
 import java.util.Date;
 
-public class WebCompany extends BaseEntity {
-    private Integer id;
+public class SysUser extends BaseEntity {
+    private Long id;
 
-    private String companyName;
+    private String userName;
 
-    private String companyEmail;
+    private String password;
 
-    private String introduction;
+    private String nickName;
 
-    private String owner;
+    private Integer roleId;
+
+    private String remark;
 
     private Integer state;
 
@@ -26,44 +28,54 @@ public class WebCompany extends BaseEntity {
 
     private String updateTimeStr;
 
-    public Integer getId() {
+    private String source;   //用户来源  sys后台用户，web公司用户
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getCompanyName() {
-        return companyName;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName == null ? null : companyName.trim();
+    public void setUserName(String userName) {
+        this.userName = userName == null ? null : userName.trim();
     }
 
-    public String getCompanyEmail() {
-        return companyEmail;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCompanyEmail(String companyEmail) {
-        this.companyEmail = companyEmail == null ? null : companyEmail.trim();
+    public void setPassword(String password) {
+        this.password = password == null ? null : password.trim();
     }
 
-    public String getIntroduction() {
-        return introduction;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setIntroduction(String introduction) {
-        this.introduction = introduction == null ? null : introduction.trim();
+    public void setNickName(String nickName) {
+        this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public String getOwner() {
-        return owner;
+    public Integer getRoleId() {
+        return roleId;
     }
 
-    public void setOwner(String owner) {
-        this.owner = owner;
+    public void setRoleId(Integer roleId) {
+        this.roleId = roleId;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark == null ? null : remark.trim();
     }
 
     public Integer getState() {
@@ -104,5 +116,13 @@ public class WebCompany extends BaseEntity {
 
     public void setUpdateTimeStr(String updateTimeStr) {
         this.updateTimeStr = updateTimeStr;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 }

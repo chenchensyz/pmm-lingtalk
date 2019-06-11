@@ -31,9 +31,9 @@ public class WebPerimissionController {
 
     //查询用户权限列表
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public RestResponse getPermissionList(Integer userId, Integer type) {
+    public RestResponse getPermissionList(Integer roleId, Integer type) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-        List<WebPermission> permissions = webPerimissionService.getPermissions(userId, Arrays.asList(type));
+        List<WebPermission> permissions = webPerimissionService.getPermissions(roleId, Arrays.asList(type));
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(permissions);
     }
 

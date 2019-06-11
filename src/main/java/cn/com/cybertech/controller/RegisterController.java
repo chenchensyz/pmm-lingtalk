@@ -38,7 +38,7 @@ public class RegisterController {
     @RequestMapping(value = "/findPasswordFlag/{userName}", method = RequestMethod.GET)
     public RestResponse findPasswordFlag(@PathVariable("userName") String userName) {
         boolean flag = false;
-        WebUser user = webUserService.getWebUserByUserName(userName, null);
+        WebUser user = webUserService.getWebUserLoginPass(userName);
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {
             flag = true;
         }

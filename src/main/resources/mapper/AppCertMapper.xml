@@ -209,4 +209,8 @@
   <select id="getAppCertIdsByAppId" parameterType="int" resultType="int">
      SELECT count(id) FROM sdk_app_cert  where app_id=#{appId}
   </select>
+
+  <select id="getAppCertByApkNameAndType" parameterType="map"  resultMap="BaseResultMap">
+     select * from sdk_app_cert where apk_name = #{apkName} and type = #{type}
+  </select>
 </mapper>

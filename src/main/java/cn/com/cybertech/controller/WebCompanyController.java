@@ -3,6 +3,8 @@ package cn.com.cybertech.controller;
 import cn.com.cybertech.model.WebCompany;
 import cn.com.cybertech.service.WebCompanyService;
 import cn.com.cybertech.tools.RestResponse;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,4 +29,12 @@ public class WebCompanyController {
         return RestResponse.success().setData(companyInfos);
     }
 
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    public RestResponse getCompanyList(WebCompany webCompany) {
+        PageHelper.startPage(webCompany.getPageNum(), webCompany.getPageSize());
+        List<WebCompany> companyInfos = webCompanyService.getWebCompanyList(webCompany);
+        PageInfo<WebCompany> companyInfoPage = new PageInfo<>(companyInfos);
+        return RestResponse.success().setData(companyInfos)
+                .setTotal(companyInfoPage.getTotal()).setPage(companyInfoPage.getLastPage());
+    }
 }

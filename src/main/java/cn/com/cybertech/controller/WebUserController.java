@@ -52,7 +52,7 @@ public class WebUserController {
     }
 
     @RequestMapping("/addOrEditUser")
-    public RestResponse addOrEditUser(HttpServletRequest request, WebUser webUser) {
+    public RestResponse addOrEditUser(HttpServletRequest request, WebUser webUser,String checkPass) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         String platform = request.getHeader("platform");
@@ -100,7 +100,7 @@ public class WebUserController {
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(userDetail);
     }
 
-    //修改用户状态
+    //修改密码
     @RequestMapping("/resetPassword")
     public RestResponse resetPassword(HttpServletRequest request, String oldPassword, String newPassword) {
         int msgCode = MessageCode.BASE_SUCC_CODE;

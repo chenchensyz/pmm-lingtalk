@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface WebPermissionMapper extends BaseDao<WebPermission> {
 
-    List<WebPermission> getPermByUserId(@Param("userId") Integer userId, @Param("types") List<Integer> types);
+    List<WebPermission> getPermByRoleId(@Param("roleId") Integer roleId, @Param("types") List<Integer> types);
 
     List<WebPermission> getPermsByRoleId(Integer roleId);
 

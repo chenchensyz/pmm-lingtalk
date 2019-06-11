@@ -162,10 +162,9 @@
     <include refid="sql_where" />
   </select>
 
-  <select id="getPermByUserId" parameterType="map" resultMap="BaseResultMap">
+  <select id="getPermByRoleId" parameterType="map" resultMap="BaseResultMap">
      SELECT <include refid="Base_Column_List" /> FROM sdk_web_permission WHERE id in
-     (SELECT swrp.perimission_id FROM sdk_web_role_perm swrp WHERE swrp.role_id=
-     (SELECT swr.id FROM sdk_web_user swu LEFT JOIN sdk_web_role swr on swu.role_id=swr.id WHERE swu.id=#{userId}))
+     (SELECT swrp.perimission_id FROM sdk_web_role_perm swrp WHERE swrp.role_id = #{roleId})
      <if test="types != null and types.size() > 0">
        and type in
        <foreach collection="types" item="type" index="index" open="(" close=")" separator=",">

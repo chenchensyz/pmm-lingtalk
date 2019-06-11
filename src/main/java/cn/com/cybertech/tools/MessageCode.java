@@ -27,6 +27,8 @@ public class MessageCode {
     public static final int CERT_NULL = 11103; //证书不存在
     public static final int CERT_FILE_ERR_DEL = 11104; //删除证书文件失败
     public static final int CERT_KEY_ERR_DEL = 11105; //删除证书key文件失败
+    public static final int CERT_APKNAME_BIND_MORE = 11106; //当前证书已绑定其他应用，请重新输入
+    public static final int CERT_BIND_NULL = 11107; //请上传相应的证书文件
 
     //讨论组
     public static final int DISCUSS_NULL_SELECT = 12101; //讨论组不存在
@@ -48,6 +50,7 @@ public class MessageCode {
     public static final int USERINFO_PARAM_NULL = 20109; //请填写完整登录信息
     public static final int USERINFO_ERR_OLDPASS = 20110; //原密码错误
     public static final int USERINFO_ERR_RESETPASS = 20111; //修改密码失败
+    public static final int USERINFO_DETAIL_ERR_ADD = 20112; //保存用户登陆信息失败
 
     //角色
     public static final int ROLE_ERR_ADD = 21101; //角色增加失败

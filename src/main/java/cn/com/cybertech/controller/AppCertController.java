@@ -43,7 +43,7 @@ public class AppCertController {
         try {
             appCertService.addOrEditAppCert(request, appCert);
         } catch (ValueRuntimeException e) {
-            msgCode = Integer.valueOf(e.getMessage());
+            msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }
@@ -54,7 +54,7 @@ public class AppCertController {
         try {
             appCertService.deleteAppCert(certId);
         } catch (ValueRuntimeException e) {
-            msgCode = Integer.valueOf(e.getMessage());
+            msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
     }

@@ -9,4 +9,6 @@ public interface WebCompanyService{
     void saveWebCompany(WebCompany webCompany);
 
     List<WebCompany> getWebCompanyByUserName(String userName);
+
+    List<WebCompany> getWebCompanyList(WebCompany webCompany);
 }

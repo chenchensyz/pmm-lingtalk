@@ -2,6 +2,7 @@ package cn.com.cybertech.dao;
 
 import cn.com.cybertech.dao.common.BaseDao;
 import cn.com.cybertech.model.AppCert;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,4 +15,6 @@ public interface AppCertMapper extends BaseDao<AppCert> {
     List<AppCert> getAppCertList(AppCert appCert);
 
     int getAppCertIdsByAppId(Integer appId);
+
+    AppCert getAppCertByApkNameAndType(@Param("apkName") String apkName, @Param("type") String type);
 }

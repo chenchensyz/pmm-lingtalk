@@ -1,5 +1,6 @@
 package cn.com.cybertech.config.redis;
 
+import cn.com.cybertech.model.SysUser;
 import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
@@ -45,5 +46,20 @@ public class RedisTool {
         webUser.setRoleId(Integer.valueOf(map.get("roleId")));
         webUser.setSource(map.get("source"));
         return webUser;
+    }
+
+
+    public SysUser getSysUser(String key) {
+        SysUser sysUser=new SysUser();
+        Map<String, String> map = hgetAll(key);
+        if(map.isEmpty()){
+            throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
+        }
+        sysUser.setId(Long.valueOf(map.get("userId")));
+        sysUser.setUserName(map.get("userName"));
+        sysUser.setNickName(map.get("nickName"));
+        sysUser.setRoleId(Integer.valueOf(map.get("roleId")));
+        sysUser.setSource(map.get("source"));
+        return sysUser;
     }
 }

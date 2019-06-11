@@ -2,7 +2,6 @@ package cn.com.cybertech.controller;
 
 
 import cn.com.cybertech.model.AppUser;
-import cn.com.cybertech.service.AppInfoService;
 import cn.com.cybertech.service.AppUserService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
@@ -25,9 +24,6 @@ public class AppUserController {
 
     @Autowired
     private AppUserService appUserService;
-
-    @Autowired
-    private AppInfoService appInfoService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;

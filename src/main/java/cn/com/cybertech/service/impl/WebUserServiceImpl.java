@@ -48,13 +48,13 @@ public class WebUserServiceImpl implements WebUserService {
     }
 
     @Override
-    public WebUser getWebUserByUserName(String userName, Integer companyId) {
-        return webUserMapper.getWebUserByUserName(userName, companyId);
+    public WebUser getWebUserLoginPass(String userName) {
+        return webUserMapper.getWebUserLoginPass(userName);
     }
 
     @Override
     public Map<String, Object> login(WebUser webUser, String platform) {
-        WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), webUser.getCompanyId());
+        WebUser user = webUserMapper.getWebUserLogin(webUser.getUserName(), webUser.getCompanyId());
         Map<String, Object> resultMap = Maps.newHashMap();
         if (user == null) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT); //用户不存在
@@ -88,6 +88,8 @@ public class WebUserServiceImpl implements WebUserService {
             resultMap.put("nickName", user.getNickName());
             resultMap.put("userId", user.getId());
             resultMap.put("companyId", user.getCompanyId());
+            int owner = webCompanyMapper.checkWebCompanyByOwner(user.getCompanyId(), user.getUserName());
+            resultMap.put("owner", owner); //是否当前的公司管理员
             resultMap.put("createTime", user.getCreateTimeStr());
             resultMap.put("roleId", user.getRoleId());
         } catch (Exception e) {
@@ -105,8 +107,9 @@ public class WebUserServiceImpl implements WebUserService {
         WebCompany webCompany = new WebCompany();
         webCompany.setCompanyName(companyName);
         webCompany.setIntroduction(introduction);
+        webCompany.setOwner(webUser.getUserName());
         int count1 = webCompanyMapper.insertSelective(webCompany);
-        WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), null);
+        WebUser user = webUserMapper.getWebUserLoginPass(webUser.getUserName());
         String newPwd;
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {
             newPwd = user.getPassword();
@@ -115,8 +118,14 @@ public class WebUserServiceImpl implements WebUserService {
         }
         webUser.setPassword(newPwd);
         webUser.setCompanyId(webCompany.getId());
-        webUser.setRoleId(CodeUtil.ROLE_COMPANY_ADMIN);
+        webUser.setRoleId(CodeUtil.ROLE_COMPANY_MANAGER);
         int count2 = webUserMapper.insertWebUser(webUser);
+        if (user == null) {
+            int count3 = webUserMapper.insertWebUserLogin(webUser);
+            if (count3 == 0) {
+                throw new ValueRuntimeException(MessageCode.USERINFO_DETAIL_ERR_ADD);
+            }
+        }
         if (count1 + count2 < 2) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
         }
@@ -133,21 +142,30 @@ public class WebUserServiceImpl implements WebUserService {
         int count = 0;
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
         webUser.setCompanyId(localUser.getCompanyId());
+        List<Integer> appCheckedList = webUser.getAppCheckedList();
         if (webUser.getId() == null) {  //新增
-            if (StringUtils.isBlank(webUser.getUserName()) || StringUtils.isBlank(webUser.getPassword())) {
+            WebUser valiedUser = webUserMapper.getWebUserLogin(webUser.getUserName(), webUser.getCompanyId());
+            if (valiedUser != null) { //当前公司用户已存在
+                throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
+            }
+            WebUser user = webUserMapper.getWebUserLoginPass(webUser.getUserName());
+            if (user == null && StringUtils.isBlank(webUser.getPassword())) { //密码为空，可能用户已存在
                 throw new ValueRuntimeException(MessageCode.USERINFO_PARAM_NULL);
             }
-            WebUser user = webUserMapper.getWebUserByUserName(webUser.getUserName(), null);
-            String newPwd = EncryptUtils.MD5Encode(webUser.getUserName() + webUser.getPassword() + "*!!");
-            if (user != null) {
-                if (user.getCompanyId() == webUser.getCompanyId()) {
-                    throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
-                }
-                if (StringUtils.isNotBlank(user.getPassword())) {
-                    newPwd = user.getPassword();
+            if (user != null && StringUtils.isNotBlank(user.getPassword())) {
+                webUser.setPassword(user.getPassword());
+            } else {  //保存用户登陆信息
+                String newPwd = EncryptUtils.MD5Encode(webUser.getUserName() + webUser.getPassword() + "*!!");
+                webUser.setPassword(newPwd);
+                int userLogin = webUserMapper.insertWebUserLogin(webUser);
+                if (userLogin == 0) {
+                    throw new ValueRuntimeException(MessageCode.USERINFO_DETAIL_ERR_ADD);
                 }
             }
-            webUser.setPassword(newPwd);
+            if (localUser.getRoleId() == CodeUtil.ROLE_COMPANY_MANAGER) {
+                webUser.setRoleId(CodeUtil.ROLE_COMPANY_DEVELOPER);
+                appCheckedList = webUserMapper.getUserApp(localUser.getId(), localUser.getCompanyId());
+            }
             count = webUserMapper.insertWebUser(webUser);
         } else {  //编辑
             List<Integer> userApp = webUserMapper.getUserApp(webUser.getId(), webUser.getCompanyId());
@@ -160,8 +178,8 @@ public class WebUserServiceImpl implements WebUserService {
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_ADD);
         }
-        if (webUser.getAppCheckedList() != null && webUser.getAppCheckedList().size() > 0) {
-            webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), webUser.getAppCheckedList());
+        if (appCheckedList != null && appCheckedList.size() > 0) {
+            webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), appCheckedList);
         }
     }
 
@@ -216,7 +234,7 @@ public class WebUserServiceImpl implements WebUserService {
     @Override
     public void resetPassword(String token, String oldPassword, String newPassword) {
         WebUser localUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
-        WebUser user = webUserMapper.getWebUserById(localUser.getId());
+        WebUser user = webUserMapper.getWebUserLoginPass(localUser.getUserName());
         String localoldPwd = EncryptUtils.MD5Encode(user.getUserName() + oldPassword + "*!!");
         if (!localoldPwd.equals(user.getPassword())) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_OLDPASS); //原密码错误
@@ -224,7 +242,7 @@ public class WebUserServiceImpl implements WebUserService {
 
         String newPwd = EncryptUtils.MD5Encode(user.getUserName() + newPassword + "*!!");
         user.setPassword(newPwd);
-        int count = webUserMapper.updateUserPassByUserName(newPwd, user.getUserName());
+        int count = webUserMapper.updateWebUserLogin(user);
         if (count == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_RESETPASS); //修改密码失败
         }

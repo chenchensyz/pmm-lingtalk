@@ -99,7 +99,8 @@ public class AppInfoServiceImpl implements AppInfoService {
             if (count == 0) {
                 throw new ValueRuntimeException(MessageCode.APPINFO_ERR_OPERATION);
             }
-            if (webUser.getRoleId() == CodeUtil.ROLE_COMPANY_DEVELOPER) { //开发者绑定自己创建的应用
+            int userAppInfo = appInfoMapper.countUserAppInfo(webUser.getId(), webUser.getCompanyId());
+            if (userAppInfo > 0) { //为已绑定过应用的用户绑定
                 List<Integer> appIds = Lists.newArrayList();
                 appIds.add(appInfo.getId());
                 webUserMapper.insertUserApp(webUser.getId(), webUser.getCompanyId(), appIds);
