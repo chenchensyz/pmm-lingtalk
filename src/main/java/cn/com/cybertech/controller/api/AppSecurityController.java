@@ -7,6 +7,7 @@ import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,17 +22,21 @@ public class AppSecurityController {
     private MessageCodeUtil messageCodeUtil;
 
     /**
-     * 获取公众号的全局唯一票据
+     * sdk获取token
      */
-//    @RequestMapping(value = "/token", method = RequestMethod.POST)
-//    public @ResponseBody
-//    Object queryToken(HttpServletRequest request, String appId, String secret) {
-//        try {
-//            return getSuccessResult().addAttribute(AppConstants.RET_MESSAGE_DATAS, securityServiceImpl.queryToken(appId, secret));
-//        } catch (ValueRuntimeException e) {
-//            return new Result((Integer) e.getValue(), MessageUtils.getMessage(request, String.valueOf(e.getValue())));
-//        }
-//    }
+    @RequestMapping(value = "/token", method = RequestMethod.POST)
+    public RestResponse queryToken(@RequestParam String appId, @RequestParam String secret) {
+        RestResponse response = new RestResponse();
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            response = appSecurityService.queryToken(response, appId, secret);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
+    }
+
     @RequestMapping(value = "/userlogin")
     public RestResponse userlogin(@RequestParam String appId, @RequestParam String userId,
                                   @RequestParam String password, @RequestParam String platform) {

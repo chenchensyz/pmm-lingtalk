@@ -55,4 +55,17 @@ public class CodeUtil {
 
     //http
     public static final String REQUEST_MAXTIME = "request_maxtime";
+
+    //sdk token
+    public static final String TOKEN_FILED_APPID = "appid";
+    public static final String TOKEN_FILED_SECRET = "secret";
+    public static final String TOKEN_FILED_NAME = "name";
+    public static final String TOKEN_FILED_ID = "id";
+    public static final int TOKEN_EXPIRE = 2 * 60 * 60;
+
+    public static final String TOKEN_FILED = "token";
+    public static final String TOKEN_FILED_EXPIRES = "expires";
+
+    //推送
+    public static final String MESSAGE_EVENT_TYPE_EXTERNALPUSH = "externalpush";
 }

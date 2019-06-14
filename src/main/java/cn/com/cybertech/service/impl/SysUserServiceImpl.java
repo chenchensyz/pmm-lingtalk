@@ -86,6 +86,7 @@ public class SysUserServiceImpl implements SysUserService {
             resultMap.put("userId", user.getId());
             resultMap.put("createTime", user.getCreateTimeStr());
             resultMap.put("roleId", user.getRoleId());
+            resultMap.put("source", CodeUtil.USER_TYPE_SYS);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败

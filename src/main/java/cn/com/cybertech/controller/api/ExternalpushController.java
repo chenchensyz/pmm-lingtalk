@@ -1,6 +1,8 @@
 package cn.com.cybertech.controller.api;
 
+import cn.com.cybertech.model.ExternalPush;
 import cn.com.cybertech.model.ExternalTo;
+import cn.com.cybertech.service.ExternalPushService;
 import cn.com.cybertech.service.ExternalToService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
@@ -11,12 +13,12 @@ import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -30,10 +32,68 @@ public class ExternalpushController {
     private static final Logger logger = LoggerFactory.getLogger(ExternalpushController.class);
 
     @Autowired
+    private ExternalPushService externalPushService;
+
+    @Autowired
     private ExternalToService externalToService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
+
+    /**
+     * 发送推送
+     */
+    @RequestMapping("/push")
+    public RestResponse push(HttpServletRequest request, ExternalPush externalpush, Long expire, Boolean offLine) {
+        logger.debug("发送推送消息 uuid:{}", externalpush.getUuid());
+        RestResponse response = new RestResponse();
+        String token = request.getHeader("token");
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            response = externalPushService.push(response, token, externalpush, expire, offLine);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
+    }
+
+
+    /**
+     * 查询推送状态
+     */
+    @RequestMapping("/pushstate")
+    public RestResponse pushstate(String uuids) {
+        logger.debug("查询推送状态 uuids:{}", uuids);
+        RestResponse response = new RestResponse();
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            response = externalPushService.pushstate(response, uuids);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
+    }
+
+    /**
+     * 查询推送详情
+     */
+    @RequestMapping("/pushdetail")
+    @ResponseBody
+    public RestResponse pushdetail(HttpServletRequest request, String uuid, String by) {
+        logger.debug("查询推送详情 uuid:{}", uuid);
+        RestResponse response = new RestResponse();
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            response = externalPushService.pushdetail(response, uuid, by);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
+    }
+
 
     /**
      * 接收方设置推送状态

@@ -152,4 +152,12 @@
   <select id="getAppUserIdsByAppId" parameterType="int" resultType="int">
      select count(id) from sg_tp_users where APP_ID = #{appId}
   </select>
+
+  <select id="queryAppUserStrByUserId" parameterType="map" resultType="string">
+    SELECT ID FROM SG_TP_USERS
+    where DISABLED = 0 AND APP_ID = #{appId} AND user_id IN
+    <foreach item="user" collection="userIds" open="(" separator="," close=")">
+      #{user}
+    </foreach>
+  </select>
 </mapper>

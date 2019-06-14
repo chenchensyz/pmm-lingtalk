@@ -41,6 +41,29 @@ public class AppSecurityServiceImpl implements AppSecurityService {
     private JedisPool jedisPool;
 
     @Override
+    public RestResponse queryToken(RestResponse response, String appId, String secret) {
+
+        // 验证三方应用的凭证及密钥
+        AppInfo appInfo = appInfoMapper.queryAppByAppId(appId);
+        if (appInfo == null) {
+            throw new ValueRuntimeException(MessageCode.APPINFO_ERR_SELECT);
+        }
+
+        // 获取票据并缓存票据
+        String token = cacheTokenStr(appInfo);
+        if (StringUtils.isBlank(token)) {
+            throw new ValueRuntimeException(MessageCode.APPINFO_ERR_TOKEN);
+        }
+
+        // 组装全局票据对象
+        Map<String, Object> resultMap = Maps.newHashMap();
+        resultMap.put(CodeUtil.TOKEN_FILED, token);
+        resultMap.put(CodeUtil.TOKEN_FILED_EXPIRES, CodeUtil.TOKEN_EXPIRE);
+        response.put("datas", resultMap);
+        return response;
+    }
+
+    @Override
     public RestResponse userlogin(RestResponse response, String appId, String userId, String password, String platform) {
         AppInfo appInfo = appInfoMapper.queryAppByAppId(appId); //验证应用
         if (appInfo == null) {
@@ -126,5 +149,45 @@ public class AppSecurityServiceImpl implements AppSecurityService {
         } finally {
             jedis.close();
         }
+    }
+
+    /**
+     * 获取票据并缓存票据
+     */
+    private String cacheTokenStr(AppInfo appInfo) {
+        Jedis jedis = jedisPool.getResource();
+        try {
+            jedis.select(CodeUtil.REDIS_DBINDEX);
+
+            // 获取旧的票据, 如果未超时，直接返回
+            String token = jedis.get(appInfo.getAppId());
+            if (StringUtils.isNotBlank(token)) {
+                String expire = jedis.hget(token, CodeUtil.TOKEN_FILED_EXPIRES);
+                //未超时
+                if (StringUtils.isNotBlank(expire) && Long.valueOf(expire) < System.currentTimeMillis()) {
+                    return token;
+                }
+                jedis.del(token);
+            }
+
+            // 生成新的票据
+            token = HttpClientUtil.getUUID().toUpperCase();
+            // 缓存票据对应的应用信息
+            Map<String, String> hash = Maps.newHashMap();
+            hash.put(CodeUtil.TOKEN_FILED_APPID, appInfo.getAppId());
+            hash.put(CodeUtil.TOKEN_FILED_SECRET, appInfo.getAppSecret());
+            hash.put(CodeUtil.TOKEN_FILED_NAME, appInfo.getName());
+            hash.put(CodeUtil.TOKEN_FILED_ID, String.valueOf(appInfo.getId()));
+            hash.put(CodeUtil.TOKEN_FILED_EXPIRES, System.currentTimeMillis() + "");
+
+            jedis.set(appInfo.getAppId(), token);
+            jedis.hmset(token, hash);
+            return token;
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            jedis.close();
+        }
+        return null;
     }
 }

@@ -100,9 +100,7 @@
       <if test="disabled != null">
         DISABLED = #{disabled,jdbcType=INTEGER},
       </if>
-      <if test="updateTime != null">
-        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        UPDATE_TIME = sysdate()
     </set>
     where DISCUSS_ID = #{discussId,jdbcType=INTEGER}
   </update>
@@ -129,7 +127,7 @@
 	LEFT JOIN pm_tp_discuss_users ptu ON ptd.DISCUSS_ID = ptu.DISCUSS_ID
     LEFT JOIN sg_tp_users su ON su.ID = ptu.USER_ID
     LEFT JOIN sg_tp_users sud ON sud.ID = ptd.CREATOR_ID
-    WHERE ptd.DISCUSS_ID IN
+    WHERE  ptd.DISABLED = 0 and ptd.DISCUSS_ID IN
     <foreach collection="list" item="discussId" open="(" separator="," close=")">
       #{discussId}
     </foreach>
@@ -153,7 +151,7 @@
     </foreach>
   </delete>
 
-  <select id="getAppDiscussIdsByAppId" parameterType="int" resultType="int">
+  <select id="countAppDiscussIdsByAppId" parameterType="int" resultType="int">
     SELECT count(DISCUSS_ID) FROM pm_tp_discuss WHERE APP_ID = #{appId} and DISABLED = 0
   </select>
 
@@ -169,4 +167,41 @@
       #{id}
     </foreach>
   </update>
+
+  <select id="getAppApiDiscussList" parameterType="map" resultMap="DiscussMap">
+    SELECT ptd.DISCUSS_ID, ptd.DISCUSS_NAME, sud.USER_ID CREATOR_ID, su.USER_ID, ptd.DISABLED,
+    ptd.CREATE_TIME, ptd.DISCUSS_VERSION, ptd.app_id
+    FROM pm_tp_discuss ptd
+    LEFT JOIN pm_tp_discuss_users ptu ON ptd.DISCUSS_ID = ptu.DISCUSS_ID
+    LEFT JOIN sg_tp_users su ON su.ID = ptu.USER_ID
+    LEFT JOIN sg_tp_users sud ON sud.ID = ptd.CREATOR_ID
+    WHERE ptd.DISABLED = 0  AND ptd.APP_ID = #{appId}
+    <if test="discussIdList != null and discussIdList.size > 0">
+      AND ptu.DISCUSS_ID IN
+      <foreach collection="discussIdList" item="dId" open="(" separator="," close=")">
+        #{dId}
+      </foreach>
+    </if>
+    <if test="userId != null and userId != ''">
+      AND ptu.USER_ID = #{userId}
+    </if>
+  </select>
+
+  <insert id="addDiscussInUserIds" parameterType="cn.com.cybertech.model.AppDiscuss">
+    INSERT INTO pm_tp_discuss_users(DISCUSS_ID, USER_ID, ADDED, ADD_TIME)
+    VALUES
+    <foreach collection="userList" item="userId" separator=",">
+      (#{discussId},#{userId},#{creatorId},sysdate())
+    </foreach>
+  </insert>
+
+  <delete id="delDiscussInUserIds" parameterType="cn.com.cybertech.model.AppDiscuss">
+    DELETE FROM pm_tp_discuss_users WHERE DISCUSS_ID=#{discussId}
+    <if test="userIds!=null and userIds.size>0">
+      AND USER_ID in
+      <foreach collection="userIds" item="userId" index="index" open="(" close=")" separator=",">
+        #{userId}
+      </foreach>
+    </if>
+  </delete>
 </mapper>

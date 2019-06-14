@@ -46,7 +46,7 @@ Configuration:
         - ref: CONSOLE
         - ref: ROLLING_FILE
       Logger: # 为com.lee包配置特殊的Log级别，方便调试
-        - name: cn.com.cyber.dao
+        - name: cn.com.cybertech.dao
           additivity: false
           level: ${sys:log.level.console}
           AppenderRef:

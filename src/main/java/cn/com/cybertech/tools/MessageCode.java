@@ -20,6 +20,10 @@ public class MessageCode {
     public static final int APPINFO_DISCUSS_EXIT = 10105; //请先删除该应用中的讨论组
     public static final int APPINFO_CERT_EXIT = 10106; //请先删除该应用中的证书
     public static final int APPINFO_ERR_DEL = 10107; //应用删除失败
+    public static final int APPINFO_ERR_TOKEN = 10108;   // 应用票据获取失败
+    public static final int APPINFO_ERR_SECURITY = 10109;    // 应用凭证验证失败
+    public static final int APPINFO_ERR_MESSAGEBODY = 10110;   // 消息内容不能为空
+    public static final int APPINFO_SERVER_ERR_USERS_NULL = 10111; // 用户不能为空
 
     //证书
     public static final int CERT_ERR_SAVE = 11101; //保存证书失败
@@ -51,6 +55,7 @@ public class MessageCode {
     public static final int USERINFO_ERR_OLDPASS = 20110; //原密码错误
     public static final int USERINFO_ERR_RESETPASS = 20111; //修改密码失败
     public static final int USERINFO_DETAIL_ERR_ADD = 20112; //保存用户登陆信息失败
+    public static final int USERINFO_ERR_QUERY_PAGE = 20113; //请填写完整的分页信息
 
     //角色
     public static final int ROLE_ERR_ADD = 21101; //角色增加失败
@@ -82,4 +87,10 @@ public class MessageCode {
     //推送
     public static final int EXTERNALPUSH_NULL = 261001;    // 推送记录不存在
     public static final int EXTERNALPUSH_STATE_ERR = 261002;    // 推送状态修改失败
+    public static final int EXTERNALPUSH_ERR_PUSH = 261003;      // 消息发送失败
+    public static final int MESSAGE_ERR_MSGREPART = 261004;      // 发送重复消息
+    public static final int MESSAGE_ERR_SAVE = 261005;                       //消息保存失败
+    public static final int MESSAGE_BODY_ERR_SAVE = 261006;                  //消息内容保存失败
+    public static final int MESSAGE_PUSH_ERROR_STAT_NULL = 261007;          // 未找到消息推送
+
 }

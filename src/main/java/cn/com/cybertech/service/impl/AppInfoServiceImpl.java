@@ -2,7 +2,6 @@ package cn.com.cybertech.service.impl;
 
 import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.dao.*;
-import cn.com.cybertech.model.AppDiscuss;
 import cn.com.cybertech.model.AppInfo;
 import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.AppInfoService;
@@ -12,12 +11,10 @@ import cn.com.cybertech.tools.RandomUtils;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -131,7 +128,7 @@ public class AppInfoServiceImpl implements AppInfoService {
     @Override
     @Transactional
     public void deleteAppInfo(Integer appId) {
-        int discussCount = appDiscussMapper.getAppDiscussIdsByAppId(appId); //查询app下的讨论组
+        int discussCount = appDiscussMapper.countAppDiscussIdsByAppId(appId); //查询app下的讨论组
         if (discussCount > 0) {
             throw new ValueRuntimeException(MessageCode.APPINFO_DISCUSS_EXIT);
         }

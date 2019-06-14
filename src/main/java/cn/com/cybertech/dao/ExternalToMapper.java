@@ -15,4 +15,10 @@ public interface ExternalToMapper {
     int updateExternalTo(ExternalTo externalTo);
 
     List<ExternalTo> getPushUserDetail(@Param("to") String to, @Param("appId") String appId);
+
+    //批量插入
+    int addExternalToMore(@Param("uuid") String uuid, @Param("tos") List<String> tos,
+                          @Param("expire") Long expire, @Param("offLine") Boolean offLine);
+
+    List<ExternalTo> getByUuid(String uuid);
 }
