@@ -40,8 +40,9 @@ public class WebPerimissionController {
     //查找用户的菜单权限标识集合
     @RequestMapping(value = "/list/{userName}", method = RequestMethod.GET)
     public RestResponse findPermissions(@PathVariable("userName") String userName) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
         Set<String> permissions = webPerimissionService.findPermissions(userName);
-        return RestResponse.success().setData(permissions);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(permissions);
     }
 
     @RequestMapping("/addOrEditPerm")

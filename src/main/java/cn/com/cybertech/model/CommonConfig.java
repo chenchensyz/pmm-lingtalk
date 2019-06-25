@@ -1,8 +1,10 @@
 package cn.com.cybertech.model;
 
+import cn.com.cybertech.model.common.BaseEntity;
+
 import java.util.Date;
 
-public class CommonConfig{
+public class CommonConfig extends BaseEntity {
     private Integer id;
 
     private String key;

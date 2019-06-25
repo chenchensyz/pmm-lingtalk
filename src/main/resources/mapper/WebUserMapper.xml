@@ -178,4 +178,7 @@
         SELECT count(id) FROM sdk_web_user WHERE role_id = #{roleId}
     </select>
 
+    <delete id="deleteUserByCompanyId" parameterType="int">
+        delete  FROM sdk_web_user WHERE company_id=#{companyId}
+    </delete>
 </mapper>

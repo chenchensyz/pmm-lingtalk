@@ -30,7 +30,7 @@ import redis.clients.jedis.JedisPool;
 import java.util.*;
 
 @Service("appDiscussService")
-public class AppDiscussServicempl extends BaseServiceImpl implements AppDiscussService {
+public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscussService {
 
     @Autowired
     private AppInfoMapper appInfoMapper;

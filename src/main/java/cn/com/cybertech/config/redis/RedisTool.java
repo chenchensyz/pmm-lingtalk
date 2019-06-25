@@ -6,6 +6,7 @@ import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
@@ -27,39 +28,46 @@ public class RedisTool {
             stringMap = jedis.hgetAll(key);
         } catch (Exception e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             jedis.close();
         }
         return stringMap;
     }
 
     public WebUser getUser(String key) {
-        WebUser webUser=new WebUser();
+        WebUser webUser = new WebUser();
         Map<String, String> map = hgetAll(key);
-        if(map.isEmpty()){
+        if (map.isEmpty()) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
         }
         webUser.setId(Long.valueOf(map.get("userId")));
         webUser.setUserName(map.get("userName"));
         webUser.setNickName(map.get("nickName"));
-        webUser.setCompanyId(Integer.valueOf(map.get("companyId")));
-        webUser.setRoleId(Integer.valueOf(map.get("roleId")));
+        webUser.setCompanyId(getIntValue(map, "companyId"));
+        webUser.setRoleId(getIntValue(map, "roleId"));
         webUser.setSource(map.get("source"));
         return webUser;
     }
 
 
     public SysUser getSysUser(String key) {
-        SysUser sysUser=new SysUser();
+        SysUser sysUser = new SysUser();
         Map<String, String> map = hgetAll(key);
-        if(map.isEmpty()){
+        if (map.isEmpty()) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
         }
         sysUser.setId(Long.valueOf(map.get("userId")));
         sysUser.setUserName(map.get("userName"));
         sysUser.setNickName(map.get("nickName"));
-        sysUser.setRoleId(Integer.valueOf(map.get("roleId")));
+        sysUser.setRoleId(getIntValue(map, "roleId"));
         sysUser.setSource(map.get("source"));
         return sysUser;
+    }
+
+    private Integer getIntValue(Map<String, String> map, String key) {
+        if (StringUtils.isNotBlank(map.get(key))) {
+            return Integer.valueOf(map.get(key));
+        }
+        return null;
     }
 }

@@ -211,6 +211,6 @@
   </select>
 
   <select id="getAppCertByApkNameAndType" parameterType="map"  resultMap="BaseResultMap">
-     select * from sdk_app_cert where apk_name = #{apkName} and type = #{type}
+     select * from sdk_app_cert where apk_name = #{apkName} and type = #{type} and  cert_environ = #{certEnviron}
   </select>
 </mapper>

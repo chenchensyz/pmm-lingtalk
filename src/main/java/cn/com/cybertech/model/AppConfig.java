@@ -1,5 +1,8 @@
 package cn.com.cybertech.model;
 
+import java.util.List;
+import java.util.Map;
+
 public class AppConfig{
     private Integer id;
 
@@ -8,6 +11,8 @@ public class AppConfig{
     private String value;
 
     private Integer appId;
+
+    private List<Map<String,Object>> appConfigs;
 
     public Integer getId() {
         return id;
@@ -39,5 +44,13 @@ public class AppConfig{
 
     public void setAppId(Integer appId) {
         this.appId = appId;
+    }
+
+    public List<Map<String, Object>> getAppConfigs() {
+        return appConfigs;
+    }
+
+    public void setAppConfigs(List<Map<String, Object>> appConfigs) {
+        this.appConfigs = appConfigs;
     }
 }

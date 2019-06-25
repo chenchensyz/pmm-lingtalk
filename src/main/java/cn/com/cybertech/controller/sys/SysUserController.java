@@ -1,50 +1,44 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.sys;
 
-import cn.com.cybertech.config.redis.RedisTool;
-import cn.com.cybertech.model.AppInfo;
-import cn.com.cybertech.model.WebCompany;
-import cn.com.cybertech.model.WebUser;
-import cn.com.cybertech.service.WebUserService;
-import cn.com.cybertech.tools.CodeUtil;
+import cn.com.cybertech.model.SysUser;
+import cn.com.cybertech.service.SysUserService;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RestController
-@RequestMapping("/web/user")
-public class WebUserController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebUserController.class);
+@RequestMapping("/sys/user")
+public class SysUserController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SysUserController.class);
 
     @Autowired
-    private WebUserService webUserService;
+    private SysUserService sysUserService;
 
     @Autowired
     private MessageCodeUtil messageCodeUtil;
 
 
     @RequestMapping("/list")
-    public RestResponse queryWebUserList(HttpServletRequest request, WebUser webUser) {
+    public RestResponse queryWebUserList(HttpServletRequest request, SysUser sysUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         try {
-            PageHelper.startPage(webUser.getPageNum(), webUser.getPageSize());
-            List<WebUser> webUserList = webUserService.getWebUserList(token, webUser);
-            PageInfo<WebUser> webInfoPage = new PageInfo<>(webUserList);
-            return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(webUserList)
-                    .setTotal(webInfoPage.getTotal()).setPage(webInfoPage.getLastPage());
+            PageHelper.startPage(sysUser.getPageNum(), sysUser.getPageSize());
+            List<SysUser> sysUsers = sysUserService.getSysUserList(token, sysUser);
+            PageInfo<SysUser> sysUsersPage = new PageInfo<>(sysUsers);
+            return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(sysUsers)
+                    .setTotal(sysUsersPage.getTotal()).setPage(sysUsersPage.getLastPage());
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
@@ -52,30 +46,16 @@ public class WebUserController {
     }
 
     @RequestMapping("/addOrEditUser")
-    public RestResponse addOrEditUser(HttpServletRequest request, WebUser webUser,String checkPass) {
+    public RestResponse addOrEditUser(HttpServletRequest request, SysUser sysUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         String platform = request.getHeader("platform");
         try {
-            webUserService.addOrEditUser(token, platform, webUser);
+            sysUserService.addOrEditUser(token, platform, sysUser);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
-    }
-
-    //查询：用户绑定应用
-    @RequestMapping("/getUserApp")
-    public RestResponse getUserApp(HttpServletRequest request, Long userId) {
-        int msgCode = MessageCode.BASE_SUCC_CODE;
-        String token = request.getHeader("token");
-        List<Integer> userApp = Lists.newArrayList();
-        try {
-            userApp = webUserService.getUserApp(token, userId);
-        } catch (ValueRuntimeException e) {
-            msgCode = (Integer) e.getValue();
-        }
-        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(userApp);
     }
 
     //修改用户状态
@@ -84,7 +64,7 @@ public class WebUserController {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String platform = request.getHeader("platform");
         try {
-            webUserService.optionUser(platform, userId, state);
+            sysUserService.optionUser(platform, userId, state);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
@@ -96,7 +76,7 @@ public class WebUserController {
     public RestResponse getUserInfo(HttpServletRequest request) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
-        WebUser userDetail = webUserService.getUserInfo(token);
+        SysUser userDetail = sysUserService.getUserInfo(token);
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(userDetail);
     }
 
@@ -106,7 +86,7 @@ public class WebUserController {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         try {
-            webUserService.resetPassword(token, oldPassword, newPassword);
+            sysUserService.resetPassword(token, oldPassword, newPassword);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

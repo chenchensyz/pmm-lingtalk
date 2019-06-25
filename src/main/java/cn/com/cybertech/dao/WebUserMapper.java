@@ -40,4 +40,7 @@ public interface WebUserMapper {
     //根据角色查询用户
     int getWebUserByRoleId(Integer roleId);
 
+    //根据公司删除用户
+    int deleteUserByCompanyId(Integer companyId);
+
 }

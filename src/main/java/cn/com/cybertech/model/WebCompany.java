@@ -10,7 +10,7 @@ public class WebCompany extends BaseEntity {
 
     private String companyName;
 
-    private String companyEmail;
+    private String companyCode;
 
     private String introduction;
 
@@ -21,6 +21,8 @@ public class WebCompany extends BaseEntity {
     private Date createTime;
 
     private Date updateTime;
+
+    private String updateUser;
 
     private String createTimeStr;
 
@@ -42,12 +44,12 @@ public class WebCompany extends BaseEntity {
         this.companyName = companyName == null ? null : companyName.trim();
     }
 
-    public String getCompanyEmail() {
-        return companyEmail;
+    public String getCompanyCode() {
+        return companyCode;
     }
 
-    public void setCompanyEmail(String companyEmail) {
-        this.companyEmail = companyEmail == null ? null : companyEmail.trim();
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
     }
 
     public String getIntroduction() {
@@ -104,5 +106,13 @@ public class WebCompany extends BaseEntity {
 
     public void setUpdateTimeStr(String updateTimeStr) {
         this.updateTimeStr = updateTimeStr;
+    }
+
+    public String getUpdateUser() {
+        return updateUser;
+    }
+
+    public void setUpdateUser(String updateUser) {
+        this.updateUser = updateUser;
     }
 }

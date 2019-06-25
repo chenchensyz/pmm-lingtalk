@@ -16,5 +16,6 @@ public interface AppCertMapper extends BaseDao<AppCert> {
 
     int getAppCertIdsByAppId(Integer appId);
 
-    AppCert getAppCertByApkNameAndType(@Param("apkName") String apkName, @Param("type") String type);
+    AppCert getAppCertByApkNameAndType(@Param("apkName") String apkName, @Param("type") String type,
+                                       @Param("certEnviron") Integer certEnviron);
 }

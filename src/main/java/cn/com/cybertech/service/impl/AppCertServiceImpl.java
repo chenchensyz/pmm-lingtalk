@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service("appCertService")
-public class AppCertServicempl implements AppCertService {
+public class AppCertServiceImpl implements AppCertService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppCertServicempl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppCertServiceImpl.class);
 
     @Autowired
     private AppCertMapper appCertMapper;
@@ -128,7 +128,8 @@ public class AppCertServicempl implements AppCertService {
             }
             count = appCertMapper.updateAppCert(appCert);
         } else {
-            AppCert isCert = appCertMapper.getAppCertByApkNameAndType(appCert.getApkName(), appCert.getType());
+            Integer certEnviron = appCert.getCertEnviron() == null ? 1 : appCert.getCertEnviron();
+            AppCert isCert = appCertMapper.getAppCertByApkNameAndType(appCert.getApkName(), appCert.getType(), certEnviron);
             if (isCert != null) { //证书已绑定，同类型，包名相同
                 throw new ValueRuntimeException(MessageCode.CERT_APKNAME_BIND_MORE);
             }

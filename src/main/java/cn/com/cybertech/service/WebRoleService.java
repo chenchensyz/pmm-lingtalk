@@ -9,7 +9,7 @@ public interface WebRoleService {
 
     List<WebRole> getRoleList(WebRole webRole);
 
-    List<WebRole> getCompanyRoleList(String token);
+    List<WebRole> getCompanyRoleList(String source);
 
     void addOrEdidRole(WebRole webRole);
 

@@ -42,6 +42,9 @@ public class MessageCode {
     public static final int DISCUSS_USER_ERR_DEL = 12105; //删除讨论组成员失败
     public static final int DISCUSS_USER_EXIT = 12106; //讨论组成员已存在
 
+    //应用配置
+    public static final int CONFIG_ERR_ADD = 13101; //应用配置添加失败
+
     //用户
     public static final int USERINFO_ERR_SELECT = 20101; //用户不存在
     public static final int USERINFO_DISABLE = 20102; //用户已被禁用
@@ -72,12 +75,12 @@ public class MessageCode {
 
     //公司
     public static final int COMPANYINFO_ERR_SELECT = 23101; //未查到公司
-    public static final int COMPANYINFO_ERR_OPERATION = 23102; //添加或修改公司失败
+    public static final int COMPANYINFO_ERR_SAVE = 23102; //保存公司失败
     public static final int COMPANYINFO_ERR_DELECT = 23103; //删除公司失败
 
     //离线推送
-    public static final int OFFLINEPUSH_ERR_REGISTER= 24101; //离线推送注册失败
-    public static final int OFFLINEPUSH_ERR_UNREGISTER= 24102; //离线推送注销失败
+    public static final int OFFLINEPUSH_ERR_REGISTER = 24101; //离线推送注册失败
+    public static final int OFFLINEPUSH_ERR_UNREGISTER = 24102; //离线推送注销失败
 
     //平台
     public static final int PLATFORM_NEXIST_ERR = 251001;    // 平台不存在
@@ -92,5 +95,10 @@ public class MessageCode {
     public static final int MESSAGE_ERR_SAVE = 261005;                       //消息保存失败
     public static final int MESSAGE_BODY_ERR_SAVE = 261006;                  //消息内容保存失败
     public static final int MESSAGE_PUSH_ERROR_STAT_NULL = 261007;          // 未找到消息推送
+
+    public static final int COMMONCONFIG_ERR_SAVE = 271001;          // 全局配置保存失败
+    public static final int COMMONCONFIG_ERR_DEL = 271002;          // 全局配置删除失败
+    public static final int COMMONCONFIG_FROM_NULL= 271003;          // 源版本配置不存在
+    public static final int COMMONCONFIG_TO_NULL= 271004;          // 目标版本不存在
 
 }

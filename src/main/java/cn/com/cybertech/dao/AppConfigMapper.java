@@ -7,4 +7,8 @@ import java.util.List;
 public interface AppConfigMapper {
 
     List<AppConfig> getAppConfigListByAppId(int appId);
+
+    int insertMoreAppConfig(AppConfig appConfig);
+
+    int deleteByAppId(Integer appId);
 }

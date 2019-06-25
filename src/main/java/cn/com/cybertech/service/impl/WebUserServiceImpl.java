@@ -109,7 +109,7 @@ public class WebUserServiceImpl implements WebUserService {
         webCompany.setCompanyName(companyName);
         webCompany.setIntroduction(introduction);
         webCompany.setOwner(webUser.getUserName());
-        int count1 = webCompanyMapper.insertSelective(webCompany);
+        int count1 = webCompanyMapper.insertWebCompany(webCompany);
         WebUser user = webUserMapper.getWebUserLoginPass(webUser.getUserName());
         String newPwd;
         if (user != null && StringUtils.isNotBlank(user.getPassword())) {

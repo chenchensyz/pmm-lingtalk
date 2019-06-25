@@ -44,7 +44,7 @@
 
 
         <!--配置实体 -->
-        <table  tableName="sdk_sys_user" domainObjectName="SysUser"
+        <table  tableName="web_common_configuration" domainObjectName="CommonConfig"
                 enableCountByExample="false" enableUpdateByExample="false"
                 enableDeleteByExample="false" enableSelectByExample="false"
                 selectByExampleQueryId="false" >

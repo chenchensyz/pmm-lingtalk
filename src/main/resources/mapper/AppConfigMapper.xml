@@ -70,4 +70,17 @@
   <select id="getAppConfigListByAppId" parameterType="int" resultMap="BaseResultMap">
      select * from sdk_app_config where  app_id = #{appId}
   </select>
+
+  <delete id="deleteByAppId" parameterType="java.lang.Integer">
+    delete from sdk_app_config  where app_id = #{appId}
+  </delete>
+
+
+  <insert id="insertMoreAppConfig" parameterType="cn.com.cybertech.model.AppConfig">
+    insert into sdk_app_config(`KEY`, `VALUE`, app_id)
+      VALUES
+    <foreach collection="appConfigs" item="item" index="index" separator="," >
+      (#{item.key},#{item.value},#{appId})
+    </foreach>
+  </insert>
 </mapper>

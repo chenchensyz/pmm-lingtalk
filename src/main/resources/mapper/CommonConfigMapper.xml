@@ -1,164 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.com.cybertech.dao.CommonConfigMapper">
-  <resultMap id="BaseResultMap" type="cn.com.cybertech.model.CommonConfig">
-    <id column="ID" jdbcType="INTEGER" property="id" />
-    <result column="KEY" jdbcType="VARCHAR" property="key" />
-    <result column="VALUE" jdbcType="VARCHAR" property="value" />
-    <result column="PLATFORM" jdbcType="VARCHAR" property="platform" />
-    <result column="VERSION" jdbcType="VARCHAR" property="version" />
-    <result column="STATE" jdbcType="INTEGER" property="state" />
-    <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser" />
-    <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser" />
-    <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="DELETED" jdbcType="INTEGER" property="deleted" />
-    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
-    <result column="DELETE_TIME" jdbcType="TIMESTAMP" property="deleteTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
+    <resultMap id="BaseResultMap" type="cn.com.cybertech.model.CommonConfig">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="KEY" jdbcType="VARCHAR" property="key"/>
+        <result column="VALUE" jdbcType="VARCHAR" property="value"/>
+        <result column="PLATFORM" jdbcType="VARCHAR" property="platform"/>
+        <result column="VERSION" jdbcType="VARCHAR" property="version"/>
+        <result column="STATE" jdbcType="INTEGER" property="state"/>
+        <result column="CREATE_USER" jdbcType="VARCHAR" property="createUser"/>
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="UPDATE_USER" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="DELETED" jdbcType="INTEGER" property="deleted"/>
+        <result column="DESCRIPTION" jdbcType="VARCHAR" property="description"/>
+        <result column="DELETE_TIME" jdbcType="TIMESTAMP" property="deleteTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
     ID, KEY, VALUE, PLATFORM, VERSION, STATE, CREATE_USER, CREATE_TIME, UPDATE_USER, 
     UPDATE_TIME, DELETED, DESCRIPTION, DELETE_TIME
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from web_common_configuration
-    where ID = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    <select id="getCommonConfigById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select  <include refid="Base_Column_List"/> from web_common_configuration
+        where ID = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteCommonConfigById" parameterType="java.lang.Integer">
     delete from web_common_configuration
     where ID = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insertSelective" parameterType="cn.com.cybertech.model.CommonConfig">
-    insert into web_common_configuration
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="key != null">
-        KEY,
-      </if>
-      <if test="value != null">
-        VALUE,
-      </if>
-      <if test="platform != null">
-        PLATFORM,
-      </if>
-      <if test="version != null">
-        VERSION,
-      </if>
-      <if test="state != null">
-        STATE,
-      </if>
-      <if test="createUser != null">
-        CREATE_USER,
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME,
-      </if>
-      <if test="updateUser != null">
-        UPDATE_USER,
-      </if>
-      <if test="updateTime != null">
-        UPDATE_TIME,
-      </if>
-      <if test="deleted != null">
-        DELETED,
-      </if>
-      <if test="description != null">
-        DESCRIPTION,
-      </if>
-      <if test="deleteTime != null">
-        DELETE_TIME,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="key != null">
-        #{key,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null">
-        #{value,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="version != null">
-        #{version,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        #{state,jdbcType=INTEGER},
-      </if>
-      <if test="createUser != null">
-        #{createUser,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUser != null">
-        #{updateUser,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deleted != null">
-        #{deleted,jdbcType=INTEGER},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="deleteTime != null">
-        #{deleteTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.CommonConfig">
-    update web_common_configuration
-    <set>
-      <if test="key != null">
-        KEY = #{key,jdbcType=VARCHAR},
-      </if>
-      <if test="value != null">
-        VALUE = #{value,jdbcType=VARCHAR},
-      </if>
-      <if test="platform != null">
-        PLATFORM = #{platform,jdbcType=VARCHAR},
-      </if>
-      <if test="version != null">
-        VERSION = #{version,jdbcType=VARCHAR},
-      </if>
-      <if test="state != null">
-        STATE = #{state,jdbcType=INTEGER},
-      </if>
-      <if test="createUser != null">
-        CREATE_USER = #{createUser,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateUser != null">
-        UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="deleted != null">
-        DELETED = #{deleted,jdbcType=INTEGER},
-      </if>
-      <if test="description != null">
-        DESCRIPTION = #{description,jdbcType=VARCHAR},
-      </if>
-      <if test="deleteTime != null">
-        DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where ID = #{id,jdbcType=INTEGER}
-  </update>
+    <insert id="insertCommonConfig" parameterType="cn.com.cybertech.model.CommonConfig">
+        insert into web_common_configuration
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="key != null">
+                `KEY`,
+            </if>
+            <if test="value != null">
+                `VALUE`,
+            </if>
+            <if test="platform != null">
+                PLATFORM,
+            </if>
+            <if test="version != null">
+                VERSION,
+            </if>
+            <if test="createUser != null">
+                CREATE_USER,
+            </if>
+            <if test="description != null">
+                DESCRIPTION,
+            </if>
+            STATE, CREATE_TIME, DELETED
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="key != null">
+                #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=INTEGER},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            0,sysdate(),0
+        </trim>
+    </insert>
+    <update id="updateCommonConfig" parameterType="cn.com.cybertech.model.CommonConfig">
+        update web_common_configuration
+        <set>
+            <if test="key != null">
+                `KEY` = #{key,jdbcType=VARCHAR},
+            </if>
+            <if test="value != null">
+                `VALUE`= #{value,jdbcType=VARCHAR},
+            </if>
+            <if test="platform != null">
+                PLATFORM = #{platform,jdbcType=VARCHAR},
+            </if>
+            <if test="version != null">
+                VERSION = #{version,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                STATE = #{state,jdbcType=INTEGER},
+            </if>
+            <if test="updateUser != null">
+                UPDATE_USER = #{updateUser,jdbcType=VARCHAR},
+            </if>
+                UPDATE_TIME = sysdate(),
+            <if test="deleted != null">
+                DELETED = #{deleted,jdbcType=INTEGER},
+            </if>
+            <if test="description != null">
+                DESCRIPTION = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="deleteTime != null">
+                DELETE_TIME = #{deleteTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
 
-  <select id="findCommonConfig" parameterType="map" resultMap="BaseResultMap">
+    <select id="getCommonConfigList" parameterType="cn.com.cybertech.model.CommonConfig" resultMap="BaseResultMap">
+        SELECT CC.ID, CC.KEY, CC.VALUE, CC.PLATFORM, CC.VERSION, CC.STATE
+        FROM WEB_COMMON_CONFIGURATION CC
+        WHERE CC.DELETED = 0 AND CC.STATE = 0
+        <if test="key != null and key !=''" >
+           and  CC.KEY = #{key,jdbcType=VARCHAR}
+        </if>
+        <if test="value != null and value !=''">
+            and  CC.VALUE = #{value,jdbcType=VARCHAR}
+        </if>
+        <if test="platform != null and platform !=''">
+            and CC.PLATFORM = #{platform,jdbcType=VARCHAR}
+        </if>
+        <if test="version != null and version !=''">
+            and CC.VERSION = #{version,jdbcType=VARCHAR}
+        </if>
+        order by CC.VERSION desc
+    </select>
+
+    <select id="findCommonConfig" parameterType="map" resultMap="BaseResultMap">
         SELECT CC.ID, CC.KEY, CC.VALUE, CC.PLATFORM, CC.VERSION, CC.STATE
           FROM WEB_COMMON_CONFIGURATION CC
          WHERE CC.PLATFORM = #{platform}
@@ -167,9 +145,32 @@
            AND CC.STATE = 0
     </select>
 
-  <!-- 获取平台最新版本号 -->
-  <select id="queryMaxVesrion" parameterType="string" resultType="string">
+    <!-- 获取平台最新版本号 -->
+    <select id="queryMaxVesrion" parameterType="string" resultType="string">
         SELECT max(VERSION) FROM web_common_configuration where  DELETED = 0 AND STATE = 0
         AND PLATFORM = #{platform}
     </select>
+
+    <select id="queryGroupPlatform"  resultType="string">
+       SELECT PLATFORM from web_common_configuration GROUP BY PLATFORM
+    </select>
+
+    <select id="getVersionByPlatform"  resultType="string" parameterType="string">
+       SELECT DISTINCT(VERSION)  FROM web_common_configuration where  DELETED = 0 AND STATE = 0
+        AND PLATFORM = #{platform}
+    </select>
+
+   <delete id="deleteConfigByPlatformAndVersion" parameterType="map">
+    delete from web_common_configuration WHERE PLATFORM = #{platform} AND VERSION = #{version}
+  </delete>
+
+    <insert id="insertMoreCommonConfig" parameterType="list">
+        insert into web_common_configuration(`KEY`, `VALUE`, platform ,VERSION , CREATE_USER ,
+        DESCRIPTION, STATE, CREATE_TIME, DELETED)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator="," >
+            (#{item.key},#{item.value},#{item.platform},#{item.version},
+            #{item.createUser},#{item.description}, 0,sysdate(),0)
+        </foreach>
+    </insert>
 </mapper>

@@ -39,7 +39,7 @@ public class AppOfflinePushController {
         }
         int msgCode = MessageCode.OFFLINEPUSH_ERR_REGISTER;
         String msg;
-        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);
         String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
@@ -61,7 +61,7 @@ public class AppOfflinePushController {
     public RestResponse unregisterOffline(String userId, String appId) {
         int msgCode = MessageCode.OFFLINEPUSH_ERR_UNREGISTER;
         String msg;
-        String upload_url = env.getProperty(CodeUtil.CERT_UPLOAD_URL);
+        String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);
         String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         String requestUrl = upload_url + push_status_url + "/" + userId + "@" + appId;
         Map<String, Object> map =

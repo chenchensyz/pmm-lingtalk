@@ -105,6 +105,9 @@ public class SysUserServiceImpl implements SysUserService {
                 throw new ValueRuntimeException(MessageCode.USERINFO_PARAM_NULL);
             }
             SysUser user = sysUserMapper.getSysUserByUserName(sysUser.getUserName());
+            if (user != null) {
+                throw new ValueRuntimeException(MessageCode.USERINFO_EXIST);
+            }
             String newPwd = EncryptUtils.MD5Encode(sysUser.getUserName() + sysUser.getPassword() + "*!!");
             if (user != null) {
                 if (StringUtils.isNotBlank(user.getPassword())) {

@@ -33,9 +33,8 @@ public class WebRoleServiceImpl implements WebRoleService {
     }
 
     @Override
-    public List<WebRole> getCompanyRoleList(String token) {
-        WebUser webUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
-        return webRoleMapper.getCompanyRoleList(webUser.getSource());
+    public List<WebRole> getCompanyRoleList(String source) {
+        return webRoleMapper.getCompanyRoleList(source);
     }
 
     @Override

@@ -40,19 +40,26 @@ public class WebRoleController {
     @Autowired
     private WebPerimissionService webPerimissionService;
 
+    @Autowired
+    private RedisTool redisTool;
+
     @RequestMapping("/list")
-    public RestResponse queryWebUserList(HttpServletRequest request,WebRole webRole) {
+    public RestResponse queryWebRoleList(HttpServletRequest request, WebRole webRole) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        PageHelper.startPage(webRole.getPageNum(), webRole.getPageSize());
+        List<WebRole> webRoleList = webRoleService.getRoleList(webRole);
+        PageInfo<WebRole> webInfoPage = new PageInfo<>(webRoleList);
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(webRoleList)
+                .setTotal(webInfoPage.getTotal()).setPage(webInfoPage.getLastPage());
+    }
+
+    @RequestMapping("/queryWebRoleTypeList")
+    public RestResponse queryWebRoleTypeList(HttpServletRequest request) {
         String token = request.getHeader("token");
-        if (webRole.getPageSize() == 0) {
-            List<WebRole> companyRoleList = webRoleService.getCompanyRoleList(token);
-            return RestResponse.success().setData(companyRoleList);
-        } else {
-            PageHelper.startPage(webRole.getPageNum(), webRole.getPageSize());
-            List<WebRole> webRoleList = webRoleService.getRoleList(webRole);
-            PageInfo<WebRole> webInfoPage = new PageInfo<>(webRoleList);
-            return RestResponse.success().setData(webRoleList)
-                    .setTotal(webInfoPage.getTotal()).setPage(webInfoPage.getLastPage());
-        }
+        WebUser webUser = redisTool.getUser(CodeUtil.REDIS_PREFIX + token);
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        List<WebRole> companyRoleList = webRoleService.getCompanyRoleList(webUser.getSource());
+        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(companyRoleList);
     }
 
     @RequestMapping("/addOrEdidRole")
