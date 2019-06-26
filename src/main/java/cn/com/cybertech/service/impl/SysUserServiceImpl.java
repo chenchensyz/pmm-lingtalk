@@ -30,8 +30,6 @@ public class SysUserServiceImpl implements SysUserService {
     @Autowired
     private SysUserMapper sysUserMapper;
 
-    @Autowired
-    private WebCompanyMapper webCompanyMapper;
 
     @Autowired
     private JedisPool jedisPool;

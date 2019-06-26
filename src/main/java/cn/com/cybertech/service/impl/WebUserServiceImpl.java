@@ -54,6 +54,13 @@ public class WebUserServiceImpl implements WebUserService {
 
     @Override
     public Map<String, Object> login(WebUser webUser, String platform) {
+        WebCompany company = webCompanyMapper.getWebCompanyById(webUser.getCompanyId());
+        if (company == null) {
+            throw new ValueRuntimeException(MessageCode.COMPANYINFO_ERR_SELECT); //未查到公司
+        }
+        if (company.getState() != 1) {
+            throw new ValueRuntimeException(MessageCode.COMPANYINFO_NOT_PASS); //公司未通过审核或者已被禁用
+        }
         WebUser user = webUserMapper.getWebUserLogin(webUser.getUserName(), webUser.getCompanyId());
         Map<String, Object> resultMap = Maps.newHashMap();
         if (user == null) {
@@ -68,6 +75,7 @@ public class WebUserServiceImpl implements WebUserService {
         if (user.getState() == 0) {
             throw new ValueRuntimeException(MessageCode.USERINFO_DISABLE); //用户已被禁用
         }
+
         //生成token
         String token = EncryptUtils.MD5Encode(platform + webUser.getUserName() + webUser.getCompanyId());
 

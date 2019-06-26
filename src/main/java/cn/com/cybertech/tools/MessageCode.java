@@ -77,6 +77,7 @@ public class MessageCode {
     public static final int COMPANYINFO_ERR_SELECT = 23101; //未查到公司
     public static final int COMPANYINFO_ERR_SAVE = 23102; //保存公司失败
     public static final int COMPANYINFO_ERR_DELECT = 23103; //删除公司失败
+    public static final int COMPANYINFO_NOT_PASS = 23104; //公司未通过审核或者已被禁用，请联系管理员
 
     //离线推送
     public static final int OFFLINEPUSH_ERR_REGISTER = 24101; //离线推送注册失败

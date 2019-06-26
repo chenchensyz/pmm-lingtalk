@@ -68,7 +68,7 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
         if (count1 == 0) {
             throw new ValueRuntimeException(MessageCode.MESSAGE_ERR_SAVE);
         }
-        pushMessages(pushToIds, externalpush); //推送
+        pushMessages(pushToIds, externalpush, offLine); //推送
         int count2 = externalToMapper.addExternalToMore(externalpush.getUuid(), toIds, expire, offLine);
         if (count2 != toIds.size()) {
             throw new ValueRuntimeException(MessageCode.MESSAGE_BODY_ERR_SAVE);
@@ -82,7 +82,7 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
         return response;
     }
 
-    public void pushMessages(List<String> toIds, ExternalPush externalpush) {
+    public void pushMessages(List<String> toIds, ExternalPush externalpush, Boolean offLine) {
         Jedis jedis = jedisPool.getResource();
         try {
             Set<String> tosSet = new HashSet<String>(toIds);
@@ -91,10 +91,10 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
                 byte[] uByte = to.getBytes(CodeUtil.cs);
                 //byte[] dByte = Base64Utils.encode(content.getBytes("UTF-8"));
                 byte[] eIdByte = externalpush.getUuid().getBytes(CodeUtil.cs);
-                byte[] pushByte = "0".getBytes(CodeUtil.cs);
+                String pushByteStr = offLine == null ? "0" : "1";
+                byte[] pushByte = pushByteStr.getBytes(CodeUtil.cs);
                 StringBuffer contentBuf = new StringBuffer();
                 contentBuf.append(externalpush.getUuid())
-                        .append(":").append(RedisUtils.toBase64String(externalpush.getPkg()))
                         .append(":").append(RedisUtils.toBase64String(externalpush.getContent()));
                 byte[] dByte = contentBuf.toString().getBytes(CodeUtil.cs);
                 jedis.publish("notice".getBytes(), RedisUtils.buildBytesArray(uByte, cByte, eIdByte, pushByte, dByte));

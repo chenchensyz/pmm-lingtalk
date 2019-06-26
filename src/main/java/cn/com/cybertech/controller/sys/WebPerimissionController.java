@@ -1,7 +1,6 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.sys;
 
 import cn.com.cybertech.model.WebPermission;
-import cn.com.cybertech.model.WebRole;
 import cn.com.cybertech.service.WebPerimissionService;
 import cn.com.cybertech.tools.EncryptUtils;
 import cn.com.cybertech.tools.MessageCode;
@@ -31,9 +30,9 @@ public class WebPerimissionController {
 
     //查询用户权限列表
     @RequestMapping(value = "list", method = RequestMethod.GET)
-    public RestResponse getPermissionList(Integer roleId, Integer type) {
+    public RestResponse getPermissionList(Integer roleId, Integer type, String source) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
-        List<WebPermission> permissions = webPerimissionService.getPermissions(roleId, Arrays.asList(type));
+        List<WebPermission> permissions = webPerimissionService.getPermissions(roleId, Arrays.asList(type), source);
         return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(permissions);
     }
 

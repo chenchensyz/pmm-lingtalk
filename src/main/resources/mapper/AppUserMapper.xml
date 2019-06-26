@@ -147,6 +147,10 @@
     <if test="userId != null and userId !=''">
       and USER_ID = #{userId}
     </if>
+    <if test="userName != null">
+      <bind name="userNameSec" value="'%' + userName + '%'" />
+      and USER_NAME  LIKE  #{userNameSec}
+    </if>
   </select>
 
   <select id="getAppUserIdsByAppId" parameterType="int" resultType="int">

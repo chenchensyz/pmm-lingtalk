@@ -242,7 +242,6 @@
                     <!--</excludes>-->
                     <includes>引入
                         <include>cn/**</include>
-                        <include>mapper/**</include>
                     </includes>
                 </configuration>
             </plugin>

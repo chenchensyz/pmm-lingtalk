@@ -1,9 +1,11 @@
 package cn.com.cybertech.controller;
 
+import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.model.WebCompany;
 import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.WebCompanyService;
 import cn.com.cybertech.service.WebUserService;
+import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import redis.clients.jedis.JedisPool;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -28,7 +31,6 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WebUserController.class);
 
-
     @Autowired
     private MessageCodeUtil messageCodeUtil;
 
@@ -37,6 +39,9 @@ public class LoginController {
 
     @Autowired
     private WebCompanyService webCompanyService;
+
+    @Autowired
+    private RedisTool redisTool;
 
     @RequestMapping(method = RequestMethod.POST)
     public RestResponse login(WebUser webUser, HttpServletRequest request) {
@@ -61,6 +66,14 @@ public class LoginController {
     public RestResponse getCompanyList(@PathVariable("userName") String userName) {
         List<WebCompany> companyInfos = webCompanyService.getWebCompanyByUserName(userName);
         return RestResponse.success().setData(companyInfos);
+    }
+
+    //获取用户所在的公司列表
+    @RequestMapping(value = "/logout", method = RequestMethod.GET)
+    public RestResponse logout(HttpServletRequest request) {
+        String token = request.getHeader("token");
+        Long del = redisTool.del(CodeUtil.REDIS_PREFIX + token);
+        return RestResponse.success().setData(del);
     }
 
 }

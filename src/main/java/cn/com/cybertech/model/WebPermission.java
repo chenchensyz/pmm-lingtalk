@@ -20,6 +20,8 @@ public class WebPermission extends BaseEntity {
 
     private Integer type;
 
+    private String source;
+
     private String icon;
 
     private Integer orderNum;
@@ -147,4 +149,11 @@ public class WebPermission extends BaseEntity {
         this.children = children;
     }
 
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
 }

@@ -9,6 +9,7 @@
     <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="perms" jdbcType="VARCHAR" property="perms" />
     <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
     <result column="icon" jdbcType="VARCHAR" property="icon" />
     <result column="order_num" jdbcType="INTEGER" property="orderNum" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -47,6 +48,9 @@
       <if test="type != null">
         type,
       </if>
+      <if test="source != null">
+        source,
+      </if>
       <if test="icon != null">
         icon,
       </if>
@@ -79,6 +83,9 @@
       <if test="type != null">
         #{type,jdbcType=INTEGER},
       </if>
+      <if test="source != null">
+        #{source,jdbcType=INTEGER},
+      </if>
       <if test="icon != null">
         #{icon,jdbcType=VARCHAR},
       </if>
@@ -106,7 +113,10 @@
         perms = #{perms,jdbcType=VARCHAR},
       </if>
       <if test="type != null">
-        type = #{type,jdbcType=INTEGER},
+        type = #{type},
+      </if>
+      <if test="source != null">
+        source = #{source},
       </if>
       <if test="icon != null">
         icon = #{icon,jdbcType=VARCHAR},
@@ -134,32 +144,19 @@
       <if test="parentId != null">
          and parent_id = #{parentId,jdbcType=BIGINT}
       </if>
-      <if test="url != null and url !=''">
-         and url = #{url,jdbcType=VARCHAR}
-      </if>
       <if test="perms != null and perms !=''">
          and perms = #{perms,jdbcType=VARCHAR}
       </if>
       <if test="type != null">
          and type = #{type,jdbcType=INTEGER}
       </if>
-      <if test="icon != null and icon !=''">
-         and icon = #{icon,jdbcType=VARCHAR}
-      </if>
-      <if test="orderNum != null">
-         and order_num = #{orderNum,jdbcType=INTEGER}
-      </if>
-      <if test="createTime != null">
-         and create_time = #{createTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="updateTime != null">
-         and update_time = #{updateTime,jdbcType=TIMESTAMP}
-      </if>
     </where>
   </sql>
-  <select id="getList" parameterType="cn.com.cybertech.model.WebPermission" resultMap="BaseResultMap">
-     select * from sdk_web_permission
-    <include refid="sql_where" />
+  <select id="getPermList" parameterType="string" resultMap="BaseResultMap">
+     select * from sdk_web_permission where 1=1
+    <if test="source != null and source !=''">
+      and source= #{source}
+    </if>
   </select>
 
   <select id="getPermByRoleId" parameterType="map" resultMap="BaseResultMap">

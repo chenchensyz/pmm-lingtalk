@@ -23,13 +23,13 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
     private WebPermissionMapper webPermissionMapper;
 
     @Override
-    public List<WebPermission> getPermissions(Integer roleId, List<Integer> types) {
+    public List<WebPermission> getPermissions(Integer roleId, List<Integer> types, String source) {
         List<WebPermission> permissions = new ArrayList<>();
         List<WebPermission> menus;
         if (roleId != null) { //角色用户拥有的权限
             menus = webPermissionMapper.getPermByRoleId(roleId, types);
         } else {
-            menus = webPermissionMapper.getList(new WebPermission());
+            menus = webPermissionMapper.getPermList(source);
         }
         for (WebPermission menu : menus) {
             if (menu.getParentId() == null || menu.getParentId() == 0) {
@@ -76,7 +76,7 @@ public class WebPerimissionServiceImpl implements WebPerimissionService {
     @Override
     public Set<String> findPermissions(String userName) {
         Set<String> perms = new HashSet<>();
-        List<WebPermission> permissions = webPermissionMapper.getList(new WebPermission());
+        List<WebPermission> permissions = webPermissionMapper.getPermList(null);
         for (WebPermission permission : permissions) {
             if (permission.getPerms() != null && !"".equals(permission.getPerms())) {
                 perms.add(permission.getPerms());

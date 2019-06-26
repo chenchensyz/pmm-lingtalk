@@ -134,8 +134,8 @@
   </select>
 
   <select id="getSysUserByUserName" parameterType="string" resultMap="BaseResultMap">
-    SELECT syu.id, syu.user_name, syu.password, syu.nick_name, syu.role_id, syu.state
-    FROM sdk_sys_user syu WHERE syu.user_name = #{userName} group by syu.user_name
+    SELECT id, user_name, password, nick_name, role_id, state
+    FROM sdk_sys_user  WHERE user_name = #{userName}
   </select>
 
   <update id="updateSysUserPassByUserName" parameterType="map">

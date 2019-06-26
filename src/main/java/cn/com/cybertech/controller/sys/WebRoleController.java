@@ -1,4 +1,4 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.sys;
 
 import cn.com.cybertech.config.redis.RedisTool;
 import cn.com.cybertech.model.WebPermission;
@@ -6,7 +6,6 @@ import cn.com.cybertech.model.WebRole;
 import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.WebPerimissionService;
 import cn.com.cybertech.service.WebRoleService;
-import cn.com.cybertech.service.WebUserService;
 import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
@@ -22,9 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/web/role")

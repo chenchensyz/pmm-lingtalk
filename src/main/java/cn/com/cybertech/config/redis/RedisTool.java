@@ -34,6 +34,20 @@ public class RedisTool {
         return stringMap;
     }
 
+    public Long del(String key) {
+        Jedis jedis = jedisPool.getResource();
+        jedis.select(CodeUtil.REDIS_DBINDEX);
+        Long del = 0l;
+        try {
+            del = jedis.del(key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            jedis.close();
+        }
+        return del;
+    }
+
     public WebUser getUser(String key) {
         WebUser webUser = new WebUser();
         Map<String, String> map = hgetAll(key);
