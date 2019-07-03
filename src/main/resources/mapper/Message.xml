@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.cybertech.dao.MessageApiMapper">
+	
+	<resultMap id="ReceiptMessageMap" type="cn.com.cybertech.model.ReceiptMessage">
+		<id property="messageId" column="UUID"/>
+		<collection property="statusSet" ofType="cn.com.cybertech.model.ReceiptMessageStatus" column="UUID">
+			<result property="userId" column="USERID"/>
+			<result property="status" column="STATUS"/>
+		</collection>
+	</resultMap>
+	
+
+	<select id="queryReceiptMessageStatus" resultMap="ReceiptMessageMap">
+		SELECT * FROM pm_td_message_receipts WHERE UUID IN
+		<foreach collection="list" item="msgId" open="(" separator="," close=")">
+			#{msgId}
+		</foreach>
+	</select>
+</mapper>

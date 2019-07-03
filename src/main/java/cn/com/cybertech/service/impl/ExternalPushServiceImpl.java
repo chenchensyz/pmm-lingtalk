@@ -91,10 +91,11 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
                 byte[] uByte = to.getBytes(CodeUtil.cs);
                 //byte[] dByte = Base64Utils.encode(content.getBytes("UTF-8"));
                 byte[] eIdByte = externalpush.getUuid().getBytes(CodeUtil.cs);
-                String pushByteStr = offLine == null ? "0" : "1";
+                String pushByteStr = offLine != null && offLine == true ? "1" : "0";
                 byte[] pushByte = pushByteStr.getBytes(CodeUtil.cs);
                 StringBuffer contentBuf = new StringBuffer();
                 contentBuf.append(externalpush.getUuid())
+                        .append(":").append(RedisUtils.toBase64String(externalpush.getPkg()))
                         .append(":").append(RedisUtils.toBase64String(externalpush.getContent()));
                 byte[] dByte = contentBuf.toString().getBytes(CodeUtil.cs);
                 jedis.publish("notice".getBytes(), RedisUtils.buildBytesArray(uByte, cByte, eIdByte, pushByte, dByte));

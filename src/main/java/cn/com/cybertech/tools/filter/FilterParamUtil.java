@@ -11,8 +11,8 @@ public class FilterParamUtil {
 
     public static final String APPCONFIG_FILTER = "id,appId";
     public static final String COMMON_FILTER = "id,platform,version,state,createUser,createTime," +
-            "updateUser,updateTime,deleted,description,deleteTime";
-    public static final String EXTERNALTO_FILTER = "acktime,expire,offLine,push.to,push.pkg,push.appId";
+            "updateUser,updateTime,deleted,description,deleteTime,pageNum,pageSize";
+    public static final String EXTERNALTO_FILTER = "acktime,expire,push.to,push.pkg,push.appId";
     public static final String EXTERNALTOS_PUSH_FILTER = "uuid,acktime,expire,offLine";
 
     public static Object filterParam(Object o, String filters) {

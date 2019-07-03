@@ -117,7 +117,6 @@
     LEFT JOIN app_app aa ON aa.id = ep.app_id
     WHERE  et.msg_to= #{to}
     and et.state != 2
-    and et.off_line = 1
     and (date_add(et.pushtime, interval et.expire minute) >= SYSDATE() or et.expire is null)
     <if test="appId != null">
       and aa.app_id = #{appId}
