@@ -1,4 +1,4 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.web;
 
 
 import cn.com.cybertech.model.WebUser;

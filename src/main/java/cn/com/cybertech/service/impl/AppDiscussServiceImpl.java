@@ -276,7 +276,7 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
         AppDiscuss appDiscuss = JSONObject.parseObject(param, AppDiscuss.class);
         if (appDiscuss != null && appDiscuss.getUserList() != null && appDiscuss.getUserList().size() > 0) {
             AppDiscuss discuss = appDiscussMapper.getAppDiscussById(appDiscuss.getDiscussId());  //查询讨论组
-            if (discuss.getAppId() != appInfo.getId()) {
+            if (discuss == null || discuss.getAppId() != appInfo.getId()) {
                 throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
             }
             Set<String> userList = new HashSet(appDiscuss.getUserList());

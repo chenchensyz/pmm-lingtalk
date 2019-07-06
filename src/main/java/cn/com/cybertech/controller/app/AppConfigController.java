@@ -1,4 +1,4 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.app;
 
 import cn.com.cybertech.model.AppConfig;
 import cn.com.cybertech.service.AppConfigService;

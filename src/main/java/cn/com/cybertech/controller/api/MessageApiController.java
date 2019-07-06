@@ -36,4 +36,17 @@ public class MessageApiController {
         response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
         return response;
     }
+
+    @RequestMapping(value = "/location/uploadimg", method = RequestMethod.GET)
+    public RestResponse uploadimg(@RequestParam String messageIds) {
+        RestResponse response = new RestResponse();
+        int msgCode = MessageCode.BASE_SUCC_CODE;
+        try {
+            response = messageApiService.getReceiptMessageStatus(response, messageIds);
+        } catch (ValueRuntimeException e) {
+            msgCode = (Integer) e.getValue();
+        }
+        response.retMsg(response, msgCode, messageCodeUtil.getMessage(msgCode));
+        return response;
+    }
 }

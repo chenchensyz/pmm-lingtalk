@@ -1,11 +1,7 @@
-package cn.com.cybertech.controller;
+package cn.com.cybertech.controller.web;
 
-import cn.com.cybertech.config.redis.RedisTool;
-import cn.com.cybertech.model.AppInfo;
-import cn.com.cybertech.model.WebCompany;
 import cn.com.cybertech.model.WebUser;
 import cn.com.cybertech.service.WebUserService;
-import cn.com.cybertech.tools.CodeUtil;
 import cn.com.cybertech.tools.MessageCode;
 import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
@@ -13,7 +9,6 @@ import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/web/user")

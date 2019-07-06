@@ -29,7 +29,7 @@
 	    ptd.DISCUSS_VERSION, ptd.app_id
      FROM pm_tp_discuss ptd
 	LEFT JOIN pm_tp_discuss_users ptu ON ptd.DISCUSS_ID = ptu.DISCUSS_ID
-    WHERE ptd.DISCUSS_ID = #{discussId}
+    WHERE ptd.DISCUSS_ID = #{discussId} and ptd.DISABLED = 0
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from pm_tp_discuss
