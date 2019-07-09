@@ -1,18 +1,20 @@
 package cn.com.cybertech.model;
 
 
-public class ExternalPush{
+public class ExternalPush {
     private String uuid;
 
     private String from;
 
     private String content;
 
-    private String pkg;
-
     private String to;
 
     private Integer appId;
+
+    private String title;
+
+    private String text;
 
     public String getUuid() {
         return uuid;
@@ -38,14 +40,6 @@ public class ExternalPush{
         this.content = content;
     }
 
-    public String getPkg() {
-        return pkg;
-    }
-
-    public void setPkg(String pkg) {
-        this.pkg = pkg;
-    }
-
     public String getTo() {
         return to;
     }
@@ -60,5 +54,21 @@ public class ExternalPush{
 
     public void setAppId(Integer appId) {
         this.appId = appId;
+    }
+
+    public String getTitle() {
+        return title == null ? "" : title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getText() {
+        return text == null ? "" : text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 }

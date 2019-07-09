@@ -18,7 +18,7 @@ public interface ExternalToMapper {
 
     //批量插入
     int addExternalToMore(@Param("uuid") String uuid, @Param("tos") List<String> tos,
-                          @Param("expire") Long expire, @Param("offLine") Boolean offLine);
+                          @Param("expire") Long expire, @Param("offLine") Integer offLine);
 
     List<ExternalTo> getByUuid(String uuid);
 }

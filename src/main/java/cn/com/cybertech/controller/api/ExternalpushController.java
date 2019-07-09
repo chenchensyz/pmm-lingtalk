@@ -44,13 +44,15 @@ public class ExternalpushController {
      * 发送推送
      */
     @RequestMapping("/push")
-    public RestResponse push(HttpServletRequest request, ExternalPush externalpush, Long expire, Boolean offLine) {
+    public RestResponse push(HttpServletRequest request, ExternalPush externalpush,
+                             Long expire, Boolean offLine) {
         logger.debug("发送推送消息 uuid:{}", externalpush.getUuid());
         RestResponse response = new RestResponse();
         String token = request.getHeader("token");
         int msgCode = MessageCode.BASE_SUCC_CODE;
+        int offLineInt = offLine ? 1 : 0;
         try {
-            response = externalPushService.push(response, token, externalpush, expire, offLine);
+            response = externalPushService.push(response, token, externalpush, expire, offLineInt);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

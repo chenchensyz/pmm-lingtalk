@@ -97,6 +97,7 @@ public class MessageCode {
     public static final int MESSAGE_BODY_ERR_SAVE = 261006;                  //消息内容保存失败
     public static final int MESSAGE_PUSH_ERROR_STAT_NULL = 261007;          // 未找到消息推送
     public static final int MESSAGE_SELECT_NULL = 261008;          // 消息未找到
+    public static final int MESSAGE_ERR_OFFLINE_PUSH = 261009;     //离线消息发送失败
 
     public static final int COMMONCONFIG_ERR_SAVE = 271001;          // 全局配置保存失败
     public static final int COMMONCONFIG_ERR_DEL = 271002;          // 全局配置删除失败

@@ -5,11 +5,12 @@
     <id column="MSG_UUID" property="uuid" jdbcType="VARCHAR" />
     <result column="MSG_FROM" property="from" jdbcType="VARCHAR" />
     <result column="MSG_CONTENT" property="content" jdbcType="VARCHAR" />
-    <result column="TO_PACKAGE" property="pkg" jdbcType="VARCHAR" />
     <result column="app_id" property="appId" jdbcType="VARCHAR" />
+    <result column="msg_title" property="title" jdbcType="VARCHAR" />
+    <result column="msg_text" property="text" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    MSG_UUID, MSG_FROM, MSG_CONTENT, TO_PACKAGE, APP_ID
+    msg_uuid, msg_from, msg_content, to_package, app_id ,msg_title, msg_text
   </sql>
   <select id="getExternalPushByUuid" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
@@ -33,12 +34,16 @@
       <if test="content != null" >
         MSG_CONTENT,
       </if>
-      <if test="pkg != null" >
-        TO_PACKAGE,
-      </if>
       <if test="appId != null" >
         app_id,
       </if>
+      <if test="title != null" >
+        msg_title,
+      </if>
+      <if test="text != null" >
+        msg_text,
+      </if>
+      create_time
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="uuid != null" >
@@ -50,12 +55,16 @@
       <if test="content != null" >
         #{content,jdbcType=VARCHAR},
       </if>
-      <if test="pkg != null" >
-        #{pkg,jdbcType=VARCHAR},
-      </if>
       <if test="appId != null" >
         #{appId},
       </if>
+      <if test="title != null" >
+        #{title},
+      </if>
+      <if test="text != null" >
+        #{text},
+      </if>
+      sysdate()
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.ExternalPush" >
@@ -67,8 +76,11 @@
       <if test="content != null" >
         MSG_CONTENT = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="pkg != null" >
-        TO_PACKAGE = #{pkg,jdbcType=VARCHAR},
+      <if test="title != null" >
+        msg_title= #{title},
+      </if>
+      <if test="text != null" >
+        msg_text= #{text},
       </if>
     </set>
     where MSG_UUID = #{uuid,jdbcType=VARCHAR}
@@ -83,9 +95,6 @@
       </if>
       <if test="msgContent != null and msgContent !=''" >
         and MSG_CONTENT = #{content,jdbcType=VARCHAR}
-      </if>
-      <if test="toPackage != null and toPackage !=''" >
-        and TO_PACKAGE = #{pkg,jdbcType=VARCHAR}
       </if>
     </where>
   </sql>

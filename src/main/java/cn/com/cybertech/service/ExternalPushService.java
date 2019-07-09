@@ -10,7 +10,7 @@ public interface ExternalPushService {
 
     List<ExternalPush> getList(ExternalPush externalpush);
 
-    RestResponse push(RestResponse response, String token, ExternalPush externalpush, Long expire, Boolean offLine);
+    RestResponse push(RestResponse response, String token, ExternalPush externalpush, Long expire, Integer offLine);
 
     RestResponse pushstate(RestResponse response, String uuids);
 
