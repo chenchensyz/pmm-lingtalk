@@ -63,8 +63,12 @@ public class LoginController {
     //获取用户所在的公司列表
     @RequestMapping(value = "/companys/{userName}", method = RequestMethod.GET)
     public RestResponse getCompanyList(@PathVariable("userName") String userName) {
+        int msgCode = MessageCode.BASE_SUCC_CODE;
         List<WebCompany> companyInfos = webCompanyService.getWebCompanyByUserName(userName);
-        return RestResponse.success().setData(companyInfos);
+        if (companyInfos == null || companyInfos.isEmpty()) {
+            msgCode = MessageCode.USERINFO_ERR_SELECT;
+        }
+       return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(companyInfos);
     }
 
     //获取用户所在的公司列表
