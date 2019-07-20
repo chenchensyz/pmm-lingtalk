@@ -11,8 +11,6 @@ public interface ExternalPushMapper {
 
     int insertSelective(ExternalPush externalpush);
 
-    int updateByPrimaryKeySelective(ExternalPush externalpush);
-
     List<ExternalPush> getList(ExternalPush externalpush);
 
     int deleteByPrimaryKey(Integer id);

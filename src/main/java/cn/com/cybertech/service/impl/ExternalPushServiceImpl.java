@@ -92,11 +92,10 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
         try {
             Set<String> tosSet = new HashSet<String>(toIds);
             for (String to : tosSet) {
+                onlinePush(externalpush, jedis, to);  //在线推送
                 Map<String, String> map = jedis.hgetAll(CodeUtil.REDIS_USER_ONLINE + to + CodeUtil.REDIS_USER_SUFFIX);
                 if (map.isEmpty() && offLine == 1) { //用户不在线  消息支持离线推送
                     offlinePush(externalpush, jedis, to);  //离线推送
-                } else if (!map.isEmpty()) {  //用户在线
-                    onlinePush(externalpush, jedis, to);  //在线推送
                 }
             }
         } catch (Exception e) {

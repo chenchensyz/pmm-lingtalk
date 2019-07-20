@@ -67,24 +67,7 @@
       sysdate()
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.com.cybertech.model.ExternalPush" >
-    update web_external_push
-    <set >
-      <if test="from != null" >
-        MSG_FROM = #{from,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null" >
-        MSG_CONTENT = #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="title != null" >
-        msg_title= #{title},
-      </if>
-      <if test="text != null" >
-        msg_text= #{text},
-      </if>
-    </set>
-    where MSG_UUID = #{uuid,jdbcType=VARCHAR}
-  </update>
+
   <sql id="sql_where" >
     <where >
       <if test="msgUuid != null and msgUuid !=''" >
