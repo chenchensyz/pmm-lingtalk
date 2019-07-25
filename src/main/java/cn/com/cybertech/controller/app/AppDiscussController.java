@@ -33,7 +33,7 @@ public class AppDiscussController {
     public RestResponse addOrEditAppDiscuss(AppDiscuss appDiscuss) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         try {
-            appDiscussService.addOrEditAppDiscuss(appDiscuss);
+            appDiscussService.addOrEditAppDiscuss(null, appDiscuss);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }

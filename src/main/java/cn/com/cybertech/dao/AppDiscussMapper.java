@@ -17,9 +17,8 @@ public interface AppDiscussMapper extends BaseDao<AppDiscuss> {
     //分页查询
     int getAppDiscussCount(AppDiscuss appDiscuss);
 
-    List<Integer> getAppDiscussIdList(AppDiscuss appDiscuss);
+    List<AppDiscuss> getAppDiscussList(AppDiscuss appDiscuss);
 
-    List<AppDiscuss> getAppDiscussList(List<Integer> discussIds);
 
     //根据创建者批量删除讨论组
     int deleteDiscussInCreatorIds(List<String> creatorId);
@@ -42,4 +41,7 @@ public interface AppDiscussMapper extends BaseDao<AppDiscuss> {
 
     //批量删除成员
     int delDiscussInUserIds(AppDiscuss appDiscuss);
+
+    List<AppDiscuss> getPushDiscussList(List<Integer> discussIds);
+
 }

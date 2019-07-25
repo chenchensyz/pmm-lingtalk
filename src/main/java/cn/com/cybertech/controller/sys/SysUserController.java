@@ -33,16 +33,18 @@ public class SysUserController {
     public RestResponse queryWebUserList(HttpServletRequest request, SysUser sysUser) {
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
+        RestResponse rest = new RestResponse();
         try {
             PageHelper.startPage(sysUser.getPageNum(), sysUser.getPageSize());
             List<SysUser> sysUsers = sysUserService.getSysUserList(token, sysUser);
             PageInfo<SysUser> sysUsersPage = new PageInfo<>(sysUsers);
-            return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode)).setData(sysUsers)
-                    .setTotal(sysUsersPage.getTotal()).setPage(sysUsersPage.getLastPage());
+            rest.setData(sysUsers).setTotal(sysUsersPage.getTotal()).setPage(sysUsersPage.getLastPage());
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
-        return RestResponse.res(msgCode, messageCodeUtil.getMessage(msgCode));
+        rest.setCode(msgCode);
+        rest.setMessage(messageCodeUtil.getMessage(msgCode));
+        return rest;
     }
 
     @RequestMapping("/addOrEditUser")

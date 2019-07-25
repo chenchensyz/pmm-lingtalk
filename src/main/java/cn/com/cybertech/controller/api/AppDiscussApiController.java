@@ -7,6 +7,7 @@ import cn.com.cybertech.tools.MessageCodeUtil;
 import cn.com.cybertech.tools.RestResponse;
 import cn.com.cybertech.tools.exception.ValueRuntimeException;
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,13 +31,16 @@ public class AppDiscussApiController {
      * 创建讨论组`
      */
     @RequestMapping(value = "/create")
-    public RestResponse create(HttpServletRequest request,@RequestBody String param) {
+    public RestResponse create(HttpServletRequest request, @RequestBody String param) {
         RestResponse response = new RestResponse();
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");
         AppDiscuss appDiscuss = JSONObject.parseObject(param, AppDiscuss.class);
         try {
-            response = appDiscussService.addAppApiDiscuss(response, token, appDiscuss);
+            Integer discussId = appDiscussService.addOrEditAppDiscuss(token, appDiscuss);
+            Map<String, Object> resultMap = Maps.newHashMap();
+            resultMap.put("discussId", discussId);
+            response.retDatas(resultMap);
         } catch (ValueRuntimeException e) {
             msgCode = (Integer) e.getValue();
         }
@@ -70,7 +74,7 @@ public class AppDiscussApiController {
      * 更新讨论组
      */
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public RestResponse updateDiscuss(HttpServletRequest request, @RequestBody  String param) {
+    public RestResponse updateDiscuss(HttpServletRequest request, @RequestBody String param) {
         RestResponse response = new RestResponse();
         int msgCode = MessageCode.BASE_SUCC_CODE;
         String token = request.getHeader("token");

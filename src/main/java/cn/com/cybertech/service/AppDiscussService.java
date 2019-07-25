@@ -7,7 +7,7 @@ public interface AppDiscussService {
 
     AppDiscuss selectAppDiscussById(Integer discussId);
 
-    Integer addOrEditAppDiscuss(AppDiscuss appDiscuss);
+    Integer addOrEditAppDiscuss(String token, AppDiscuss appDiscuss);
 
     RestResponse getAppDiscussList(AppDiscuss appDiscuss);
 
@@ -16,9 +16,6 @@ public interface AppDiscussService {
     void addAppDiscussUser(Integer appId, Integer discussId, String userId);
 
     void delAppDiscussUser(Integer appId, Integer discussId, String userId);
-
-    //sdk创建
-    RestResponse addAppApiDiscuss(RestResponse response, String token, AppDiscuss appDiscuss);
 
     //sdk删除
     void deleteAppApiDiscuss(String token, Integer discussId);

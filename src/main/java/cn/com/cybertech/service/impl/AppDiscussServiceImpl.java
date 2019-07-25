@@ -64,10 +64,14 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
 
     @Override
     @Transactional
-    public Integer addOrEditAppDiscuss(AppDiscuss appDiscuss) {
+    public Integer addOrEditAppDiscuss(String token, AppDiscuss appDiscuss) {
         int count;
         List<String> pushUsers; //推送的成员列表
         if (appDiscuss.getDiscussId() == null) {  //新增
+            if (StringUtils.isNotBlank(token)) {  //sdk创建
+                AppInfo appInfo = getAppByToken(token);
+                appDiscuss.setAppId(appInfo.getId());
+            }
             String creatorId = createAppUserId(appDiscuss.getCreatorId(), appDiscuss.getAppId()); //组装新的id
             AppUser appUser = appUserMapper.getAppUserById(creatorId); //查询用户是否存在
             if (appUser == null) {
@@ -113,14 +117,13 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
         int lastPage = 0;
         if (total > 0) {
             appDiscuss.setPageNum((appDiscuss.getPageNum() - 1) * appDiscuss.getPageSize());
-            List<Integer> discussIds = appDiscussMapper.getAppDiscussIdList(appDiscuss); //分页查询出discussIds
-            List<AppDiscuss> appDiscussMemberList = appDiscussMapper.getAppDiscussList(discussIds);
-            int count = appDiscussMemberList.size();
+            List<AppDiscuss> appDiscussList = appDiscussMapper.getAppDiscussList(appDiscuss);
+            int count = appDiscussList.size();
             lastPage = total / count;
             if (total / count > 0) {
                 lastPage += 1;
             }
-            restResponse.setData(appDiscussMemberList);
+            restResponse.setData(appDiscussList);
         }
         restResponse.setTotal(Long.valueOf(total));
         restResponse.setPage(lastPage);
@@ -136,13 +139,13 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
         for (String id : idArray) {
             discussIds.add(Integer.valueOf(id));
         }
-        List<AppDiscuss> appDiscussList = appDiscussMapper.getAppDiscussList(discussIds);
+        List<AppDiscuss> appDiscussList = appDiscussMapper.getPushDiscussList(discussIds);
         appDiscussUserMapper.deleteUserInDiscussIds(discussIds); //删除成员
         int count = appDiscussMapper.updateAppDiscussDisabled(discussIds);//批量修改为已删除
         if (count != discussIds.size()) {
             throw new ValueRuntimeException(MessageCode.DISCUSS_ERR_DEL);
         }
-        for (AppDiscuss discuss:appDiscussList) {
+        for (AppDiscuss discuss : appDiscussList) {
             publishDiscussUsersChange(discuss.getUserList(), discuss.getDiscussId(), NoticeActionType.delete);
         }
     }
@@ -218,34 +221,35 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
         }
     }
 
-    @Override
-    public RestResponse addAppApiDiscuss(RestResponse response, String token, AppDiscuss appDiscuss) {
-        AppInfo appInfo = getAppByToken(token);
-        appDiscuss.setAppId(appInfo.getId());
-        Integer discussId = addOrEditAppDiscuss(appDiscuss);
-        Map<String, Object> resultMap = Maps.newHashMap();
-        resultMap.put("discussId", discussId);
-        response.retDatas(resultMap);
-        return response;
-    }
 
     @Override
+    @Transactional
     public void deleteAppApiDiscuss(String token, Integer discussId) {
         AppInfo appInfo = getAppByToken(token);
         AppDiscuss appDiscuss = appDiscussMapper.getAppDiscussById(discussId);
-        if (appDiscuss != null && appDiscuss.getAppId() == appInfo.getId()) {
-            deleteAppDiscuss(String.valueOf(discussId));
+        if (appDiscuss != null && appDiscuss.getAppId().equals(appInfo.getId())) {
+            List<Integer> discussIds = Arrays.asList(discussId);
+            List<AppDiscuss> appDiscussList = appDiscussMapper.getPushDiscussList(discussIds);
+            appDiscussUserMapper.deleteUserInDiscussIds(discussIds); //删除成员
+            int count = appDiscussMapper.updateAppDiscussDisabled(discussIds);//批量修改为已删除
+            if (count != discussIds.size()) {
+                throw new ValueRuntimeException(MessageCode.DISCUSS_ERR_DEL);
+            }
+            for (AppDiscuss discuss : appDiscussList) {
+                publishDiscussUsersChange(discuss.getUserList(), discuss.getDiscussId(), NoticeActionType.delete);
+            }
         } else {
             throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
         }
     }
 
     @Override
+    @Transactional
     public void updateAppApiDiscuss(String token, String param) {
         AppInfo appInfo = getAppByToken(token);
         JSONObject jsonObject = JSONObject.parseObject(param);
         AppDiscuss appDiscuss = appDiscussMapper.getAppDiscussById(jsonObject.getInteger("discussId"));
-        if (appDiscuss != null && appDiscuss.getAppId() == appInfo.getId()) {
+        if (appDiscuss != null && appDiscuss.getAppId().equals(appInfo.getId())) {
             appDiscuss.setDiscussName(jsonObject.getString("discussName"));
             int count = appDiscussMapper.updateAppDiscuss(appDiscuss);
             if (count == 0) {
@@ -280,13 +284,31 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
         AppDiscuss appDiscuss = JSONObject.parseObject(param, AppDiscuss.class);
         if (appDiscuss != null && appDiscuss.getUserList() != null && appDiscuss.getUserList().size() > 0) {
             AppDiscuss discuss = appDiscussMapper.getAppDiscussById(appDiscuss.getDiscussId());  //查询讨论组
-            if (discuss == null || discuss.getAppId() != appInfo.getId()) {
+            if (discuss == null || !discuss.getAppId().equals(appInfo.getId())) {
                 throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
             }
             Set<String> userList = new HashSet(appDiscuss.getUserList());
             for (String userId : userList) {
-                addAppDiscussUser(appInfo.getId(), appDiscuss.getDiscussId(), userId);
+                String pmUserId = createAppUserId(userId, appInfo.getId());
+                AppUser appUser = appUserMapper.getAppUserById(pmUserId); //查询用户是否存在
+                if (appUser == null) {
+                    throw new ValueRuntimeException(MessageCode.USERINFO_ERR_SELECT);
+                }
+                if (discuss.getUserList().contains(pmUserId)) { //成员已存在
+                    throw new ValueRuntimeException(MessageCode.DISCUSS_USER_EXIT);
+                }
+                AppDiscussUser appDiscussUser = new AppDiscussUser();
+                appDiscussUser.setDiscussId(discuss.getDiscussId());
+                appDiscussUser.setUserId(pmUserId);
+                appDiscussUser.setAdded(discuss.getCreatorId());
+                appDiscussUser.setAddTime(new Date());
+                int count = appDiscussUserMapper.insertAppDiscussUser(appDiscussUser);//存入成员表
+                if (count == 0) {//保存讨论组成员失败
+                    throw new ValueRuntimeException(MessageCode.DISCUSS_USER_ERR_SAVE);
+                }
+                discuss.getUserList().add(pmUserId);//推送
             }
+            publishDiscussUsersChange(discuss.getUserList(), discuss.getDiscussId(), NoticeActionType.change);
         } else {
             throw new ValueRuntimeException(MessageCode.BASE_PARAMS_ERR_VALIDE);
         }
@@ -296,16 +318,22 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
     @Transactional
     public void deleteMembers(String token, String param) {
         AppInfo appInfo = getAppByToken(token);
-        AppDiscuss appDiscuss = JSONObject.parseObject(param, AppDiscuss.class);
+        AppDiscuss appDiscuss = JSONObject.parseObject(param, AppDiscuss.class); //传入要删除的用户
         if (appDiscuss != null && appDiscuss.getUserList() != null && appDiscuss.getUserList().size() > 0) {
             AppDiscuss discuss = appDiscussMapper.getAppDiscussById(appDiscuss.getDiscussId());  //查询讨论组
-            if (discuss == null || discuss.getAppId() != appInfo.getId()) {
+            if (discuss == null || !discuss.getAppId().equals(appInfo.getId())) {
                 throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
             }
-            Set<String> userList = new HashSet(appDiscuss.getUserList());
+
+            Set<String> userList = new HashSet(appDiscuss.getUserList());   //要删除的用户
             for (String userId : userList) {
-                delAppDiscussUser(appInfo.getId(), appDiscuss.getDiscussId(), userId);
+                String pmUserId = createAppUserId(userId, appInfo.getId()); //验证应用,组成pmId
+                int count = appDiscussUserMapper.deleteAppDiscussUser(appDiscuss.getDiscussId(), pmUserId);
+                if (count == 0) {
+                    throw new ValueRuntimeException(MessageCode.DISCUSS_USER_ERR_DEL); //删除讨论组成员失败
+                }
             }
+            publishDiscussUsersChange(discuss.getUserList(), discuss.getDiscussId(), NoticeActionType.change);
         } else {
             throw new ValueRuntimeException(MessageCode.BASE_PARAMS_ERR_VALIDE);
         }
