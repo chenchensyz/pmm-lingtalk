@@ -255,6 +255,7 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
             if (count == 0) {
                 throw new ValueRuntimeException(MessageCode.DISCUSS_USER_ERR_SAVE);
             }
+            publishDiscussUsersChange(appDiscuss.getUserList(), appDiscuss.getDiscussId(), NoticeActionType.change);
         } else {
             throw new ValueRuntimeException(MessageCode.DISCUSS_NULL_SELECT);
         }

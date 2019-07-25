@@ -12,7 +12,7 @@
   <sql id="Base_Column_List">
     ID, DISCUSS_ID, USER_ID, ADDED, ADD_TIME, CARDNAME
   </sql>
-  <select id="getUsersByDiscussId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="getUsersByDiscussId" parameterType="java.lang.Integer" resultType="string">
     select USER_ID from pm_tp_discuss_users where  DISCUSS_ID = #{discussId}
   </select>
 
