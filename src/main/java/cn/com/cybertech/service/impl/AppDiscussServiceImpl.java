@@ -85,7 +85,8 @@ public class AppDiscussServiceImpl extends BaseServiceImpl implements AppDiscuss
             if (count == 0) {
                 throw new ValueRuntimeException(MessageCode.DISCUSS_ERR_SAVE);
             }
-            Set<String> userSet = Sets.newHashSet(creatorId);
+            Set<String> userSet = Sets.newLinkedHashSet();
+            userSet.add(creatorId);
             if (appDiscuss.getUserList() != null && appDiscuss.getUserList().size() > 0) {
                 for (String userId : appDiscuss.getUserList()) {
                     userSet.add(createAppUserId(userId, appDiscuss.getAppId()));
