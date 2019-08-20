@@ -1,6 +1,5 @@
 package cn.com.cybertech.service.impl;
 
-import cn.com.cybertech.dao.AppDiscussMapper;
 import cn.com.cybertech.dao.AppDiscussUserMapper;
 import cn.com.cybertech.dao.AppInfoMapper;
 import cn.com.cybertech.dao.AppUserMapper;
@@ -32,9 +31,6 @@ public class AppUserServiceImpl extends BaseServiceImpl implements AppUserServic
     @Autowired
     private AppDiscussUserMapper appDiscussUserMapper;
 
-    @Autowired
-    private AppDiscussMapper appDiscussMapper;
-
     //通过appId和userId组成sdk的im用户id
     public String createAppUserId(String userId, String appId) {
         String newId = userId + "@" + appId;
@@ -47,6 +43,7 @@ public class AppUserServiceImpl extends BaseServiceImpl implements AppUserServic
     }
 
     @Override
+    @Transactional
     public void addOrEditAppUser(AppUser appUser) {
         AppInfo appInfo = appInfoMapper.getAppInfoById(appUser.getAppId());
         if (appInfo == null) {
@@ -74,7 +71,6 @@ public class AppUserServiceImpl extends BaseServiceImpl implements AppUserServic
     @Transactional
     public void deleteAppUsers(List<String> userIds) {
         appDiscussUserMapper.deleteDiscussUserInUserIds(userIds);   //从讨论组中删除
-        appDiscussMapper.deleteDiscussInCreatorIds(userIds); //删除用户创建的讨论组
         int count = appUserMapper.deleteAppUserInIds(userIds);
         if (count != userIds.size()) {
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_DEL);
@@ -131,11 +127,9 @@ public class AppUserServiceImpl extends BaseServiceImpl implements AppUserServic
 
 
     @Override
-    @Transactional
     public void deleteAppApiUser(String token, Map<String, Object> paramMap) {
         AppInfo appInfo = getAppByToken(token);
-        List<String> userIds =
-                paramMap.get("userIds") == null ? null : (ArrayList) paramMap.get("userIds");
+        List<String> userIds = paramMap.get("userIds") == null ? null : (ArrayList) paramMap.get("userIds");
         if (userIds == null || userIds.size() <= 0) {
 
         }

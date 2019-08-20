@@ -14,7 +14,7 @@ public interface AppUserService {
 
     void deleteAppUsers(List<String> userIds);
 
-    RestResponse addAppApiUser(RestResponse response,String token, Map<String, Object> paramMap);
+    RestResponse addAppApiUser(RestResponse response, String token, Map<String, Object> paramMap);
 
     void deleteAppApiUser(String token, Map<String, Object> paramMap);
 
