@@ -30,6 +30,8 @@ public class CodeUtil {
     public static final int REDIS_DBINDEX = 2;    //token报存在redis第二个库
     public static final String REDIS_PREFIX = "session:";    //token保存在redis第二个库
     public static final String REDIS_APPLOGIN_PREFIX = "as:";   //IM用户登陆
+    public static final int REDIS_EXPIRE_TIME = 60 * 30;  //30分
+
 
     public static final int REDIS_USER_DBINDEX = 4;    //用户状态判断存在第四个库
     public static final String REDIS_USER_ONLINE = "1:";  //im用户在线状态

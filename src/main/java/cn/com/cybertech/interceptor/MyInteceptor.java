@@ -12,12 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -26,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
@@ -119,14 +116,13 @@ class AuthCheckInterceptor implements HandlerInterceptor {
                 writeJsonResult(response, 401, MessageCode.AUTH_HEADER_USER_FILED, messageMap.get(MessageCode.AUTH_HEADER_PLATFORM_NULL));
                 return false;
             }
+            jedis.expire(CodeUtil.REDIS_PREFIX + token, CodeUtil.REDIS_EXPIRE_TIME);
         } catch (Exception e) {
             e.printStackTrace();
             throw new ValueRuntimeException(MessageCode.USERINFO_ERR_LOGIN); //用户登陆失败
         } finally {
             jedis.close();
         }
-
-
         return true;
     }
 

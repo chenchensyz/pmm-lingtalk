@@ -90,7 +90,9 @@ public class WebUserServiceImpl implements WebUserService {
             map.put("roleId", user.getRoleId() + "");
             map.put("source", CodeUtil.USER_TYPE_WEB);
             map.put("timestamp", System.currentTimeMillis() + "");
-            jedis.hmset(CodeUtil.REDIS_PREFIX + token, map);
+            String key = CodeUtil.REDIS_PREFIX + token;
+            jedis.hmset(key, map);
+            jedis.expire(key, CodeUtil.REDIS_EXPIRE_TIME);
 
             resultMap.put("token", token);
             resultMap.put("nickName", user.getNickName());
