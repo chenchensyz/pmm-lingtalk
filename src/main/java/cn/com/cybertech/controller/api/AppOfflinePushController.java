@@ -43,13 +43,12 @@ public class AppOfflinePushController {
         String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         JSONArray jsonArray = new JSONArray();
         jsonArray.add(jsonObject);
-        Map<String, Object> map = HttpClientUtil.httpRequest(upload_url + push_status_url, CodeUtil.METHOD_POST,
-                CodeUtil.CONTEXT_JSON, jsonArray.toString());
-        if (map.get("code") != null && CodeUtil.HTTP_OK == (Integer) map.get("code")) {
+        ResultData resultData = HttpClientUtil.httpRequest(upload_url + push_status_url, CodeUtil.METHOD_POST, CodeUtil.CONTEXT_JSON, jsonArray.toString());
+        if (resultData != null && CodeUtil.HTTP_OK == resultData.getCode()) {
             msgCode = MessageCode.BASE_SUCC_CODE;
             msg = messageCodeUtil.getMessage(msgCode);
         } else {
-            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + map.get("error")));
+            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + resultData.getResult()));
         }
         RestResponse response = new RestResponse();
         response.retMsg(response, msgCode, msg);
@@ -64,13 +63,12 @@ public class AppOfflinePushController {
         String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);
         String push_status_url = env.getProperty(CodeUtil.PUSH_STATUS_URL);
         String requestUrl = upload_url + push_status_url + "/" + userId + "@" + appId;
-        Map<String, Object> map =
-                HttpClientUtil.httpRequest(requestUrl, CodeUtil.METHOD_DELETE, null, null);
-        if (map.get("code") != null && CodeUtil.HTTP_OK == (Integer) map.get("code")) {
+        ResultData resultData = HttpClientUtil.httpRequest(requestUrl, CodeUtil.METHOD_DELETE, null, null);
+        if (resultData != null && CodeUtil.HTTP_OK == resultData.getCode()) {
             msgCode = MessageCode.BASE_SUCC_CODE;
             msg = messageCodeUtil.getMessage(msgCode);
         } else {
-            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + map.get("error")));
+            msg = JSON.toJSONString(RestResponse.res(MessageCode.OFFLINEPUSH_ERR_REGISTER, messageCodeUtil.getMessage(MessageCode.OFFLINEPUSH_ERR_REGISTER) + resultData.getResult()));
         }
         RestResponse response = new RestResponse();
         response.retMsg(response, msgCode, msg);

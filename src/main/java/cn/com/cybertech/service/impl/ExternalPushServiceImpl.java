@@ -120,9 +120,9 @@ public class ExternalPushServiceImpl extends BaseServiceImpl implements External
         jsonObject.put("userdata", externalpush.getContent());
         String upload_url = env.getProperty(CodeUtil.CERT_PROD_UPLOAD_URL);  //地址
         String offline_push_url = env.getProperty(CodeUtil.OFFLINE_PUSH_URL);
-        Map<String, Object> resultMap = HttpClientUtil.httpRequest(upload_url + offline_push_url, CodeUtil.METHOD_POST,
+        ResultData resultData = HttpClientUtil.httpRequest(upload_url + offline_push_url, CodeUtil.METHOD_POST,
                 CodeUtil.CONTEXT_JSON, jsonObject.toString());
-        if (resultMap.get("code") != null && CodeUtil.HTTP_OK != (Integer) resultMap.get("code")) {
+        if (resultData != null && CodeUtil.HTTP_OK != resultData.getCode()) {
             throw new ValueRuntimeException(MessageCode.MESSAGE_ERR_OFFLINE_PUSH);  //离线消息发送失败
         }
     }

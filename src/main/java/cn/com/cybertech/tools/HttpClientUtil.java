@@ -27,15 +27,16 @@ public class HttpClientUtil {
         return uuidStr;
     }
 
-    public static Map<String, Object> httpRequest(String requestUrl, String method, String contentType, String outputStr) {
+    public static ResultData httpRequest(String requestUrl, String method, String contentType, String outputStr) {
         LOGGER.info("进入连接:{}", requestUrl);
-        Map<String, Object> map = Maps.newHashMap();
+        ResultData resultData = new ResultData();
         String result = null;
         HttpURLConnection conn = null;
         OutputStream outputStream = null;
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         BufferedReader bufferedReader = null;
+        int code = 402;
         try {
             URL url = new URL(null, requestUrl, new Handler());
             conn = (HttpURLConnection) url.openConnection();
@@ -50,7 +51,7 @@ public class HttpClientUtil {
             conn.setReadTimeout(maxTime);
             // 设置请求方式（GET/POST）
             conn.setRequestMethod(method);
-            if(StringUtils.isNotBlank(contentType)){
+            if (StringUtils.isNotBlank(contentType)) {
                 conn.setRequestProperty("Content-type", contentType);
             }
             // 当outputStr不为null时向输出流写数据
@@ -72,13 +73,13 @@ public class HttpClientUtil {
                 result = buffer.toString();
                 LOGGER.info("请求成功:{}", result);
             } else {
-                map.put("error", responseCode + ":" + conn.getResponseMessage());
+                result = responseCode + ":" + conn.getResponseMessage();
                 LOGGER.error("响应异常code:{}, requestUrl:{} ,msg:{}", responseCode, requestUrl, conn.getResponseMessage());
             }
-            map.put("code", responseCode);
+            code = responseCode;
         } catch (Exception e) {
             LOGGER.error(e.toString(), e);
-            map.put("error", e.toString());
+            result = e.toString();
         } finally {
             // 释放资源
             try {
@@ -101,8 +102,9 @@ public class HttpClientUtil {
                 e.printStackTrace();
             }
         }
-        map.put("result", result);
-        return map;
+        resultData.setCode(code);
+        resultData.setResult(result);
+        return resultData;
     }
 
     public static void main(String[] args) {
