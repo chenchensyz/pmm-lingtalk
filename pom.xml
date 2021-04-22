@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <slf4j.version>1.7.7</slf4j.version>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
         <fastjson.version>1.2.41</fastjson.version>
         <!--mybatis-->
         <mybatis.version>3.4.6</mybatis.version>
